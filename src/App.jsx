@@ -405,8 +405,8 @@ export default function App() {
             value={region}
             onChange={(e) => setRegion(e.target.value)}
           >
-            <option value="台灣/港澳">🇹🇼 台灣/港澳地區 (繁體)</option>
-            <option value="新加坡/大馬">🇸🇬 新加坡/大馬地區 (簡體)</option>
+            <option value="台灣/港澳">台灣/港澳地區 (繁體)</option>
+            <option value="新加坡/大馬">新加坡/大馬地区 (简体)</option>
           </select>
 
           <button 
