@@ -369,6 +369,8 @@ export default function App() {
           user: "web_user_" + Date.now()
         })
       });
+      console.log(response);
+      console.log(hexagram[sc].name);
       const data = await response.json();
       setFullReport(data.data.outputs.Report);
     } catch (error) {
