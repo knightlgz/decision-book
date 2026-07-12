@@ -353,7 +353,6 @@ export default function App() {
     }
     setUnlocked(true);
     setLoading(true);
-    console.log(hexagram["sc"].name);
 
     try {
       const response = await fetch('/api/dify', {
@@ -370,8 +369,7 @@ export default function App() {
           user: "web_user_" + Date.now()
         })
       });
-      console.log(response);
-      console.log(hexagram["sc"].name);
+
       const data = await response.json();
       setFullReport(data.data.outputs.Report);
     } catch (error) {
