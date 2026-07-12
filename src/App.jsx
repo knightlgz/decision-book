@@ -363,7 +363,7 @@ export default function App() {
             User_Question: question,
             Region: region,
             // 动态向大模型传入当前语言版本的卦名
-            Hexagram_Name: hexagram[lang].name 
+            Hexagram_Name: hexagram[sc].name 
           },
           response_mode: "blocking",
           user: "web_user_" + Date.now()
