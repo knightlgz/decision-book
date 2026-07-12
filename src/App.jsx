@@ -353,7 +353,7 @@ export default function App() {
     }
     setUnlocked(true);
     setLoading(true);
-    console.log(hexagram[sc].name);
+    console.log(hexagram["sc"].name);
 
     try {
       const response = await fetch('/api/dify', {
@@ -364,14 +364,14 @@ export default function App() {
             User_Question: question,
             Region: region,
             // 动态向大模型传入当前简中的卦名，确保知识库语言匹配
-            Hexagram_Name: hexagram[sc].name 
+            Hexagram_Name: hexagram["sc"].name 
           },
           response_mode: "blocking",
           user: "web_user_" + Date.now()
         })
       });
       console.log(response);
-      console.log(hexagram[sc].name);
+      console.log(hexagram["sc"].name);
       const data = await response.json();
       setFullReport(data.data.outputs.Report);
     } catch (error) {
