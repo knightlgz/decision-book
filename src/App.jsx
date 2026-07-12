@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 // 诱饵库：前端硬编码，拦截无效API调用，省下每一分钱成本
 const HEXAGRAMS = [
@@ -507,6 +508,7 @@ export default function App() {
           </section>
         )}
       </div>
+      <Analytics />
     </div>
   );
 }
