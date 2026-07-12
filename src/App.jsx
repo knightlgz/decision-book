@@ -353,6 +353,7 @@ export default function App() {
     }
     setUnlocked(true);
     setLoading(true);
+    console.log(hexagram[sc].name);
 
     try {
       const response = await fetch('/api/dify', {
