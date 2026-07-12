@@ -362,7 +362,7 @@ export default function App() {
           inputs: {
             User_Question: question,
             Region: region,
-            // 动态向大模型传入当前语言版本的卦名
+            // 动态向大模型传入当前简中的卦名，确保知识库语言匹配
             Hexagram_Name: hexagram[sc].name 
           },
           response_mode: "blocking",
