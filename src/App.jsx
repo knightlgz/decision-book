@@ -371,7 +371,19 @@ export default function App() {
       });
 
       const data = await response.json();
-      setFullReport(data.data.outputs.Report);
+      
+      if (data && data.data && data.data.outputs) {
+        let finalContent = data.data.outputs.Report || data.data.outputs.text || data.data.outputs.answer;
+        
+        if (finalContent) {
+           // 【核心新增】：使用正则清洗掉 <think> 标签及其内部的所有换行与文字，并去除首尾空白
+           finalContent = finalContent.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
+           
+           setFullReport(finalContent);
+        } else {
+           setFullReport(lang === "tc" ? "⚠️ 數據解析失敗：找不到對應的輸出內容。" : "⚠️ 数据解析失败：找不到对应的输出内容。");
+        }
+      }
     } catch (error) {
       setFullReport(lang === "tc" ? "系統繁忙，請稍後重試。" : "系统繁忙，请稍后重试。");
     } finally {
