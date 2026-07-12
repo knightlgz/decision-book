@@ -483,7 +483,7 @@ export default function App() {
                 
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white/50 backdrop-blur-xs">
                   <a 
-                    href="https://ko-fi.com/s/your-product-link" 
+                    href="https://ko-fi.com/s/c35a082076" 
                     target="_blank" 
                     rel="noreferrer"
                     className="mb-5 text-sm font-bold text-[#7C2D12] underline hover:text-black transition-colors"
