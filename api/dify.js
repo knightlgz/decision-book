@@ -8,7 +8,6 @@ export default async function handler(req, res) {
     const response = await fetch('https://api.dify.ai/v1/workflows/run', {
       method: 'POST',
       headers: {
-        // process.env.DIFY_API_KEY 将在 Vercel 环境变量中配置
         'Authorization': `Bearer ${process.env.DIFY_API_KEY}`,
         'Content-Type': 'application/json'
       },
@@ -17,7 +16,7 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     res.status(200).json(data);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch Dify API' });
   }
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics, track } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // 诱饵库：前端硬编码，拦截无效API调用，省下每一分钱成本
@@ -335,24 +335,51 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [fullReport, setFullReport] = useState("");
 
-  // 第一性原理：衍生状态 (Derived State)
-  // 根据用户选择的地区，动态决定当前语言键，无需使用 useEffect 监听
   const lang = region.includes("台灣") ? "tc" : "sc";
 
   const handleGenerate = () => {
     if (!question.trim()) {
       return alert(lang === "tc" ? "請輸入具體問題" : "请输入具体问题");
     }
-    const random = Math.floor(Math.random() * HEXAGRAMS.length);
-    setHexagram(HEXAGRAMS[random]);
+    // 时辰起卦法：时辰 + 问题哈希 + 匿名四维指纹 → 同时同问不同人得不同卦
+    // 指纹维度均无需用户授权，不涉及个人隐私，同设备稳定一致
+    const now = new Date();
+    const shichen = Math.floor(((now.getHours() + 1) % 24) / 2);
+    const hash = (s) => {
+      let h = 0;
+      for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+      return Math.abs(h);
+    };
+    const fingerprint = [
+      navigator.language,                                         // zh-TW / zh-CN / en-SG ...
+      Intl.DateTimeFormat().resolvedOptions().timeZone || "",     // Asia/Taipei / Asia/Shanghai ...
+      screen.width,                                               // 屏幕宽度 → 设备差异
+      navigator.platform || "",                                   // MacIntel / Win32 / Linux ...
+    ].join("|");
+    const seed = shichen * 100000 + hash(question) + hash(fingerprint);
+    const index = seed % HEXAGRAMS.length;
+    const result = HEXAGRAMS[index];
+    setHexagram(result);
     setUnlocked(false);
     setFullReport("");
+
+    // 漏斗追踪：卦象生成
+    track('hexagram_generated', {
+      hexagram: result.number,
+      region: region,
+      questionLength: question.length
+    });
   };
 
   const handleUnlock = async () => {
+    // 漏斗追踪：尝试解锁
+    track('unlock_attempted', { hexagram: hexagram?.number });
+
     if (password.trim() !== "AURA-888") {
+      track('unlock_failed', { reason: 'wrong_password' });
       return alert(lang === "tc" ? "密碼驗證失敗，請確認購買後的感謝信內容。" : "密码验证失败，请确认购买后的感谢信内容。");
     }
+    track('unlock_success');
     setUnlocked(true);
     setLoading(true);
 
@@ -364,7 +391,6 @@ export default function App() {
           inputs: {
             User_Question: question,
             Region: region,
-            // 动态向大模型传入当前简中的卦名，确保知识库语言匹配
             Hexagram_Name: hexagram["sc"].name 
           },
           response_mode: "blocking",
@@ -386,7 +412,7 @@ export default function App() {
            setFullReport(lang === "tc" ? "⚠️ 數據解析失敗：找不到對應的輸出內容。" : "⚠️ 数据解析失败：找不到对应的输出内容。");
         }
       }
-    } catch (error) {
+    } catch {
       setFullReport(lang === "tc" ? "系統繁忙，請稍後重試。" : "系统繁忙，请稍后重试。");
     } finally {
       setLoading(false);
@@ -394,15 +420,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#333333] font-sans p-6 selection:bg-gray-200">
-      <div className="max-w-md mx-auto space-y-8 mt-12">
+    <div className="min-h-dvh bg-[#FAFAFA] text-[#333333] font-sans p-4 sm:p-6 selection:bg-gray-200">
+      <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
         
         <header className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-widest text-gray-900">
             {lang === "tc" ? "決策之書" : "决策之书"}
           </h1>
           <p className="text-xs text-gray-500 tracking-[0.2em]">
-            {lang === "tc" ? "AI 宇宙能量推演模型" : "AI 宇宙能量推演模型"}
+            {lang === "tc" ? "易經商業決策 · 曾仕強思想體系" : "易经商业决策 · 曾仕强思想体系"}
           </p>
         </header>
 
@@ -486,9 +512,10 @@ export default function App() {
                     href="https://ko-fi.com/s/c35a082076" 
                     target="_blank" 
                     rel="noreferrer"
+                    onClick={() => track('payment_link_clicked', { hexagram: hexagram?.number })}
                     className="mb-5 text-sm font-bold text-[#7C2D12] underline hover:text-black transition-colors"
                   >
-                    🛒 {lang === "tc" ? "支付 $3.99 獲取本週解鎖密碼" : "支付 $3.99 获取本周解锁密码"}
+                    🛒 {lang === "tc" ? "解鎖完整解讀 · $3.99/週" : "解锁完整解读 · $3.99/周"}
                   </a>
                   <input 
                     type="text" 
