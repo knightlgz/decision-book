@@ -1,16 +1,28 @@
-# React + Vite
+# 决策之书 (Decision Book)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> 基于曾仕强教授易经思想体系，用 AI 为你推演职场与商业抉择。
+> 
+> 🔗 在线体验：**[decision-book.vercel.app](https://decision-book.vercel.app)**
 
-Currently, two official plugins are available:
+## 这是什么？
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+决策之书是一个结合易经智慧与 AI 的商业决策助手。输入你在职场或商业上遇到的困惑，系统会通过易经起卦，为你生成一份包含核心洞察、避坑指南和破局行动的深度解读报告。
 
-## React Compiler
+- 曾仕强教授《易经的智慧》分析框架
+- 64 卦全商业/职场语境解读
+- 支持繁体中文（台湾/港澳）和简体中文（新加坡/大马）
+- 每周 $3.99 解锁完整 AI 解读
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 技术栈
 
-## Expanding the ESLint configuration
+- React 19 + Vite 8
+- Tailwind CSS 4
+- Dify AI 工作流
+- Vercel 部署
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 本地开发
+
+```bash
+npm install
+npm run dev
+```
