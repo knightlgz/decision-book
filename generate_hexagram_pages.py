@@ -192,16 +192,12 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
 
     # 白话解读区块（DeepSeek 生成）
     # 策略：释义全量展示；职场启示截为2句引子；行动建议不上页面（付费产品核心价值）
-    def to_paragraphs(text, sentences_per_para=2):
-        """按句分段，每段 2 句"""
-        sentences = re.split(r'(?<=[。！？])', text)
-        sentences = [s.strip() for s in sentences if s.strip()]
-        paras = []
-        for i in range(0, len(sentences), sentences_per_para):
-            chunk = "".join(sentences[i:i + sentences_per_para])
-            if chunk:
-                paras.append(f"<p>{chunk}</p>")
-        return "".join(paras)
+    def to_paragraphs(text):
+        """优先按 LLM 语义分段标记 ||| 分，无标记时退回原样"""
+        if "|||" in text:
+            parts = [p.strip() for p in text.split("|||") if p.strip()]
+            return "".join(f"<p>{p}</p>" for p in parts)
+        return f"<p>{text}</p>"
 
     interp_html = ""
     meaning_text = interp_text.get("meaning", "")
