@@ -11,6 +11,7 @@
   public/sitemap.xml                   ← 全量 URL（130+）
 """
 import json
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -129,7 +130,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         breadcrumb_idx = "六十四卦"
         insight_label = "核心解讀"
         cta_h2 = "你正在面對類似的職場或商業抉擇嗎？"
-        cta_p = "免費起卦，看看你的能量切片對應哪一卦；完整商業決策報告，可輸入解鎖密碼後查看。"
+        cta_p = "免費起卦，看看你的能量切片對應哪一卦；針對你處境的完整行動方案，可輸入解鎖密碼後查看。"
         cta_btn = "免費起卦 →"
         orig_label = "《易經》原文"
         gua_label = "卦辭"
@@ -154,7 +155,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         breadcrumb_idx = "六十四卦"
         insight_label = "核心解读"
         cta_h2 = "你正在面对类似的职场或商业抉择吗？"
-        cta_p = "免费起卦，看看你的能量切片对应哪一卦；完整商业决策报告，可输入解锁密码后查看。"
+        cta_p = "免费起卦，看看你的能量切片对应哪一卦；针对你处境的完整行动方案，可输入解锁密码后查看。"
         cta_btn = "免费起卦 →"
         orig_label = "《易经》原文"
         gua_label = "卦辞"
@@ -190,12 +191,22 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         scripture_html += lines_html
 
     # 白话解读区块（DeepSeek 生成）
+    # 策略：释义全量展示；职场启示截为2句引子；行动建议不上页面（付费产品核心价值）
     interp_html = ""
-    if interp_text.get("meaning") or interp_text.get("career") or interp_text.get("advice"):
+    meaning_text = interp_text.get("meaning", "")
+    career_text = interp_text.get("career", "")
+    if meaning_text or career_text:
         blocks = []
-        for key, label in [("meaning", interp_labels[0]), ("career", interp_labels[1]), ("advice", interp_labels[2])]:
-            if interp_text.get(key):
-                blocks.append(f'<div class="interp-block"><h3>{label}</h3><p>{interp_text[key]}</p></div>')
+        if meaning_text:
+            blocks.append(f'<div class="interp-block"><h3>{interp_labels[0]}</h3><p>{meaning_text}</p></div>')
+        if career_text:
+            # 截取前两句作为引子
+            sentences = re.split(r'(?<=[。！？])', career_text)
+            teaser = "".join(sentences[:2]).strip()
+            if len(teaser) < 30 and len(sentences) > 2:
+                teaser += sentences[2]
+            teaser += "…"
+            blocks.append(f'<div class="interp-block"><h3>{interp_labels[1]}</h3><p>{teaser}</p></div>')
         interp_html = f'<div class="interpretation">{"".join(blocks)}</div>'
 
     # Article + FAQ 双 schema
