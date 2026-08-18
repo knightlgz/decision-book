@@ -18,8 +18,22 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 DATA_FILE = ROOT / "src" / "data" / "hexagrams.js"
 ORIGINAL_FILE = ROOT / "src" / "data" / "iching_original.json"
+INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
 PUBLIC = ROOT / "public"
 BASE_URL = "https://decision-book.vercel.app"
+
+
+def parse_original():
+    """读取原文数据（卦辞+爻辞），按卦序号索引"""
+    data = json.loads(ORIGINAL_FILE.read_text(encoding="utf-8"))
+    return {d["id"]: d for d in data}
+
+
+def parse_interpretations():
+    """读取白话解读（DeepSeek 生成），返回 {number: {meaning, career, advice}}"""
+    if not INTERP_FILE.exists():
+        return {}
+    return json.loads(INTERP_FILE.read_text(encoding="utf-8"))
 
 
 def parse_hexagrams():
@@ -36,12 +50,6 @@ console.log(JSON.stringify(HEXAGRAMS));
     return json.loads(result.stdout)
 
 
-def parse_original():
-    """读取原文数据（卦辞+爻辞），按卦序号索引"""
-    data = json.loads(ORIGINAL_FILE.read_text(encoding="utf-8"))
-    return {d["id"]: d for d in data}
-
-
 FAQ_TC = [
     {
         "q": "這個卦象適合問什麼問題？",
@@ -49,7 +57,7 @@ FAQ_TC = [
     },
     {
         "q": "如何獲得專屬於我的卦象解讀？",
-        "a": "在決策之書輸入你的具體困惑，AI 會基於曾仕強教授易經思想體系，生成一份結合你情境的商業決策報告。",
+        "a": "在決策之書輸入你的具體困惑即可免費起卦；輸入解鎖密碼後，AI 會基於曾仕強教授易經思想體系，生成一份結合你情境的完整商業決策報告。",
     },
     {
         "q": "卦象解讀可以代替專業意見嗎？",
@@ -64,7 +72,7 @@ FAQ_SC = [
     },
     {
         "q": "如何获得专属于我的卦象解读？",
-        "a": "在决策之书输入你的具体困惑，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的商业决策报告。",
+        "a": "在决策之书输入你的具体困惑即可免费起卦；输入解锁密码后，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的完整商业决策报告。",
     },
     {
         "q": "卦象解读可以代替专业意见吗？",
@@ -88,13 +96,23 @@ def faq_jsonld(faq_items, url):
     }, ensure_ascii=False)
 
 
-def page_html(hx, orig, prev_num, next_num, lang="tc"):
+def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
     """单个卦象页。lang: tc=繁体 / sc=简体"""
     n = hx["number"]
     is_tc = lang == "tc"
     name = hx["tc"]["name"] if is_tc else hx["sc"]["name"]
     insight = hx["tc"]["insight"] if is_tc else hx["sc"]["insight"]
     num_label = f"第 {int(n)} 卦"
+
+    # 白话解读（繁→简转换）
+    interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
+    if not is_tc:
+        try:
+            from opencc import OpenCC
+            cc = OpenCC("t2s")
+            interp_text = {k: cc.convert(v) for k, v in interp_text.items()}
+        except ImportError:
+            pass
 
     if is_tc:
         title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業決策解讀"
@@ -111,8 +129,8 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         breadcrumb_idx = "六十四卦"
         insight_label = "核心解讀"
         cta_h2 = "你正在面對類似的職場或商業抉擇嗎？"
-        cta_p = "輸入你的具體困惑，讓 AI 以曾仕強教授的易經智慧，為你推演專屬的決策報告。"
-        cta_btn = "開始免費推演 →"
+        cta_p = "免費起卦，看看你的能量切片對應哪一卦；完整商業決策報告，可輸入解鎖密碼後查看。"
+        cta_btn = "免費起卦 →"
         orig_label = "《易經》原文"
         gua_label = "卦辭"
         yao_label = "爻辭"
@@ -120,6 +138,7 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         footer = "曾仕強教授易經思想體系"
         subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
         faq_heading = "常見問題"
+        interp_labels = ["白話釋義", "職場啟示", "行動建議"]
     else:
         title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
         desc = f"易经第{int(n)}卦{name}：{insight}。卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
@@ -135,8 +154,8 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         breadcrumb_idx = "六十四卦"
         insight_label = "核心解读"
         cta_h2 = "你正在面对类似的职场或商业抉择吗？"
-        cta_p = "输入你的具体困惑，让 AI 以曾仕强教授的易经智慧，为你推演专属的决策报告。"
-        cta_btn = "开始免费推演 →"
+        cta_p = "免费起卦，看看你的能量切片对应哪一卦；完整商业决策报告，可输入解锁密码后查看。"
+        cta_btn = "免费起卦 →"
         orig_label = "《易经》原文"
         gua_label = "卦辞"
         yao_label = "爻辞"
@@ -144,6 +163,7 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         footer = "曾仕强教授易经思想体系"
         subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
         faq_heading = "常见问题"
+        interp_labels = ["白话释义", "职场启示", "行动建议"]
 
     faq_items = FAQ_TC if is_tc else FAQ_SC
     faq_lines = "\n".join(
@@ -168,6 +188,15 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         for line in orig.get("lines", []):
             lines_html += f'<div class="yao-line"><span class="yao-name">{line["name"]}</span><span class="yao-text">{line["scripture"]}</span></div>'
         scripture_html += lines_html
+
+    # 白话解读区块（DeepSeek 生成）
+    interp_html = ""
+    if interp_text.get("meaning") or interp_text.get("career") or interp_text.get("advice"):
+        blocks = []
+        for key, label in [("meaning", interp_labels[0]), ("career", interp_labels[1]), ("advice", interp_labels[2])]:
+            if interp_text.get(key):
+                blocks.append(f'<div class="interp-block"><h3>{label}</h3><p>{interp_text[key]}</p></div>')
+        interp_html = f'<div class="interpretation">{"".join(blocks)}</div>'
 
     # Article + FAQ 双 schema
     article_ld = json.dumps({
@@ -233,6 +262,10 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
   .subtitle {{ color:var(--muted); font-size:15px; margin-bottom:40px; }}
   .insight {{ background:var(--card); border-left:3px solid var(--accent); padding:24px; border-radius:0 8px 8px 0; font-size:18px; color:var(--text3); margin-bottom:48px; }}
   .insight-label {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:12px; display:block; }}
+  .interpretation {{ margin-bottom:48px; }}
+  .interp-block {{ background:var(--card); border-radius:10px; padding:20px 24px; margin-bottom:12px; }}
+  .interp-block h3 {{ color:var(--accent); font-size:15px; letter-spacing:2px; margin-bottom:10px; }}
+  .interp-block p {{ color:var(--text3); font-size:15px; line-height:1.9; }}
   .scripture {{ background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:48px; }}
   .scripture-label {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:16px; display:block; }}
   .gua-ci {{ font-size:20px; color:var(--text-strong); border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:16px; }}
@@ -271,6 +304,8 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
     <span class="insight-label">{insight_label}</span>
     {insight}
   </div>
+
+  {interp_html}
 
   <div class="scripture">
     <span class="scripture-label">{orig_label}</span>
@@ -423,7 +458,8 @@ def build_sitemap(hexagrams):
 def main():
     hexagrams = parse_hexagrams()
     original = parse_original()
-    print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文")
+    interpretations = parse_interpretations()
+    print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
         print("⚠️ 卦象数量不对")
         return
@@ -432,18 +468,19 @@ def main():
         n = hx["number"]
         num_int = int(n)
         orig = original.get(num_int)
+        interp = interpretations.get(n, {})
         prev_num = hexagrams[i - 1]["number"] if i > 0 else None
         next_num = hexagrams[i + 1]["number"] if i < 63 else None
 
         # 繁体页
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig, prev_num, next_num, "tc"), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc"), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, prev_num, next_num, "sc"), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "sc"), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")
