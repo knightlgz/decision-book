@@ -1,25 +1,29 @@
 #!/usr/bin/env python3
 """
-生成 64 卦象 SEO 落地页 + 索引页 + sitemap
+生成 64 卦象 SEO 落地页（繁简双语 + 原文 + FAQ schema）
 用法：python3 generate_hexagram_pages.py
-输出：public/hexagram/XX/index.html (64页) + public/hexagram/index.html + public/sitemap.xml
+
+输出结构：
+  public/hexagram/NN/index.html        ← 繁体页 (zh-Hant, 主市场 TW/HK)
+  public/cn/hexagram/NN/index.html     ← 简体页 (zh-Hans, 目标 MY/SG 华语用户)
+  public/hexagram/index.html           ← 繁体索引
+  public/cn/hexagram/index.html        ← 简体索引
+  public/sitemap.xml                   ← 全量 URL（130+）
 """
 import json
-import os
-import re
+import subprocess
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 DATA_FILE = ROOT / "src" / "data" / "hexagrams.js"
-OUT_DIR = ROOT / "public" / "hexagram"
-SITEMAP = ROOT / "public" / "sitemap.xml"
+ORIGINAL_FILE = ROOT / "src" / "data" / "iching_original.json"
+PUBLIC = ROOT / "public"
 BASE_URL = "https://decision-book.vercel.app"
 
 
 def parse_hexagrams():
-    """用 Node.js 解析 ES module，输出 JSON"""
-    import subprocess, tempfile
-    # 写一个临时 mjs 脚本来 require 数据
+    """用 Node.js 解析 ES module"""
     tmp_js = Path(tempfile.gettempdir()) / "dump_hexagrams.mjs"
     tmp_js.write_text("""
 import HEXAGRAMS from '%s';
@@ -29,57 +33,149 @@ console.log(JSON.stringify(HEXAGRAMS));
     if result.returncode != 0:
         print("Node 解析失败:", result.stderr[:300])
         return []
-    data = json.loads(result.stdout)
-    return [{
-        "number": d["number"],
-        "sc_name": d["sc"]["name"], "sc_insight": d["sc"]["insight"],
-        "tc_name": d["tc"]["name"], "tc_insight": d["tc"]["insight"],
-    } for d in data]
+    return json.loads(result.stdout)
 
 
-def page_html(hx, prev_num, next_num):
-    """单个卦象页 HTML（繁体为主，lang=zh-Hant）"""
+def parse_original():
+    """读取原文数据（卦辞+爻辞），按卦序号索引"""
+    data = json.loads(ORIGINAL_FILE.read_text(encoding="utf-8"))
+    return {d["id"]: d for d in data}
+
+
+FAQ_ITEMS = [
+    {
+        "q": "這個卦象適合問什麼問題？",
+        "a": "適合工作與事業上的抉擇，例如轉職、與主管同事相處、創業方向、升遷時機等情境。",
+    },
+    {
+        "q": "如何獲得專屬於我的卦象解讀？",
+        "a": "在決策之書輸入你的具體困惑，AI 會基於曾仕強教授易經思想體系，生成一份結合你情境的商業決策報告。",
+    },
+    {
+        "q": "卦象解讀可以代替專業意見嗎？",
+        "a": "易經解讀提供的是東方智慧視角與思考框架，重大商業或人生決策仍建議結合自身判斷與專業意見。",
+    },
+]
+
+
+def faq_jsonld(name, url):
+    return json.dumps({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": item["q"],
+                "acceptedAnswer": {"@type": "Answer", "text": item["a"]},
+            }
+            for item in FAQ_ITEMS
+        ],
+    }, ensure_ascii=False)
+
+
+def page_html(hx, orig, prev_num, next_num, lang="tc"):
+    """单个卦象页。lang: tc=繁体 / sc=简体"""
     n = hx["number"]
-    name = hx["tc_name"]
-    insight = hx["tc_insight"]
-    title = f"{name}卦｜第{n}卦｜曾仕強易經商業決策解讀"
-    desc = f"易經第{n}卦{name}：{insight}。基於曾仕強教授易經思想體系，用 AI 為你推演職場與商業抉擇。"
+    is_tc = lang == "tc"
+    name = hx["tc"]["name"] if is_tc else hx["sc"]["name"]
+    insight = hx["tc"]["insight"] if is_tc else hx["sc"]["insight"]
+    num_label = f"第 {int(n)} 卦"
 
-    prev_link = f'<a href="/hexagram/{prev_num}/" class="nav-link">← 上一卦</a>' if prev_num else '<span class="nav-link muted">首卦</span>'
-    next_link = f'<a href="/hexagram/{next_num}/" class="nav-link">下一卦 →</a>' if next_num else '<span class="nav-link muted">末卦</span>'
+    if is_tc:
+        title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業決策解讀"
+        desc = f"易經第{int(n)}卦{name}：{insight}。卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
+        html_lang = "zh-Hant"
+        url = f"{BASE_URL}/hexagram/{n}/"
+        alt_url = f"{BASE_URL}/cn/hexagram/{n}/"
+        home = "/"
+        idx_link = "/hexagram/"
+        prev_label = "← 上一卦"
+        next_label = "下一卦 →"
+        all_label = "全部六十四卦"
+        breadcrumb_home = "決策之書"
+        breadcrumb_idx = "六十四卦"
+        insight_label = "核心解讀"
+        cta_h2 = "你正在面對類似的職場或商業抉擇嗎？"
+        cta_p = "輸入你的具體困惑，讓 AI 以曾仕強教授的易經智慧，為你推演專屬的決策報告。"
+        cta_btn = "開始免費推演 →"
+        orig_label = "《易經》原文"
+        gua_label = "卦辭"
+        yao_label = "爻辭"
+        scripture_note = "原文出自《周易》，公版內容。"
+        footer = "曾仕強教授易經思想體系"
+    else:
+        title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
+        desc = f"易经第{int(n)}卦{name}：{insight}。卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
+        html_lang = "zh-Hans"
+        url = f"{BASE_URL}/cn/hexagram/{n}/"
+        alt_url = f"{BASE_URL}/hexagram/{n}/"
+        home = "/"
+        idx_link = "/cn/hexagram/"
+        prev_label = "← 上一卦"
+        next_label = "下一卦 →"
+        all_label = "全部六十四卦"
+        breadcrumb_home = "决策之书"
+        breadcrumb_idx = "六十四卦"
+        insight_label = "核心解读"
+        cta_h2 = "你正在面对类似的职场或商业抉择吗？"
+        cta_p = "输入你的具体困惑，让 AI 以曾仕强教授的易经智慧，为你推演专属的决策报告。"
+        cta_btn = "开始免费推演 →"
+        orig_label = "《易经》原文"
+        gua_label = "卦辞"
+        yao_label = "爻辞"
+        scripture_note = "原文出自《周易》，公版内容。"
+        footer = "曾仕强教授易经思想体系"
 
-    jsonld = json.dumps({
+    prev_link = f'<a href="{idx_link}{prev_num}/" class="nav-link">{prev_label}</a>' if prev_num else '<span class="nav-link muted">首卦</span>'
+    next_link = f'<a href="{idx_link}{next_num}/" class="nav-link">{next_label}</a>' if next_num else '<span class="nav-link muted">末卦</span>'
+
+    # 原文
+    scripture_html = ""
+    if orig:
+        scripture_html += f'<p class="gua-ci">{orig.get("scripture","")}</p>'
+        lines_html = ""
+        for line in orig.get("lines", []):
+            lines_html += f'<div class="yao-line"><span class="yao-name">{line["name"]}</span><span class="yao-text">{line["scripture"]}</span></div>'
+        scripture_html += lines_html
+
+    # Article + FAQ 双 schema
+    article_ld = json.dumps({
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": title,
         "description": desc,
-        "author": {"@type": "Organization", "name": "決策之書"},
-        "publisher": {"@type": "Organization", "name": "決策之書"},
-        "mainEntityOfPage": f"{BASE_URL}/hexagram/{n}/",
-        "inLanguage": "zh-Hant"
+        "author": {"@type": "Organization", "name": breadcrumb_home},
+        "publisher": {"@type": "Organization", "name": breadcrumb_home},
+        "mainEntityOfPage": url,
+        "inLanguage": html_lang,
     }, ensure_ascii=False)
+    faq_ld = faq_jsonld(name, url)
 
     return f"""<!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="{html_lang}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="{BASE_URL}/hexagram/{n}/">
+<link rel="canonical" href="{url}">
+<link rel="alternate" hreflang="zh-Hant" href="{BASE_URL}/hexagram/{n}/">
+<link rel="alternate" hreflang="zh-Hans" href="{BASE_URL}/cn/hexagram/{n}/">
+<link rel="alternate" hreflang="x-default" href="{BASE_URL}/hexagram/{n}/">
 <meta property="og:type" content="article">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
-<meta property="og:url" content="{BASE_URL}/hexagram/{n}/">
-<meta property="og:site_name" content="決策之書">
+<meta property="og:url" content="{url}">
+<meta property="og:site_name" content="{breadcrumb_home}">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
-<script type="application/ld+json">{jsonld}</script>
+<script type="application/ld+json">{article_ld}</script>
+<script type="application/ld+json">{faq_ld}</script>
 <style>
   * {{ margin:0; padding:0; box-sizing:border-box; }}
-  body {{ background:#0f1115; color:#e8e6e0; font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.8; min-height:100vh; display:flex; flex-direction:column; }}
+  body {{ background:#0f1115; color:#e8e6e0; font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; min-height:100vh; display:flex; flex-direction:column; }}
   .container {{ max-width:720px; margin:0 auto; padding:48px 24px; flex:1; }}
   .breadcrumb {{ font-size:14px; color:#8b8f98; margin-bottom:32px; }}
   .breadcrumb a {{ color:#c8a96a; text-decoration:none; }}
@@ -88,88 +184,130 @@ def page_html(hx, prev_num, next_num):
   .subtitle {{ color:#8b8f98; font-size:15px; margin-bottom:40px; }}
   .insight {{ background:#171a22; border-left:3px solid #c8a96a; padding:24px; border-radius:0 8px 8px 0; font-size:18px; color:#dcd8cf; margin-bottom:48px; }}
   .insight-label {{ color:#c8a96a; font-size:13px; letter-spacing:3px; margin-bottom:12px; display:block; }}
+  .scripture {{ background:#131621; border:1px solid #2a2e3a; border-radius:12px; padding:24px; margin-bottom:48px; }}
+  .scripture-label {{ color:#c8a96a; font-size:13px; letter-spacing:3px; margin-bottom:16px; display:block; }}
+  .gua-ci {{ font-size:20px; color:#f5f2ea; border-bottom:1px solid #2a2e3a; padding-bottom:16px; margin-bottom:16px; }}
+  .yao-line {{ display:flex; gap:16px; padding:8px 0; font-size:16px; }}
+  .yao-name {{ color:#c8a96a; min-width:44px; font-weight:700; }}
+  .yao-text {{ color:#dcd8cf; }}
+  .scripture-note {{ font-size:12px; color:#5a5e68; margin-top:12px; }}
   .cta {{ text-align:center; background:linear-gradient(135deg,#1c2030,#151823); border:1px solid #c8a96a44; border-radius:12px; padding:32px 24px; margin-bottom:48px; }}
   .cta h2 {{ font-size:22px; margin-bottom:12px; color:#f5f2ea; }}
   .cta p {{ color:#a8a5a0; font-size:15px; margin-bottom:20px; }}
   .cta a.btn {{ display:inline-block; background:#c8a96a; color:#0f1115; text-decoration:none; padding:12px 32px; border-radius:24px; font-weight:700; font-size:16px; }}
   .cta a.btn:hover {{ background:#d9ba7a; }}
+  .faq {{ margin-bottom:48px; }}
+  .faq h3 {{ font-size:16px; color:#8b8f98; letter-spacing:2px; margin-bottom:16px; }}
+  .faq-item {{ background:#171a22; border-radius:8px; padding:16px; margin-bottom:8px; }}
+  .faq-q {{ color:#f5f2ea; font-weight:700; font-size:15px; margin-bottom:6px; }}
+  .faq-a {{ color:#a8a5a0; font-size:14px; }}
   .nav {{ display:flex; justify-content:space-between; padding:16px 0; border-top:1px solid #2a2e3a; font-size:15px; }}
   .nav a {{ color:#c8a96a; text-decoration:none; }}
   .muted {{ color:#4a4e58; }}
-  .related {{ margin-top:48px; }}
-  .related h3 {{ font-size:16px; color:#8b8f98; letter-spacing:2px; margin-bottom:16px; }}
-  .related-grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; }}
-  .related-grid a {{ color:#dcd8cf; text-decoration:none; background:#171a22; padding:8px 12px; border-radius:6px; font-size:14px; text-align:center; }}
-  .related-grid a:hover {{ border-color:#c8a96a; color:#c8a96a; }}
   footer {{ text-align:center; padding:24px; color:#5a5e68; font-size:13px; }}
   footer a {{ color:#8b8f98; }}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="breadcrumb"><a href="/">決策之書</a> / <a href="/hexagram/">六十四卦</a> / {name}</div>
-  <span class="hexagram-badge">第 {int(n)} 卦</span>
+  <div class="breadcrumb"><a href="{home}">{breadcrumb_home}</a> / <a href="{idx_link}">{breadcrumb_idx}</a> / {name}</div>
+  <span class="hexagram-badge">{num_label}</span>
   <h1>{name}</h1>
   <p class="subtitle">曾仕強易經思想體系 · 商業與職場解讀</p>
 
   <div class="insight">
-    <span class="insight-label">核心解讀</span>
+    <span class="insight-label">{insight_label}</span>
     {insight}
   </div>
 
+  <div class="scripture">
+    <span class="scripture-label">{orig_label}</span>
+    {scripture_html}
+    <p class="scripture-note">{scripture_note}</p>
+  </div>
+
   <div class="cta">
-    <h2>你正在面對類似的職場或商業抉擇嗎？</h2>
-    <p>輸入你的具體困惑，讓 AI 以曾仕強教授的易經智慧，為你推演專屬的決策報告。</p>
-    <a class="btn" href="/">開始免費推演 →</a>
+    <h2>{cta_h2}</h2>
+    <p>{cta_p}</p>
+    <a class="btn" href="{home}">{cta_btn}</a>
+  </div>
+
+  <div class="faq">
+    <h3>常見問題</h3>
+    <div class="faq-item"><div class="faq-q">{FAQ_ITEMS[0]["q"]}</div><div class="faq-a">{FAQ_ITEMS[0]["a"]}</div></div>
+    <div class="faq-item"><div class="faq-q">{FAQ_ITEMS[1]["q"]}</div><div class="faq-a">{FAQ_ITEMS[1]["a"]}</div></div>
+    <div class="faq-item"><div class="faq-q">{FAQ_ITEMS[2]["q"]}</div><div class="faq-a">{FAQ_ITEMS[2]["a"]}</div></div>
   </div>
 
   <div class="nav">
     {prev_link}
-    <a href="/hexagram/" class="nav-link">全部六十四卦</a>
+    <a href="{idx_link}" class="nav-link">{all_label}</a>
     {next_link}
   </div>
 </div>
 <footer>
-  <a href="/hexagram/">六十四卦索引</a> · <a href="/">決策之書</a> · 曾仕強教授易經思想體系
+  <a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{home}">{breadcrumb_home}</a> · {footer}
 </footer>
 </body>
 </html>"""
 
 
-def index_html(hexagrams):
+def index_html(hexagrams, lang="tc"):
     """六十四卦索引页"""
+    is_tc = lang == "tc"
     items = "\n".join(
-        f'<a href="/hexagram/{h["number"]}/">{int(h["number"])}. {h["tc_name"]}</a>'
+        f'<a href="{"/hexagram/" if is_tc else "/cn/hexagram/"}{h["number"]}/"><span class="num">第 {int(h["number"])} 卦</span>{(h["tc"]["name"] if is_tc else h["sc"]["name"])}</a>'
         for h in hexagrams
     )
-    title = "易經六十四卦｜曾仕強商業決策解讀全索引"
-    desc = "易經六十四卦完整索引：每卦的商業與職場核心解讀，基於曾仕強教授易經思想體系。免費查看卦象智慧，AI 推演你的決策。"
-    jsonld = json.dumps({
+    if is_tc:
+        title = "易經六十四卦｜曾仕強商業決策解讀全索引"
+        desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
+        html_lang = "zh-Hant"
+        url = f"{BASE_URL}/hexagram/"
+        home_label = "決策之書"
+        idx_label = "六十四卦"
+        h1 = "易經六十四卦"
+        subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
+        footer = "曾仕強教授易經思想體系"
+        back = "回到決策之書"
+    else:
+        title = "易经六十四卦｜曾仕强商业决策解读全索引"
+        desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
+        html_lang = "zh-Hans"
+        url = f"{BASE_URL}/cn/hexagram/"
+        home_label = "决策之书"
+        idx_label = "六十四卦"
+        h1 = "易经六十四卦"
+        subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
+        footer = "曾仕强教授易经思想体系"
+        back = "回到决策之书"
+
+    ld = json.dumps({
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": title,
         "description": desc,
-        "url": f"{BASE_URL}/hexagram/",
-        "inLanguage": "zh-Hant"
+        "url": url,
+        "inLanguage": html_lang,
     }, ensure_ascii=False)
 
     return f"""<!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="{html_lang}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="{BASE_URL}/hexagram/">
+<link rel="canonical" href="{url}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
-<meta property="og:url" content="{BASE_URL}/hexagram/">
-<script type="application/ld+json">{jsonld}</script>
+<meta property="og:url" content="{url}">
+<script type="application/ld+json">{ld}</script>
 <style>
   * {{ margin:0; padding:0; box-sizing:border-box; }}
-  body {{ background:#0f1115; color:#e8e6e0; font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.8; }}
+  body {{ background:#0f1115; color:#e8e6e0; font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; }}
   .container {{ max-width:900px; margin:0 auto; padding:48px 24px; }}
   .breadcrumb {{ font-size:14px; color:#8b8f98; margin-bottom:32px; }}
   .breadcrumb a {{ color:#c8a96a; text-decoration:none; }}
@@ -185,26 +323,27 @@ def index_html(hexagrams):
 </head>
 <body>
 <div class="container">
-  <div class="breadcrumb"><a href="/">決策之書</a> / 六十四卦</div>
-  <h1>易經六十四卦</h1>
-  <p class="subtitle">曾仕強教授易經思想體系 · 商業與職場雙語境解讀</p>
+  <div class="breadcrumb"><a href="/">{home_label}</a> / {idx_label}</div>
+  <h1>{h1}</h1>
+  <p class="subtitle">{subtitle}</p>
   <div class="grid">
 {items}
   </div>
 </div>
 <footer>
-  <a href="/">回到決策之書</a> · 曾仕強教授易經思想體系
+  <a href="/">{back}</a> · {footer}
 </footer>
 </body>
 </html>"""
 
 
 def build_sitemap(hexagrams):
-    urls = [f"{BASE_URL}/", f"{BASE_URL}/hexagram/"]
+    urls = [f"{BASE_URL}/", f"{BASE_URL}/hexagram/", f"{BASE_URL}/cn/hexagram/"]
     for h in hexagrams:
         urls.append(f"{BASE_URL}/hexagram/{h['number']}/")
+        urls.append(f"{BASE_URL}/cn/hexagram/{h['number']}/")
     body = "\n".join(
-        f"  <url>\n    <loc>{u}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>{'1.0' if u.endswith('/') and u.count('/')==3 else '0.7'}</priority>\n  </url>"
+        f"  <url>\n    <loc>{u}</loc>\n    <changefreq>weekly</changefreq>\n  </url>"
         for u in urls
     )
     return f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -215,27 +354,38 @@ def build_sitemap(hexagrams):
 
 def main():
     hexagrams = parse_hexagrams()
-    print(f"解析到 {len(hexagrams)} 个卦象")
+    original = parse_original()
+    print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文")
     if len(hexagrams) != 64:
-        print("⚠️ 数量不对，检查解析逻辑")
+        print("⚠️ 卦象数量不对")
         return
-
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     for i, hx in enumerate(hexagrams):
         n = hx["number"]
+        num_int = int(n)
+        orig = original.get(num_int)
         prev_num = hexagrams[i - 1]["number"] if i > 0 else None
         next_num = hexagrams[i + 1]["number"] if i < 63 else None
-        page_dir = OUT_DIR / n
-        page_dir.mkdir(exist_ok=True)
-        (page_dir / "index.html").write_text(page_html(hx, prev_num, next_num), encoding="utf-8")
-        print(f"  ✓ /hexagram/{n}/ {hx['tc_name']}")
 
-    (OUT_DIR / "index.html").write_text(index_html(hexagrams), encoding="utf-8")
-    print("  ✓ /hexagram/ 索引页")
+        # 繁体页
+        tc_dir = PUBLIC / "hexagram" / n
+        tc_dir.mkdir(parents=True, exist_ok=True)
+        (tc_dir / "index.html").write_text(page_html(hx, orig, prev_num, next_num, "tc"), encoding="utf-8")
 
-    SITEMAP.write_text(build_sitemap(hexagrams), encoding="utf-8")
-    print("  ✓ sitemap.xml 已更新（66 个 URL）")
+        # 简体页
+        sc_dir = PUBLIC / "cn" / "hexagram" / n
+        sc_dir.mkdir(parents=True, exist_ok=True)
+        (sc_dir / "index.html").write_text(page_html(hx, orig, prev_num, next_num, "sc"), encoding="utf-8")
+
+        if num_int % 16 == 1:
+            print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")
+
+    (PUBLIC / "hexagram" / "index.html").write_text(index_html(hexagrams, "tc"), encoding="utf-8")
+    (PUBLIC / "cn" / "hexagram" / "index.html").write_text(index_html(hexagrams, "sc"), encoding="utf-8")
+    print("  ✓ 繁简索引页")
+
+    (PUBLIC / "sitemap.xml").write_text(build_sitemap(hexagrams), encoding="utf-8")
+    print(f"  ✓ sitemap.xml（{64*2+3} 个 URL）")
     print("\n完成！提交 git 后 Vercel 自动部署。")
 
 
