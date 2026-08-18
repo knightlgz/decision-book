@@ -88,6 +88,18 @@ export default function App() {
             />
           </section>
         )}
+
+        <footer className="mt-10 pt-6 border-t border-gray-100 text-center space-y-1.5">
+          <a
+            href={lang === "tc" ? "/hexagram/" : "/cn/hexagram/"}
+            className="inline-block text-sm text-gray-500 hover:text-gray-800 underline underline-offset-4"
+          >
+            {lang === "tc" ? "📖 易經六十四卦索引 · 卦辭爻辭原文" : "📖 易经六十四卦索引 · 卦辞爻辞原文"}
+          </a>
+          <p className="text-xs text-gray-400 tracking-wider">
+            {lang === "tc" ? "曾仕強教授易經思想體系" : "曾仕强教授易经思想体系"}
+          </p>
+        </footer>
       </div>
       <Analytics />
       <SpeedInsights />
