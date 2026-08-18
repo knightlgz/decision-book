@@ -192,13 +192,24 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
 
     # 白话解读区块（DeepSeek 生成）
     # 策略：释义全量展示；职场启示截为2句引子；行动建议不上页面（付费产品核心价值）
+    def to_paragraphs(text, sentences_per_para=2):
+        """按句分段，每段 2 句"""
+        sentences = re.split(r'(?<=[。！？])', text)
+        sentences = [s.strip() for s in sentences if s.strip()]
+        paras = []
+        for i in range(0, len(sentences), sentences_per_para):
+            chunk = "".join(sentences[i:i + sentences_per_para])
+            if chunk:
+                paras.append(f"<p>{chunk}</p>")
+        return "".join(paras)
+
     interp_html = ""
     meaning_text = interp_text.get("meaning", "")
     career_text = interp_text.get("career", "")
     if meaning_text or career_text:
         blocks = []
         if meaning_text:
-            blocks.append(f'<div class="interp-block"><h3>{interp_labels[0]}</h3><p>{meaning_text}</p></div>')
+            blocks.append(f'<div class="interp-block"><h3>{interp_labels[0]}</h3>{to_paragraphs(meaning_text)}</div>')
         if career_text:
             # 截取前两句作为引子
             sentences = re.split(r'(?<=[。！？])', career_text)
@@ -276,7 +287,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
   .interpretation {{ margin-bottom:48px; }}
   .interp-block {{ background:var(--card); border-radius:10px; padding:20px 24px; margin-bottom:12px; }}
   .interp-block h3 {{ color:var(--accent); font-size:15px; letter-spacing:2px; margin-bottom:10px; }}
-  .interp-block p {{ color:var(--text3); font-size:15px; line-height:1.9; }}
+  .interp-block p {{ color:var(--text3); font-size:15px; line-height:1.9; margin-bottom:12px; }}
+  .interp-block p:last-child {{ margin-bottom:0; }}
   .scripture {{ background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:48px; }}
   .scripture-label {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:16px; display:block; }}
   .gua-ci {{ font-size:20px; color:var(--text-strong); border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:16px; }}
@@ -316,13 +328,13 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
     {insight}
   </div>
 
-  {interp_html}
-
   <div class="scripture">
     <span class="scripture-label">{orig_label}</span>
     {scripture_html}
     <p class="scripture-note">{scripture_note}</p>
   </div>
+
+  {interp_html}
 
   <div class="cta">
     <h2>{cta_h2}</h2>
