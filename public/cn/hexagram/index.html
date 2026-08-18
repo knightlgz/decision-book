@@ -13,24 +13,40 @@
 <meta property="og:url" content="https://decision-book.vercel.app/cn/hexagram/">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "易经六十四卦｜曾仕强商业决策解读全索引", "description": "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。", "url": "https://decision-book.vercel.app/cn/hexagram/", "inLanguage": "zh-Hans"}</script>
 <style>
+  :root {
+    --bg:#0f1115; --text:#e8e6e0; --text-strong:#f5f2ea; --muted:#8b8f98; --muted2:#5a5e68;
+    --card:#171a22; --border:#2a2e3a; --accent:#c8a96a; --accent-hover:#d9ba7a;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg:#faf8f4; --text:#3a3833; --text-strong:#22201c; --muted:#7a766d; --muted2:#aaa69c;
+      --card:#ffffff; --border:#e5e0d5; --accent:#9a7b3f; --accent-hover:#7d6433;
+    }
+  }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#0f1115; color:#e8e6e0; font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; }
+  body { background:var(--bg); color:var(--text); font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; }
   .container { max-width:900px; margin:0 auto; padding:48px 24px; }
-  .breadcrumb { font-size:14px; color:#8b8f98; margin-bottom:32px; }
-  .breadcrumb a { color:#c8a96a; text-decoration:none; }
-  h1 { font-size:32px; margin-bottom:8px; color:#f5f2ea; }
-  .subtitle { color:#8b8f98; font-size:15px; margin-bottom:40px; }
+  .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+  .breadcrumb { font-size:14px; color:var(--muted); }
+  .breadcrumb a { color:var(--accent); text-decoration:none; }
+  .lang-switch a { color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; }
+  .lang-switch a:hover { color:var(--accent); border-color:var(--accent); }
+  h1 { font-size:32px; margin-bottom:8px; color:var(--text-strong); }
+  .subtitle { color:var(--muted); font-size:15px; margin-bottom:40px; }
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
-  .grid a { display:block; background:#171a22; border:1px solid #2a2e3a; color:#dcd8cf; text-decoration:none; padding:16px; border-radius:10px; font-size:15px; transition:border-color .2s; }
-  .grid a:hover { border-color:#c8a96a; color:#c8a96a; }
-  .grid a .num { display:block; font-size:12px; color:#8b8f98; letter-spacing:2px; margin-bottom:4px; }
-  footer { text-align:center; padding:24px; color:#5a5e68; font-size:13px; }
-  footer a { color:#8b8f98; }
+  .grid a { display:block; background:var(--card); border:1px solid var(--border); color:var(--text); text-decoration:none; padding:16px; border-radius:10px; font-size:15px; transition:border-color .2s; }
+  .grid a:hover { border-color:var(--accent); color:var(--accent); }
+  .grid a .num { display:block; font-size:12px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }
+  footer { text-align:center; padding:24px; color:var(--muted2); font-size:13px; }
+  footer a { color:var(--muted); }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="breadcrumb"><a href="/">决策之书</a> / 六十四卦</div>
+  <div class="topbar">
+    <div class="breadcrumb"><a href="/">决策之书</a> / 六十四卦</div>
+    <span class="lang-switch"><a href="https://decision-book.vercel.app/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>
+  </div>
   <h1>易经六十四卦</h1>
   <p class="subtitle">曾仕强教授易经思想体系 · 商业与职场双语境解读</p>
   <div class="grid">

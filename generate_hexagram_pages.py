@@ -129,6 +129,12 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
     prev_link = f'<a href="{idx_link}{prev_num}/" class="nav-link">{prev_label}</a>' if prev_num else '<span class="nav-link muted">首卦</span>'
     next_link = f'<a href="{idx_link}{next_num}/" class="nav-link">{next_label}</a>' if next_num else '<span class="nav-link muted">末卦</span>'
 
+    # 语言切换链接
+    if is_tc:
+        lang_switch = f'<span class="lang-switch"><a href="{alt_url}" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
+    else:
+        lang_switch = f'<span class="lang-switch"><a href="{alt_url}" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
+
     # 原文
     scripture_html = ""
     if orig:
@@ -174,43 +180,64 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
 <script type="application/ld+json">{article_ld}</script>
 <script type="application/ld+json">{faq_ld}</script>
 <style>
+  :root {{
+    --bg:#0f1115; --text:#e8e6e0; --text-strong:#f5f2ea; --muted:#8b8f98; --muted2:#5a5e68;
+    --card:#171a22; --card2:#131621; --border:#2a2e3a; --accent:#c8a96a; --accent-hover:#d9ba7a;
+    --accent-border:#c8a96a33; --accent-border2:#c8a96a44; --text2:#a8a5a0; --text3:#dcd8cf;
+    --cta-bg1:#1c2030; --cta-bg2:#151823;
+  }}
+  @media (prefers-color-scheme: light) {{
+    :root {{
+      --bg:#faf8f4; --text:#3a3833; --text-strong:#22201c; --muted:#7a766d; --muted2:#aaa69c;
+      --card:#ffffff; --card2:#f4f1ea; --border:#e5e0d5; --accent:#9a7b3f; --accent-hover:#7d6433;
+      --accent-border:#9a7b3f33; --accent-border2:#9a7b3f44; --text2:#5f5b52; --text3:#4a4740;
+      --cta-bg1:#f0ece2; --cta-bg2:#faf8f4;
+    }}
+  }}
   * {{ margin:0; padding:0; box-sizing:border-box; }}
-  body {{ background:#0f1115; color:#e8e6e0; font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; min-height:100vh; display:flex; flex-direction:column; }}
+  body {{ background:var(--bg); color:var(--text); font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; min-height:100vh; display:flex; flex-direction:column; }}
   .container {{ max-width:720px; margin:0 auto; padding:48px 24px; flex:1; }}
-  .breadcrumb {{ font-size:14px; color:#8b8f98; margin-bottom:32px; }}
-  .breadcrumb a {{ color:#c8a96a; text-decoration:none; }}
-  .hexagram-badge {{ display:inline-block; background:#1c2030; border:1px solid #c8a96a33; color:#c8a96a; padding:4px 16px; border-radius:20px; font-size:14px; letter-spacing:2px; margin-bottom:16px; }}
-  h1 {{ font-size:36px; margin-bottom:8px; color:#f5f2ea; }}
-  .subtitle {{ color:#8b8f98; font-size:15px; margin-bottom:40px; }}
-  .insight {{ background:#171a22; border-left:3px solid #c8a96a; padding:24px; border-radius:0 8px 8px 0; font-size:18px; color:#dcd8cf; margin-bottom:48px; }}
-  .insight-label {{ color:#c8a96a; font-size:13px; letter-spacing:3px; margin-bottom:12px; display:block; }}
-  .scripture {{ background:#131621; border:1px solid #2a2e3a; border-radius:12px; padding:24px; margin-bottom:48px; }}
-  .scripture-label {{ color:#c8a96a; font-size:13px; letter-spacing:3px; margin-bottom:16px; display:block; }}
-  .gua-ci {{ font-size:20px; color:#f5f2ea; border-bottom:1px solid #2a2e3a; padding-bottom:16px; margin-bottom:16px; }}
+  .topbar {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }}
+  .breadcrumb {{ font-size:14px; color:var(--muted); }}
+  .breadcrumb a {{ color:var(--accent); text-decoration:none; }}
+  .lang-switch a {{ color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; }}
+  .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
+  .lang-switch a.active {{ color:var(--accent); border-color:var(--accent); }}
+  .hexagram-badge {{ display:inline-block; background:var(--card); border:1px solid var(--accent-border); color:var(--accent); padding:4px 16px; border-radius:20px; font-size:14px; letter-spacing:2px; margin-bottom:16px; }}
+  h1 {{ font-size:36px; margin-bottom:8px; color:var(--text-strong); }}
+  .subtitle {{ color:var(--muted); font-size:15px; margin-bottom:40px; }}
+  .insight {{ background:var(--card); border-left:3px solid var(--accent); padding:24px; border-radius:0 8px 8px 0; font-size:18px; color:var(--text3); margin-bottom:48px; }}
+  .insight-label {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:12px; display:block; }}
+  .scripture {{ background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:48px; }}
+  .scripture-label {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:16px; display:block; }}
+  .gua-ci {{ font-size:20px; color:var(--text-strong); border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:16px; }}
   .yao-line {{ display:flex; gap:16px; padding:8px 0; font-size:16px; }}
-  .yao-name {{ color:#c8a96a; min-width:44px; font-weight:700; }}
-  .yao-text {{ color:#dcd8cf; }}
-  .scripture-note {{ font-size:12px; color:#5a5e68; margin-top:12px; }}
-  .cta {{ text-align:center; background:linear-gradient(135deg,#1c2030,#151823); border:1px solid #c8a96a44; border-radius:12px; padding:32px 24px; margin-bottom:48px; }}
-  .cta h2 {{ font-size:22px; margin-bottom:12px; color:#f5f2ea; }}
-  .cta p {{ color:#a8a5a0; font-size:15px; margin-bottom:20px; }}
-  .cta a.btn {{ display:inline-block; background:#c8a96a; color:#0f1115; text-decoration:none; padding:12px 32px; border-radius:24px; font-weight:700; font-size:16px; }}
-  .cta a.btn:hover {{ background:#d9ba7a; }}
+  .yao-name {{ color:var(--accent); min-width:44px; font-weight:700; }}
+  .yao-text {{ color:var(--text3); }}
+  .scripture-note {{ font-size:12px; color:var(--muted2); margin-top:12px; }}
+  .cta {{ text-align:center; background:linear-gradient(135deg,var(--cta-bg1),var(--cta-bg2)); border:1px solid var(--accent-border2); border-radius:12px; padding:32px 24px; margin-bottom:48px; }}
+  .cta h2 {{ font-size:22px; margin-bottom:12px; color:var(--text-strong); }}
+  .cta p {{ color:var(--text2); font-size:15px; margin-bottom:20px; }}
+  .cta a.btn {{ display:inline-block; background:var(--accent); color:var(--bg); text-decoration:none; padding:12px 32px; border-radius:24px; font-weight:700; font-size:16px; }}
+  .cta a.btn:hover {{ background:var(--accent-hover); }}
   .faq {{ margin-bottom:48px; }}
-  .faq h3 {{ font-size:16px; color:#8b8f98; letter-spacing:2px; margin-bottom:16px; }}
-  .faq-item {{ background:#171a22; border-radius:8px; padding:16px; margin-bottom:8px; }}
-  .faq-q {{ color:#f5f2ea; font-weight:700; font-size:15px; margin-bottom:6px; }}
-  .faq-a {{ color:#a8a5a0; font-size:14px; }}
-  .nav {{ display:flex; justify-content:space-between; padding:16px 0; border-top:1px solid #2a2e3a; font-size:15px; }}
-  .nav a {{ color:#c8a96a; text-decoration:none; }}
-  .muted {{ color:#4a4e58; }}
-  footer {{ text-align:center; padding:24px; color:#5a5e68; font-size:13px; }}
-  footer a {{ color:#8b8f98; }}
+  .faq h3 {{ font-size:16px; color:var(--muted); letter-spacing:2px; margin-bottom:16px; }}
+  .faq-item {{ background:var(--card); border-radius:8px; padding:16px; margin-bottom:8px; }}
+  .faq-q {{ color:var(--text-strong); font-weight:700; font-size:15px; margin-bottom:6px; }}
+  .faq-a {{ color:var(--text2); font-size:14px; }}
+  .nav {{ display:flex; justify-content:space-between; padding:16px 0; border-top:1px solid var(--border); font-size:15px; }}
+  .nav a {{ color:var(--accent); text-decoration:none; }}
+  .muted {{ color:var(--muted2); }}
+  footer {{ text-align:center; padding:24px; color:var(--muted2); font-size:13px; }}
+  footer a {{ color:var(--muted); }}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="breadcrumb"><a href="{home}">{breadcrumb_home}</a> / <a href="{idx_link}">{breadcrumb_idx}</a> / {name}</div>
+  <div class="topbar">
+    <div class="breadcrumb"><a href="{home}">{breadcrumb_home}</a> / <a href="{idx_link}">{breadcrumb_idx}</a> / {name}</div>
+    {lang_switch}
+  </div>
   <span class="hexagram-badge">{num_label}</span>
   <h1>{name}</h1>
   <p class="subtitle">曾仕強易經思想體系 · 商業與職場解讀</p>
@@ -270,6 +297,7 @@ def index_html(hexagrams, lang="tc"):
         subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
         footer = "曾仕強教授易經思想體系"
         back = "回到決策之書"
+        lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
         title = "易经六十四卦｜曾仕强商业决策解读全索引"
         desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
@@ -281,6 +309,7 @@ def index_html(hexagrams, lang="tc"):
         subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
         footer = "曾仕强教授易经思想体系"
         back = "回到决策之书"
+        lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
 
     ld = json.dumps({
         "@context": "https://schema.org",
@@ -306,24 +335,40 @@ def index_html(hexagrams, lang="tc"):
 <meta property="og:url" content="{url}">
 <script type="application/ld+json">{ld}</script>
 <style>
+  :root {{
+    --bg:#0f1115; --text:#e8e6e0; --text-strong:#f5f2ea; --muted:#8b8f98; --muted2:#5a5e68;
+    --card:#171a22; --border:#2a2e3a; --accent:#c8a96a; --accent-hover:#d9ba7a;
+  }}
+  @media (prefers-color-scheme: light) {{
+    :root {{
+      --bg:#faf8f4; --text:#3a3833; --text-strong:#22201c; --muted:#7a766d; --muted2:#aaa69c;
+      --card:#ffffff; --border:#e5e0d5; --accent:#9a7b3f; --accent-hover:#7d6433;
+    }}
+  }}
   * {{ margin:0; padding:0; box-sizing:border-box; }}
-  body {{ background:#0f1115; color:#e8e6e0; font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; }}
+  body {{ background:var(--bg); color:var(--text); font-family:"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC","Microsoft JhengHei",sans-serif; line-height:1.8; }}
   .container {{ max-width:900px; margin:0 auto; padding:48px 24px; }}
-  .breadcrumb {{ font-size:14px; color:#8b8f98; margin-bottom:32px; }}
-  .breadcrumb a {{ color:#c8a96a; text-decoration:none; }}
-  h1 {{ font-size:32px; margin-bottom:8px; color:#f5f2ea; }}
-  .subtitle {{ color:#8b8f98; font-size:15px; margin-bottom:40px; }}
+  .topbar {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }}
+  .breadcrumb {{ font-size:14px; color:var(--muted); }}
+  .breadcrumb a {{ color:var(--accent); text-decoration:none; }}
+  .lang-switch a {{ color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; }}
+  .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
+  h1 {{ font-size:32px; margin-bottom:8px; color:var(--text-strong); }}
+  .subtitle {{ color:var(--muted); font-size:15px; margin-bottom:40px; }}
   .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }}
-  .grid a {{ display:block; background:#171a22; border:1px solid #2a2e3a; color:#dcd8cf; text-decoration:none; padding:16px; border-radius:10px; font-size:15px; transition:border-color .2s; }}
-  .grid a:hover {{ border-color:#c8a96a; color:#c8a96a; }}
-  .grid a .num {{ display:block; font-size:12px; color:#8b8f98; letter-spacing:2px; margin-bottom:4px; }}
-  footer {{ text-align:center; padding:24px; color:#5a5e68; font-size:13px; }}
-  footer a {{ color:#8b8f98; }}
+  .grid a {{ display:block; background:var(--card); border:1px solid var(--border); color:var(--text); text-decoration:none; padding:16px; border-radius:10px; font-size:15px; transition:border-color .2s; }}
+  .grid a:hover {{ border-color:var(--accent); color:var(--accent); }}
+  .grid a .num {{ display:block; font-size:12px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }}
+  footer {{ text-align:center; padding:24px; color:var(--muted2); font-size:13px; }}
+  footer a {{ color:var(--muted); }}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="breadcrumb"><a href="/">{home_label}</a> / {idx_label}</div>
+  <div class="topbar">
+    <div class="breadcrumb"><a href="/">{home_label}</a> / {idx_label}</div>
+    {lang_switch}
+  </div>
   <h1>{h1}</h1>
   <p class="subtitle">{subtitle}</p>
   <div class="grid">
