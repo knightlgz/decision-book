@@ -42,7 +42,7 @@ def parse_original():
     return {d["id"]: d for d in data}
 
 
-FAQ_ITEMS = [
+FAQ_TC = [
     {
         "q": "這個卦象適合問什麼問題？",
         "a": "適合工作與事業上的抉擇，例如轉職、與主管同事相處、創業方向、升遷時機等情境。",
@@ -57,8 +57,23 @@ FAQ_ITEMS = [
     },
 ]
 
+FAQ_SC = [
+    {
+        "q": "这个卦象适合问什么问题？",
+        "a": "适合工作与事业上的抉择，例如转职、与主管同事相处、创业方向、升迁时机等情境。",
+    },
+    {
+        "q": "如何获得专属于我的卦象解读？",
+        "a": "在决策之书输入你的具体困惑，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的商业决策报告。",
+    },
+    {
+        "q": "卦象解读可以代替专业意见吗？",
+        "a": "易经解读提供的是东方智慧视角与思考框架，重大商业或人生决策仍建议结合自身判断与专业意见。",
+    },
+]
 
-def faq_jsonld(name, url):
+
+def faq_jsonld(faq_items, url):
     return json.dumps({
         "@context": "https://schema.org",
         "@type": "FAQPage",
@@ -68,7 +83,7 @@ def faq_jsonld(name, url):
                 "name": item["q"],
                 "acceptedAnswer": {"@type": "Answer", "text": item["a"]},
             }
-            for item in FAQ_ITEMS
+            for item in faq_items
         ],
     }, ensure_ascii=False)
 
@@ -103,6 +118,8 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         yao_label = "爻辭"
         scripture_note = "原文出自《周易》，公版內容。"
         footer = "曾仕強教授易經思想體系"
+        subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
+        faq_heading = "常見問題"
     else:
         title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
         desc = f"易经第{int(n)}卦{name}：{insight}。卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
@@ -125,6 +142,14 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         yao_label = "爻辞"
         scripture_note = "原文出自《周易》，公版内容。"
         footer = "曾仕强教授易经思想体系"
+        subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
+        faq_heading = "常见问题"
+
+    faq_items = FAQ_TC if is_tc else FAQ_SC
+    faq_lines = "\n".join(
+        f'<div class="faq-item"><div class="faq-q">{item["q"]}</div><div class="faq-a">{item["a"]}</div></div>'
+        for item in faq_items
+    )
 
     prev_link = f'<a href="{idx_link}{prev_num}/" class="nav-link">{prev_label}</a>' if prev_num else '<span class="nav-link muted">首卦</span>'
     next_link = f'<a href="{idx_link}{next_num}/" class="nav-link">{next_label}</a>' if next_num else '<span class="nav-link muted">末卦</span>'
@@ -155,7 +180,7 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
         "mainEntityOfPage": url,
         "inLanguage": html_lang,
     }, ensure_ascii=False)
-    faq_ld = faq_jsonld(name, url)
+    faq_ld = faq_jsonld(faq_items, url)
 
     return f"""<!DOCTYPE html>
 <html lang="{html_lang}">
@@ -240,7 +265,7 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
   </div>
   <span class="hexagram-badge">{num_label}</span>
   <h1>{name}</h1>
-  <p class="subtitle">曾仕強易經思想體系 · 商業與職場解讀</p>
+  <p class="subtitle">{subtitle_line}</p>
 
   <div class="insight">
     <span class="insight-label">{insight_label}</span>
@@ -260,10 +285,8 @@ def page_html(hx, orig, prev_num, next_num, lang="tc"):
   </div>
 
   <div class="faq">
-    <h3>常見問題</h3>
-    <div class="faq-item"><div class="faq-q">{FAQ_ITEMS[0]["q"]}</div><div class="faq-a">{FAQ_ITEMS[0]["a"]}</div></div>
-    <div class="faq-item"><div class="faq-q">{FAQ_ITEMS[1]["q"]}</div><div class="faq-a">{FAQ_ITEMS[1]["a"]}</div></div>
-    <div class="faq-item"><div class="faq-q">{FAQ_ITEMS[2]["q"]}</div><div class="faq-a">{FAQ_ITEMS[2]["a"]}</div></div>
+    <h3>{faq_heading}</h3>
+    {faq_lines}
   </div>
 
   <div class="nav">
