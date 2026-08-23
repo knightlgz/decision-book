@@ -13,6 +13,14 @@
 - 支持繁体中文（台湾/港澳）和简体中文（新加坡/大马）
 - 每周 $3.99 解锁完整 AI 解读
 
+## 六十四卦索引
+
+每卦配有《周易》原文、白话释义与职场启示：
+
+- 📖 [六十四卦索引（繁體）](https://decision-book.vercel.app/hexagram/)
+- 📖 [六十四卦索引（简体）](https://decision-book.vercel.app/cn/hexagram/)
+- 示例：[地澤臨 · 職場解讀](https://decision-book.vercel.app/hexagram/19/) ｜ [水風井 · 職場解讀](https://decision-book.vercel.app/hexagram/48/) ｜ [風火家人 · 職場解讀](https://decision-book.vercel.app/hexagram/37/)
+
 ## 技术栈
 
 - React 19 + Vite 8
@@ -26,3 +34,4 @@
 npm install
 npm run dev
 ```
+
