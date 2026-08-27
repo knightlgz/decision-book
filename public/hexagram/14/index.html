@@ -89,6 +89,22 @@
   .muted { color:var(--muted2); }
   footer { text-align:center; padding:24px; color:var(--muted2); font-size:13px; }
   footer a { color:var(--muted); }
+  /* 六爻卦象图 */
+  .hexagram-visual { display:flex; align-items:center; gap:24px; margin-bottom:32px; padding:24px; background:var(--card); border:1px solid var(--border); border-radius:12px; }
+  .hexagram-lines { display:flex; flex-direction:column; gap:6px; }
+  .hexagram-lines .line { display:flex; align-items:center; gap:8px; }
+  .hexagram-lines .bar { display:block; height:10px; border-radius:2px; background:var(--text-strong); }
+  .hexagram-lines .bar.yang { width:140px; }
+  .hexagram-lines .bar.yin { width:140px; background:transparent; border-top:4px solid var(--text-strong); height:0; }
+  .hexagram-lines .yao-name { font-size:12px; color:var(--muted); width:28px; }
+  .hexagram-tri { font-size:42px; line-height:1; color:var(--accent); }
+  .hexagram-side { flex:1; }
+  .hexagram-side .tri-label { font-size:13px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }
+  .hexagram-side .gua-name { font-size:26px; color:var(--text-strong); margin-bottom:6px; }
+  .hexagram-side .gua-relation { font-size:13px; color:var(--muted2); }
+  @media (max-width:600px) {
+    .hexagram-lines .bar.yang, .hexagram-lines .bar.yin { width:100px; }
+  }
 </style>
 </head>
 <body>
@@ -100,6 +116,8 @@
   <span class="hexagram-badge">第 14 卦</span>
   <h1>火天大有</h1>
   <p class="subtitle">曾仕強易經思想體系 · 商業與職場解讀</p>
+
+  <div class="hexagram-visual"><div class="hexagram-lines"><div class="line"><span class="bar bar yang"></span><span class="yao-name">上九</span></div><div class="line"><span class="bar bar yin"></span><span class="yao-name">六五</span></div><div class="line"><span class="bar bar yang"></span><span class="yao-name">九四</span></div><div class="line"><span class="bar bar yang"></span><span class="yao-name">九三</span></div><div class="line"><span class="bar bar yang"></span><span class="yao-name">九二</span></div><div class="line"><span class="bar bar yang"></span><span class="yao-name">初九</span></div></div><div class="hexagram-tri"><br>☰</div><div class="hexagram-side"><div class="gua-name">火天大有</div><div class="tri-label">上离 · 下乾</div><div class="gua-relation">掌握絕對壟斷資源後，必須懂得利潤普照與利益分享，方能穩固競爭壁壘。</div></div></div>
 
   <div class="insight">
     <span class="insight-label">核心解讀</span>

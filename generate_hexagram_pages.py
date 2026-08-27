@@ -284,6 +284,42 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         if rel_links:
             related_html = f'<div class="related"><h3>{related_label}</h3><div class="grid">{"".join(rel_links)}</div></div>'
 
+    # 六爻卦象图（小白也能看懂卦长什么样）
+    TRI_SYMBOLS = {"乾": "☰", "兌": "☱", "離": "☲", "震": "☳", "巽": "☴", "坎": "☵", "艮": "☶", "坤": "☷"}
+    gua_visual = ""
+    if orig and orig.get("array"):
+        arr = orig["array"]  # 自下而上：arr[0]=初爻
+        comb = orig.get("combination", [])
+        gua_relation_text = insight  # 卦象旁的一句话解读
+        lines_html = []
+        pos_names = ["初", "二", "三", "四", "五", "上"]
+        for i in range(5, -1, -1):  # 上爻在最上
+            yang = arr[i] == 1
+            # 爻名规则：初/上爻位置在前（初九/上六），中爻九/六在前（九三/六四）
+            if i == 0:
+                yao = f"初{'九' if yang else '六'}"
+            elif i == 5:
+                yao = f"上{'九' if yang else '六'}"
+            else:
+                yao = f"{'九' if yang else '六'}{pos_names[i]}"
+            bar = "bar yang" if yang else "bar yin"
+            lines_html.append(f'<div class="line"><span class="bar {bar}"></span><span class="yao-name">{yao}</span></div>')
+        tri_html = ""
+        if len(comb) == 2:
+            up_sym = TRI_SYMBOLS.get(comb[1], "")
+            lo_sym = TRI_SYMBOLS.get(comb[0], "")
+            tri_html = f'<div class="hexagram-tri">{up_sym}<br>{lo_sym}</div>'
+        gua_visual = (
+            f'<div class="hexagram-visual">'
+            f'<div class="hexagram-lines">{"".join(lines_html)}</div>'
+            f'{tri_html}'
+            f'<div class="hexagram-side">'
+            f'<div class="gua-name">{name}</div>'
+            f'<div class="tri-label">上{comb[1] if len(comb) == 2 else ""} · 下{comb[0] if len(comb) == 2 else ""}</div>'
+            f'<div class="gua-relation">{gua_relation_text}</div>'
+            f'</div></div>'
+        )
+
     # Article + FAQ 双 schema
     article_ld = json.dumps({
         "@context": "https://schema.org",
@@ -388,6 +424,22 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .muted {{ color:var(--muted2); }}
   footer {{ text-align:center; padding:24px; color:var(--muted2); font-size:13px; }}
   footer a {{ color:var(--muted); }}
+  /* 六爻卦象图 */
+  .hexagram-visual {{ display:flex; align-items:center; gap:24px; margin-bottom:32px; padding:24px; background:var(--card); border:1px solid var(--border); border-radius:12px; }}
+  .hexagram-lines {{ display:flex; flex-direction:column; gap:6px; }}
+  .hexagram-lines .line {{ display:flex; align-items:center; gap:8px; }}
+  .hexagram-lines .bar {{ display:block; height:10px; border-radius:2px; background:var(--text-strong); }}
+  .hexagram-lines .bar.yang {{ width:140px; }}
+  .hexagram-lines .bar.yin {{ width:140px; background:transparent; border-top:4px solid var(--text-strong); height:0; }}
+  .hexagram-lines .yao-name {{ font-size:12px; color:var(--muted); width:28px; }}
+  .hexagram-tri {{ font-size:42px; line-height:1; color:var(--accent); }}
+  .hexagram-side {{ flex:1; }}
+  .hexagram-side .tri-label {{ font-size:13px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }}
+  .hexagram-side .gua-name {{ font-size:26px; color:var(--text-strong); margin-bottom:6px; }}
+  .hexagram-side .gua-relation {{ font-size:13px; color:var(--muted2); }}
+  @media (max-width:600px) {{
+    .hexagram-lines .bar.yang, .hexagram-lines .bar.yin {{ width:100px; }}
+  }}
 </style>
 </head>
 <body>
@@ -399,6 +451,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   <span class="hexagram-badge">{num_label}</span>
   <h1>{name}</h1>
   <p class="subtitle">{subtitle_line}</p>
+
+  {gua_visual}
 
   <div class="insight">
     <span class="insight-label">{insight_label}</span>
