@@ -274,13 +274,13 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             blocks.append(f'<div class="interp-block"><h3>{interp_labels[1]}</h3><p>{teaser}</p></div>')
         interp_html = f'<div class="interpretation">{"".join(blocks)}</div>'
 
-    # 相关卦模块（同上卦的卦，最多 3 个）
+    # 相关卦模块（錯綜交互，含关系标签）
     related_html = ""
     if related:
         rel_links = []
-        for rn, rtc, rsc in related[:3]:
+        for rn, rtc, rsc, rlabel in related[:4]:
             r_name = rtc if is_tc else rsc
-            rel_links.append(f'<a href="{idx_link}{rn}/">{r_name}</a>')
+            rel_links.append(f'<a href="{idx_link}{rn}/"><span class="rel-name">{r_name}</span><span class="rel-tag">{rlabel}</span></a>')
         if rel_links:
             related_html = f'<div class="related"><h3>{related_label}</h3><div class="grid">{"".join(rel_links)}</div></div>'
 
@@ -376,6 +376,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .related .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; }}
   .related .grid a {{ display:block; background:var(--card); border:1px solid var(--border); color:var(--text); text-decoration:none; padding:12px 16px; border-radius:8px; font-size:14px; transition:border-color .2s; }}
   .related .grid a:hover {{ border-color:var(--accent); color:var(--accent); }}
+  .related .rel-name {{ display:block; }}
+  .related .rel-tag {{ display:inline-block; font-size:11px; color:var(--accent); border:1px solid var(--accent-border2); border-radius:10px; padding:1px 8px; margin-top:4px; }}
   .faq {{ margin-bottom:48px; }}
   .faq h3 {{ font-size:16px; color:var(--muted); letter-spacing:2px; margin-bottom:16px; }}
   .faq-item {{ background:var(--card); border-radius:8px; padding:16px; margin-bottom:8px; }}
@@ -569,11 +571,32 @@ def main():
         print("⚠️ 卦象数量不对")
         return
 
-    # 相关卦索引：按上卦（卦名首字）分组
-    upper_groups = {}
+    # 相关卦：錯綜交互（易經正統關聯體系）
+    # 錯卦=六爻全變 / 綜卦=上下顛倒 / 交卦=上下卦互換 / 互卦=2-4爻+3-5爻重組
+    bin_map = {}
     for h in hexagrams:
-        upper = h["tc"]["name"][0]
-        upper_groups.setdefault(upper, []).append(h)
+        arr = original.get(int(h["number"]), {}).get("array")
+        if arr:
+            bin_map[tuple(arr)] = h["number"]
+
+    def related_hexagrams(num):
+        arr = original.get(num, {}).get("array")
+        if not arr:
+            return []
+        rels = []
+        seen = set()
+
+        def add(rel_arr, label):
+            target = bin_map.get(tuple(rel_arr))
+            if target and target != str(num) and target not in seen:
+                seen.add(target)
+                rels.append((target, label))
+
+        add([1 - x for x in arr], "錯卦")
+        add(arr[::-1], "綜卦")
+        add(arr[3:] + arr[:3], "交卦")
+        add([arr[1], arr[2], arr[3], arr[2], arr[3], arr[4]], "互卦")
+        return rels
 
     for i, hx in enumerate(hexagrams):
         n = hx["number"]
@@ -583,10 +606,13 @@ def main():
         prev_num = hexagrams[i - 1]["number"] if i > 0 else None
         next_num = hexagrams[i + 1]["number"] if i < 63 else None
 
-        # 相关卦：同上卦的卦（排除自己），最多 3 个
-        upper = hx["tc"]["name"][0]
-        related = [(h["number"], h["tc"]["name"], h["sc"]["name"])
-                   for h in upper_groups.get(upper, []) if h["number"] != n][:3]
+        # 相關卦（含關係標籤）
+        num_to_hx = {h["number"]: h for h in hexagrams}
+        related = []
+        for rn, label in related_hexagrams(num_int):
+            rh = num_to_hx.get(rn)
+            if rh:
+                related.append((rn, rh["tc"]["name"], rh["sc"]["name"], label))
 
         # 繁体页
         tc_dir = PUBLIC / "hexagram" / n
