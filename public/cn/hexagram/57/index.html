@@ -95,7 +95,8 @@
   .hexagram-lines .line { display:flex; align-items:center; gap:8px; }
   .hexagram-lines .bar { display:block; height:10px; border-radius:2px; background:var(--text-strong); }
   .hexagram-lines .bar.yang { width:140px; }
-  .hexagram-lines .bar.yin { width:140px; background:transparent; border-top:4px solid var(--text-strong); height:0; }
+  .hexagram-lines .bar.yin { display:flex; justify-content:space-between; width:140px; background:transparent; }
+  .hexagram-lines .bar.yin .yin-seg { width:60px; height:10px; background:var(--text-strong); border-radius:2px; }
   .hexagram-lines .yao-name { font-size:12px; color:var(--muted); width:28px; }
   .hexagram-tri { font-size:42px; line-height:1; color:var(--accent); }
   .hexagram-side { flex:1; }
@@ -117,7 +118,7 @@
   <h1>巽为风</h1>
   <p class="subtitle">曾仕强易经思想体系 · 商业与职场解读</p>
 
-  <div class="hexagram-visual"><div class="hexagram-lines"><div class="line"><span class="bar bar yang"></span><span class="yao-name">上九</span></div><div class="line"><span class="bar bar yang"></span><span class="yao-name">九五</span></div><div class="line"><span class="bar bar yin"></span><span class="yao-name">六四</span></div><div class="line"><span class="bar bar yang"></span><span class="yao-name">九三</span></div><div class="line"><span class="bar bar yang"></span><span class="yao-name">九二</span></div><div class="line"><span class="bar bar yin"></span><span class="yao-name">初六</span></div></div><div class="hexagram-tri">☴<br>☴</div><div class="hexagram-side"><div class="gua-name">巽为风</div><div class="tri-label">上巽 · 下巽</div><div class="gua-relation">放弃生硬强压，通过高频、温和的沟通将战略意志渗透至组织的每一根毛细血管。</div></div></div>
+  <div class="hexagram-visual"><div class="hexagram-lines"><div class="line"><span class="bar yang"></span><span class="yao-name">上九</span></div><div class="line"><span class="bar yang"></span><span class="yao-name">九五</span></div><div class="line"><span class="bar yin"><span class="yin-seg"></span><span class="yin-seg"></span></span><span class="yao-name">六四</span></div><div class="line"><span class="bar yang"></span><span class="yao-name">九三</span></div><div class="line"><span class="bar yang"></span><span class="yao-name">九二</span></div><div class="line"><span class="bar yin"><span class="yin-seg"></span><span class="yin-seg"></span></span><span class="yao-name">初六</span></div></div><div class="hexagram-tri">☴<br>☴</div><div class="hexagram-side"><div class="gua-name">巽为风</div><div class="tri-label">上巽 · 下巽</div><div class="gua-relation">放弃生硬强压，通过高频、温和的沟通将战略意志渗透至组织的每一根毛细血管。</div></div></div>
 
   <div class="insight">
     <span class="insight-label">核心解读</span>

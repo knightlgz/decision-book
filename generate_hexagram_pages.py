@@ -303,7 +303,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             else:
                 yao = f"{'九' if yang else '六'}{pos_names[i]}"
             bar = "bar yang" if yang else "bar yin"
-            lines_html.append(f'<div class="line"><span class="bar {bar}"></span><span class="yao-name">{yao}</span></div>')
+            if yang:
+                lines_html.append(f'<div class="line"><span class="bar yang"></span><span class="yao-name">{yao}</span></div>')
+            else:
+                lines_html.append(f'<div class="line"><span class="bar yin"><span class="yin-seg"></span><span class="yin-seg"></span></span><span class="yao-name">{yao}</span></div>')
         tri_html = ""
         if len(comb) == 2:
             up_sym = TRI_SYMBOLS.get(comb[1], "")
@@ -430,7 +433,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .hexagram-lines .line {{ display:flex; align-items:center; gap:8px; }}
   .hexagram-lines .bar {{ display:block; height:10px; border-radius:2px; background:var(--text-strong); }}
   .hexagram-lines .bar.yang {{ width:140px; }}
-  .hexagram-lines .bar.yin {{ width:140px; background:transparent; border-top:4px solid var(--text-strong); height:0; }}
+  .hexagram-lines .bar.yin {{ display:flex; justify-content:space-between; width:140px; background:transparent; }}
+  .hexagram-lines .bar.yin .yin-seg {{ width:60px; height:10px; background:var(--text-strong); border-radius:2px; }}
   .hexagram-lines .yao-name {{ font-size:12px; color:var(--muted); width:28px; }}
   .hexagram-tri {{ font-size:42px; line-height:1; color:var(--accent); }}
   .hexagram-side {{ flex:1; }}
