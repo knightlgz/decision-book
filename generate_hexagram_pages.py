@@ -443,6 +443,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .hexagram-side .gua-relation {{ font-size:13px; color:var(--muted2); }}
   @media (max-width:600px) {{
     .hexagram-lines .bar.yang, .hexagram-lines .bar.yin {{ width:100px; }}
+    .hexagram-lines .bar.yin .yin-seg {{ width:42px; }}
   }}
 </style>
 </head>
