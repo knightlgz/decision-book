@@ -588,7 +588,7 @@ def main():
 
         def add(rel_arr, label):
             target = bin_map.get(tuple(rel_arr))
-            if target and target != str(num) and target not in seen:
+            if target and int(target) != num and target not in seen:
                 seen.add(target)
                 rels.append((target, label))
 
