@@ -135,8 +135,9 @@ SEO_PILOT = {
 }
 
 
-def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
-    """单个卦象页。lang: tc=繁体 / sc=简体"""
+def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
+    """单个卦象页。lang: tc=繁体 / sc=简体
+    related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）"""
     n = hx["number"]
     is_tc = lang == "tc"
     name = hx["tc"]["name"] if is_tc else hx["sc"]["name"]
@@ -177,6 +178,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         cta_h2 = "你正在面對類似的職場或商業抉擇嗎？"
         cta_p = "免費起卦，看看你的能量切片對應哪一卦；針對你處境的完整行動方案，可輸入解鎖密碼後查看。"
         cta_btn = "免費起卦 →"
+        cta_mini_text = "你的困惑，也可以起一卦看看"
         orig_label = "《易經》原文"
         gua_label = "卦辭"
         yao_label = "爻辭"
@@ -184,6 +186,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         footer = "曾仕強教授易經思想體系"
         subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
         faq_heading = "常見問題"
+        related_label = "相關卦象"
         interp_labels = ["白話釋義", "職場啟示", "行動建議"]
     else:
         title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
@@ -206,6 +209,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         cta_h2 = "你正在面对类似的职场或商业抉择吗？"
         cta_p = "免费起卦，看看你的能量切片对应哪一卦；针对你处境的完整行动方案，可输入解锁密码后查看。"
         cta_btn = "免费起卦 →"
+        cta_mini_text = "你的困惑，也可以起一卦看看"
         orig_label = "《易经》原文"
         gua_label = "卦辞"
         yao_label = "爻辞"
@@ -213,6 +217,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         footer = "曾仕强教授易经思想体系"
         subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
         faq_heading = "常见问题"
+        related_label = "相关卦象"
         interp_labels = ["白话释义", "职场启示", "行动建议"]
 
     faq_items = FAQ_TC if is_tc else FAQ_SC
@@ -268,6 +273,16 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
             teaser += "…"
             blocks.append(f'<div class="interp-block"><h3>{interp_labels[1]}</h3><p>{teaser}</p></div>')
         interp_html = f'<div class="interpretation">{"".join(blocks)}</div>'
+
+    # 相关卦模块（同上卦的卦，最多 3 个）
+    related_html = ""
+    if related:
+        rel_links = []
+        for rn, rtc, rsc in related[:3]:
+            r_name = rtc if is_tc else rsc
+            rel_links.append(f'<a href="{idx_link}{rn}/">{r_name}</a>')
+        if rel_links:
+            related_html = f'<div class="related"><h3>{related_label}</h3><div class="grid">{"".join(rel_links)}</div></div>'
 
     # Article + FAQ 双 schema
     article_ld = json.dumps({
@@ -350,6 +365,17 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
   .cta p {{ color:var(--text2); font-size:15px; margin-bottom:20px; }}
   .cta a.btn {{ display:inline-block; background:var(--accent); color:var(--bg); text-decoration:none; padding:12px 32px; border-radius:24px; font-weight:700; font-size:16px; }}
   .cta a.btn:hover {{ background:var(--accent-hover); }}
+  /* 首屏迷你 CTA（移动端第一屏可见） */
+  .cta-mini {{ margin:24px 0 40px; padding:16px 20px; border:1px solid var(--accent-border2); border-radius:10px; display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--card); }}
+  .cta-mini span {{ font-size:15px; color:var(--text); }}
+  .cta-mini a {{ white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }}
+  .cta-mini a:hover {{ background:var(--accent-hover); }}
+  /* 相关卦模块 */
+  .related {{ margin-bottom:48px; }}
+  .related h3 {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:12px; }}
+  .related .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; }}
+  .related .grid a {{ display:block; background:var(--card); border:1px solid var(--border); color:var(--text); text-decoration:none; padding:12px 16px; border-radius:8px; font-size:14px; transition:border-color .2s; }}
+  .related .grid a:hover {{ border-color:var(--accent); color:var(--accent); }}
   .faq {{ margin-bottom:48px; }}
   .faq h3 {{ font-size:16px; color:var(--muted); letter-spacing:2px; margin-bottom:16px; }}
   .faq-item {{ background:var(--card); border-radius:8px; padding:16px; margin-bottom:8px; }}
@@ -377,6 +403,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
     {insight}
   </div>
 
+  <div class="cta-mini">
+    <span>{cta_mini_text}</span>
+    <a href="{home}">{cta_btn}</a>
+  </div>
+
   <div class="scripture">
     <span class="scripture-label">{orig_label}</span>
     {scripture_html}
@@ -384,6 +415,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
   </div>
 
   {interp_html}
+
+  {related_html}
 
   <div class="cta">
     <h2>{cta_h2}</h2>
@@ -536,6 +569,12 @@ def main():
         print("⚠️ 卦象数量不对")
         return
 
+    # 相关卦索引：按上卦（卦名首字）分组
+    upper_groups = {}
+    for h in hexagrams:
+        upper = h["tc"]["name"][0]
+        upper_groups.setdefault(upper, []).append(h)
+
     for i, hx in enumerate(hexagrams):
         n = hx["number"]
         num_int = int(n)
@@ -544,15 +583,20 @@ def main():
         prev_num = hexagrams[i - 1]["number"] if i > 0 else None
         next_num = hexagrams[i + 1]["number"] if i < 63 else None
 
+        # 相关卦：同上卦的卦（排除自己），最多 3 个
+        upper = hx["tc"]["name"][0]
+        related = [(h["number"], h["tc"]["name"], h["sc"]["name"])
+                   for h in upper_groups.get(upper, []) if h["number"] != n][:3]
+
         # 繁体页
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc"), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "sc"), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "sc", related), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")
