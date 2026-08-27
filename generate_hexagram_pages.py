@@ -97,6 +97,44 @@ def faq_jsonld(faq_items, url):
     }, ensure_ascii=False)
 
 
+# 试点页 SEO 优化（2026-08-28）：热门关键词 → 卦页映射
+# 标题场景词 + Meta 描述 + 热点 FAQ。验证 2 周后决定是否全量推广
+SEO_PILOT = {
+    "27": {  # 山雷頤 → 精神內耗
+        "tc": {"kw": "精神內耗", "kw2": "消耗還是滋養",
+               "faq_q": "工作讓我越來越內耗，是山雷頤卦的意思嗎？該怎麼調適？",
+               "faq_a": "頤卦講「自求口實」：先分清工作是消耗你還是滋養你，再決定去留，答案會慢慢浮現。"},
+        "sc": {"kw": "精神内耗", "kw2": "消耗还是滋养",
+               "faq_q": "工作让我越来越内耗，是山雷颐卦的意思吗？该怎么调适？",
+               "faq_a": "颐卦讲「自求口实」：先分清工作是消耗你还是滋养你，再决定去留，答案会慢慢浮现。"},
+    },
+    "38": {  # 火澤睽 → 被主管針對
+        "tc": {"kw": "被主管針對", "kw2": "職場對立",
+               "faq_q": "感覺主管一直針對我，火澤睽卦怎麼看這種職場對立？",
+               "faq_a": "睽卦講「小事吉」：對立之中仍有轉圜，先別把矛盾升級，找雙方都能接受的共識點。"},
+        "sc": {"kw": "被主管针对", "kw2": "职场对立",
+               "faq_q": "感觉主管一直针对我，火泽睽卦怎么看这种职场对立？",
+               "faq_a": "睽卦讲「小事吉」：对立之中仍有转圜，先别把矛盾升级，找双方都能接受的共识点。"},
+    },
+    "3": {  # 水雷屯 → 面試失敗/求職碰壁
+        "tc": {"kw": "面試失敗", "kw2": "求職碰壁",
+               "faq_q": "面試一直碰壁，是水雷屯卦的暗示嗎？該怎麼調適？",
+               "faq_a": "屯卦代表萬事起頭難：碰壁不代表你不夠好，而是時機與位置還沒對上，先蓄力再出發。"},
+        "sc": {"kw": "面试失败", "kw2": "求职碰壁",
+               "faq_q": "面试一直碰壁，是水雷屯卦的暗示吗？该怎么调适？",
+               "faq_a": "屯卦代表万事起头难：碰壁不代表你不够好，而是时机与位置还没对上，先蓄力再出发。"},
+    },
+    "47": {  # 澤水困 → 中年失業/被資遣
+        "tc": {"kw": "中年失業", "kw2": "被資遣",
+               "faq_q": "中年被資遣怎麼辦？澤水困卦給什麼啟示？",
+               "faq_a": "困卦講「困而不失其所亨」：困境中守住本心與專業，暫時的困頓反而是重新定位的契機。"},
+        "sc": {"kw": "中年失业", "kw2": "被资遣",
+               "faq_q": "中年被资遣怎么办？泽水困卦给什么启示？",
+               "faq_a": "困卦讲「困而不失其所亨」：困境中守住本心与专业，暂时的困顿反而是重新定位的契机。"},
+    },
+}
+
+
 def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
     """单个卦象页。lang: tc=繁体 / sc=简体"""
     n = hx["number"]
@@ -115,9 +153,16 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         except ImportError:
             pass
 
+    # 试点页 SEO 覆盖（标题场景词 + 描述关键词）
+    pilot = SEO_PILOT.get(str(int(n)), {})
+
     if is_tc:
         title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業決策解讀"
         desc = f"易經第{int(n)}卦{name}：{insight}。卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
+        if pilot:
+            p = pilot["tc"]
+            title = f"{name}卦 {p['kw']}｜{p['kw2']}｜曾仕強易經解讀"
+            desc = f"易經第{int(n)}卦{name}：{p['kw']}、{p['kw2']}。{insight}基於曾仕強教授易經思想體系，卦辭爻辭原文與職場解讀。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/{n}/"
         alt_url = f"{BASE_URL}/cn/hexagram/{n}/"
@@ -143,6 +188,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
     else:
         title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
         desc = f"易经第{int(n)}卦{name}：{insight}。卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
+        if pilot:
+            p = pilot["sc"]
+            title = f"{name}卦 {p['kw']}｜{p['kw2']}｜曾仕强易经解读"
+            desc = f"易经第{int(n)}卦{name}：{p['kw']}、{p['kw2']}。{insight}基于曾仕强教授易经思想体系，卦辞爻辞原文与职场解读。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/{n}/"
         alt_url = f"{BASE_URL}/hexagram/{n}/"
@@ -167,6 +216,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc"):
         interp_labels = ["白话释义", "职场启示", "行动建议"]
 
     faq_items = FAQ_TC if is_tc else FAQ_SC
+    # 试点页追加热点 FAQ（SEO_PILOT）
+    if pilot:
+        pf = pilot["tc"] if is_tc else pilot["sc"]
+        faq_items = faq_items + [{"q": pf["faq_q"], "a": pf["faq_a"]}]
     faq_lines = "\n".join(
         f'<div class="faq-item"><div class="faq-q">{item["q"]}</div><div class="faq-a">{item["a"]}</div></div>'
         for item in faq_items
