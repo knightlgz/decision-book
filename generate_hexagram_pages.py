@@ -319,15 +319,9 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
                 lines_html.append(f'<div class="line"><span class="bar yang"></span><span class="yao-name">{yao}</span></div>')
             else:
                 lines_html.append(f'<div class="line"><span class="bar yin"><span class="yin-seg"></span><span class="yin-seg"></span></span><span class="yao-name">{yao}</span></div>')
-        tri_html = ""
-        if len(comb) == 2:
-            up_sym = TRI_SYMBOLS.get(comb[1], "")
-            lo_sym = TRI_SYMBOLS.get(comb[0], "")
-            tri_html = f'<div class="hexagram-tri">{up_sym}<br>{lo_sym}</div>'
         gua_visual = (
             f'<div class="hexagram-visual">'
             f'<div class="hexagram-lines">{"".join(lines_html)}</div>'
-            f'{tri_html}'
             f'<div class="hexagram-side">'
             f'<div class="gua-name">{name}</div>'
             f'<div class="tri-label">上{comb[1] if len(comb) == 2 else ""} · 下{comb[0] if len(comb) == 2 else ""}</div>'
@@ -450,7 +444,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .hexagram-lines .bar.yin {{ display:flex; justify-content:space-between; width:160px; background:transparent; }}
   .hexagram-lines .bar.yin .yin-seg {{ width:70px; height:12px; background:var(--text-strong); border-radius:3px; }}
   .hexagram-lines .yao-name {{ font-size:12px; color:var(--muted); width:28px; }}
-  .hexagram-tri {{ font-size:52px; line-height:1; color:var(--accent); }}
   .hexagram-side {{ flex:1; }}
   .hexagram-side .tri-label {{ font-size:13px; color:var(--muted); letter-spacing:2px; margin-bottom:6px; }}
   .hexagram-side .gua-name {{ font-size:32px; font-weight:700; color:var(--text-strong); margin-bottom:8px; }}
@@ -461,7 +454,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     .hexagram-visual {{ flex-direction:column; align-items:center; text-align:center; gap:20px; padding:24px 16px; }}
     .hexagram-lines .bar.yang, .hexagram-lines .bar.yin {{ width:120px; }}
     .hexagram-lines .bar.yin .yin-seg {{ width:50px; }}
-    .hexagram-tri {{ font-size:44px; }}
     .cta-mini {{ flex-wrap:wrap; }}
     .cta-mini a {{ flex:1; text-align:center; padding:12px 16px; font-size:16px; }}
     .cta a.btn {{ display:block; width:100%; padding:14px 0; font-size:17px; }}
