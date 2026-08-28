@@ -390,9 +390,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .lang-switch a {{ color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; transition:all .2s; }}
   .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
   .lang-switch a.active {{ color:var(--accent); border-color:var(--accent); }}
-  .hexagram-badge {{ display:inline-block; background:var(--card); border:1px solid var(--accent-border); color:var(--accent); padding:4px 16px; border-radius:20px; font-size:14px; letter-spacing:2px; margin-bottom:16px; }}
-  h1 {{ font-size:40px; margin-bottom:8px; color:var(--text-strong); line-height:1.3; }}
-  .subtitle {{ color:var(--muted); font-size:15px; margin-bottom:32px; }}
+  .hexagram-badge {{ display:inline-block; background:var(--card); border:1px solid var(--accent-border); color:var(--accent); padding:4px 14px; border-radius:20px; font-size:13px; letter-spacing:2px; white-space:nowrap; }}
+  .title-row {{ display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap; }}
+  h1 {{ font-size:40px; margin:0; color:var(--text-strong); line-height:1.3; }}
+  .subtitle {{ color:var(--muted); font-size:14px; margin-bottom:32px; }}
   .insight {{ background:var(--card); border-left:3px solid var(--accent); padding:24px; border-radius:0 8px 8px 0; font-size:18px; color:var(--text3); margin-bottom:48px; box-shadow:0 2px 12px rgba(0,0,0,.04); }}
   .insight-label {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:12px; display:block; }}
   .interpretation {{ margin-bottom:48px; }}
@@ -467,8 +468,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     <div class="breadcrumb"><a href="{home}">{breadcrumb_home}</a> / <a href="{idx_link}">{breadcrumb_idx}</a> / {name}</div>
     {lang_switch}
   </div>
-  <span class="hexagram-badge">{num_label}</span>
-  <h1>{name}</h1>
+  <div class="title-row">
+    <span class="hexagram-badge">{num_label}</span>
+    <h1>{name}</h1>
+  </div>
   <p class="subtitle">{subtitle_line}</p>
 
   {gua_visual}
