@@ -450,12 +450,20 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .hexagram-side .gua-name {{ font-size:32px; font-weight:700; color:var(--text-strong); margin-bottom:8px; }}
   .hexagram-side .gua-relation {{ font-size:14px; color:var(--text2); line-height:1.7; }}
   @media (max-width:600px) {{
-    .container {{ padding:28px 16px; }}
-    h1 {{ font-size:30px; }}
-    .hexagram-visual {{ flex-direction:column; align-items:center; text-align:center; gap:20px; padding:24px 16px; }}
-    .hexagram-lines .bar.yang, .hexagram-lines .bar.yin {{ width:120px; }}
-    .hexagram-lines .bar.yin .yin-seg {{ width:50px; }}
-    .cta-mini {{ flex-wrap:wrap; }}
+    .container {{ padding:24px 16px; }}
+    .title-row {{ gap:10px; }}
+    h1 {{ font-size:28px; }}
+    .subtitle {{ margin-bottom:20px; font-size:13px; }}
+    .hexagram-visual {{ flex-direction:row; align-items:center; text-align:left; gap:14px; padding:16px 14px; margin-bottom:20px; }}
+    .hexagram-lines {{ gap:4px; }}
+    .hexagram-lines .bar {{ height:9px; }}
+    .hexagram-lines .bar.yang, .hexagram-lines .bar.yin {{ width:90px; }}
+    .hexagram-lines .bar.yin .yin-seg {{ width:38px; }}
+    .hexagram-lines .yao-name {{ font-size:10px; width:22px; }}
+    .hexagram-side .tri-label {{ font-size:11px; margin-bottom:3px; }}
+    .hexagram-side .gua-name {{ font-size:22px; margin-bottom:4px; }}
+    .hexagram-side .gua-relation {{ font-size:12px; line-height:1.5; }}
+    .cta-mini {{ flex-wrap:wrap; margin:16px 0 28px; }}
     .cta-mini a {{ flex:1; text-align:center; padding:12px 16px; font-size:16px; }}
     .cta a.btn {{ display:block; width:100%; padding:14px 0; font-size:17px; }}
   }}
@@ -476,14 +484,14 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
 
   {gua_visual}
 
-  <div class="insight">
-    <span class="insight-label">{insight_label}</span>
-    {insight}
-  </div>
-
   <div class="cta-mini">
     <span>{cta_mini_text}</span>
     <a href="{home}">{cta_btn}</a>
+  </div>
+
+  <div class="insight">
+    <span class="insight-label">{insight_label}</span>
+    {insight}
   </div>
 
   <div class="scripture">
