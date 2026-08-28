@@ -302,7 +302,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     if orig and orig.get("array"):
         arr = orig["array"]  # 自下而上：arr[0]=初爻
         comb = orig.get("combination", [])
-        gua_relation_text = insight  # 卦象旁的一句话解读
         lines_html = []
         pos_names = ["初", "二", "三", "四", "五", "上"]
         for i in range(5, -1, -1):  # 上爻在最上
@@ -325,7 +324,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             f'<div class="hexagram-side">'
             f'<div class="gua-name">{name}</div>'
             f'<div class="tri-label">上{comb[1] if len(comb) == 2 else ""} · 下{comb[0] if len(comb) == 2 else ""}</div>'
-            f'<div class="gua-relation">{gua_relation_text}</div>'
             f'</div></div>'
         )
 
@@ -448,7 +446,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .hexagram-side {{ flex:1; }}
   .hexagram-side .tri-label {{ font-size:13px; color:var(--muted); letter-spacing:2px; margin-bottom:6px; }}
   .hexagram-side .gua-name {{ font-size:32px; font-weight:700; color:var(--text-strong); margin-bottom:8px; }}
-  .hexagram-side .gua-relation {{ font-size:14px; color:var(--text2); line-height:1.7; }}
   @media (max-width:600px) {{
     .container {{ padding:24px 16px; }}
     .title-row {{ gap:10px; }}
@@ -462,7 +459,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     .hexagram-lines .yao-name {{ font-size:10px; width:22px; }}
     .hexagram-side .tri-label {{ font-size:11px; margin-bottom:3px; }}
     .hexagram-side .gua-name {{ font-size:22px; margin-bottom:4px; }}
-    .hexagram-side .gua-relation {{ font-size:12px; line-height:1.5; }}
     .cta-mini {{ flex-wrap:wrap; margin:16px 0 28px; }}
     .cta-mini a {{ flex:1; text-align:center; padding:12px 16px; font-size:16px; }}
     .cta a.btn {{ display:block; width:100%; padding:14px 0; font-size:17px; }}
