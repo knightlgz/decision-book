@@ -435,7 +435,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   footer {{ text-align:center; padding:24px; color:var(--muted2); font-size:13px; }}
   footer a {{ color:var(--muted); }}
   /* 六爻卦象图（Hero 视觉焦点） */
-  .hexagram-visual {{ display:flex; align-items:center; gap:32px; margin-bottom:32px; padding:32px 28px; background:linear-gradient(135deg,var(--card),var(--card2)); border:1px solid var(--accent-border2); border-radius:16px; box-shadow:0 6px 24px rgba(0,0,0,.06); }}
+  .hexagram-visual {{ display:flex; align-items:center; justify-content:center; gap:32px; margin-bottom:32px; padding:32px 28px; background:linear-gradient(135deg,var(--card),var(--card2)); border:1px solid var(--accent-border2); border-radius:16px; box-shadow:0 6px 24px rgba(0,0,0,.06); }}
   .hexagram-lines {{ display:flex; flex-direction:column; gap:7px; }}
   .hexagram-lines .line {{ display:flex; align-items:center; gap:10px; }}
   .hexagram-lines .bar {{ display:block; height:12px; border-radius:3px; background:var(--text-strong); }}
@@ -443,7 +443,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .hexagram-lines .bar.yin {{ display:flex; justify-content:space-between; width:160px; background:transparent; }}
   .hexagram-lines .bar.yin .yin-seg {{ width:70px; height:12px; background:var(--text-strong); border-radius:3px; }}
   .hexagram-lines .yao-name {{ font-size:12px; color:var(--muted); width:28px; }}
-  .hexagram-side {{ flex:1; }}
+  .hexagram-side {{ flex:0 0 auto; }}
   .hexagram-side .tri-label {{ font-size:13px; color:var(--muted); letter-spacing:2px; margin-bottom:6px; }}
   .hexagram-side .gua-name {{ font-size:32px; font-weight:700; color:var(--text-strong); margin-bottom:8px; }}
   @media (max-width:600px) {{
