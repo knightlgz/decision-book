@@ -135,6 +135,18 @@ SEO_PILOT = {
 }
 
 
+# GA4 埋码（G-SGYWZGNCSH，2026-08-28 添加）
+GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGYWZGNCSH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SGYWZGNCSH');
+  </script>
+"""
+
+
 def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     """单个卦象页。lang: tc=繁体 / sc=简体
     related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）"""
@@ -323,6 +335,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             f'</div></div>'
         )
 
+    ga_snippet = GA_SNIPPET
+
     # Article + FAQ 双 schema
     article_ld = json.dumps({
         "@context": "https://schema.org",
@@ -446,9 +460,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     .hexagram-lines .bar.yin .yin-seg {{ width:42px; }}
   }}
 </style>
-</head>
-<body>
-<div class="container">
+  {ga_snippet}
+ </head>
+ <body>
+ <div class="container">
   <div class="topbar">
     <div class="breadcrumb"><a href="{home}">{breadcrumb_home}</a> / <a href="{idx_link}">{breadcrumb_idx}</a> / {name}</div>
     {lang_switch}
@@ -506,6 +521,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
 def index_html(hexagrams, lang="tc"):
     """六十四卦索引页"""
     is_tc = lang == "tc"
+    ga_snippet = GA_SNIPPET
     items = "\n".join(
         f'<a href="{"/hexagram/" if is_tc else "/cn/hexagram/"}{h["number"]}/"><span class="num">第 {int(h["number"])} 卦</span>{(h["tc"]["name"] if is_tc else h["sc"]["name"])}</a>'
         for h in hexagrams
@@ -586,6 +602,7 @@ def index_html(hexagrams, lang="tc"):
   footer {{ text-align:center; padding:24px; color:var(--muted2); font-size:13px; }}
   footer a {{ color:var(--muted); }}
 </style>
+  {ga_snippet}
 </head>
 <body>
 <div class="container">
