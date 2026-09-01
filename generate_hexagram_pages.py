@@ -146,6 +146,12 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
   </script>
 """
 
+# 真實職場提問問題庫
+try:
+    from question_bank import QUESTIONS_BANK, HEX_TO_CATS
+except ImportError:
+    QUESTIONS_BANK, HEX_TO_CATS = {}, {}
+
 
 def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     """单个卦象页。lang: tc=繁体 / sc=简体
@@ -327,6 +333,38 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             f'</div></div>'
         )
 
+    # 真實職場提問板块（引导到产品起卦，不給答案）
+    question_html = ""
+    if QUESTIONS_BANK and HEX_TO_CATS:
+        import urllib.parse
+        num_int_q = int(n)
+        cats = HEX_TO_CATS.get(num_int_q, [])
+        picks = []
+        if cats:
+            picks.extend(QUESTIONS_BANK.get(cats[0], [])[:2])
+            for c in cats[1:]:
+                picks.extend(QUESTIONS_BANK.get(c, [])[:1])
+            picks = [p for p in picks if p][:4]
+        if picks:
+            q_label = "真實職場提問" if is_tc else "真实职场提问"
+            q_note = "這些問題，來自職場論壇的真實發帖。很多人起卦尋找答案——你的答案，起一卦就知道。" if is_tc else "这些问题来自职场论坛的真实发帖。很多人起卦寻找答案——你的答案，起一卦就知道。"
+            q_cta = "免費起卦，看你的答案 →" if is_tc else "免费起卦，看你的答案 →"
+            q_items = []
+            for qi, q in enumerate(picks):
+                q_url = f"/?q={urllib.parse.quote(q)}"
+                q_items.append(
+                    f'<div class="q-card"><div class="q-num">Q{qi + 1}</div>'
+                    f'<p class="q-text">{q}</p>'
+                    f'<a class="q-link" href="{q_url}">{q_cta}</a></div>'
+                )
+            question_html = (
+                f'<div class="questions">'
+                f'<div class="questions-head"><span class="insight-label">{q_label}</span>'
+                f'<p class="q-note">{q_note}</p></div>'
+                f'<div class="q-grid">{"".join(q_items)}</div>'
+                f'</div>'
+            )
+
     ga_snippet = GA_SNIPPET
 
     # Article + FAQ 双 schema
@@ -416,7 +454,18 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .cta-mini span {{ font-size:15px; color:var(--text); }}
   .cta-mini a {{ white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }}
   .cta-mini a:hover {{ background:var(--accent-hover); }}
-  /* 相关卦模块 */
+  /* 真實職場提問 */
+  .questions {{ margin-bottom:48px; }}
+  .questions-head {{ margin-bottom:16px; }}
+  .q-note {{ color:var(--muted); font-size:14px; }}
+  .q-grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }}
+  .q-card {{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; display:flex; flex-direction:column; gap:10px; transition:border-color .2s, box-shadow .2s; }}
+  .q-card:hover {{ border-color:var(--accent); box-shadow:0 4px 16px rgba(0,0,0,.07); }}
+  .q-num {{ font-size:12px; color:var(--accent); letter-spacing:2px; }}
+  .q-text {{ font-size:15px; color:var(--text-strong); line-height:1.8; flex:1; }}
+  .q-link {{ color:var(--accent); text-decoration:none; font-size:14px; font-weight:700; }}
+  .q-link:hover {{ color:var(--accent-hover); text-decoration:underline; }}
+  /* 相關卦象 */
   .related {{ margin-bottom:48px; }}
   .related h3 {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:12px; }}
   .related .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; }}
@@ -499,6 +548,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   {interp_html}
 
   {related_html}
+
+  {question_html}
 
   <div class="cta">
     <h2>{cta_h2}</h2>

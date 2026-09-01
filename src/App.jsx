@@ -6,7 +6,15 @@ import { generateHexagramIndex } from './lib/seed';
 import Paywall from './components/Paywall';
 
 export default function App() {
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState(() => {
+    // 支持 ?q= 预填问题（来自卦页「真實職場提問」卡片的引导链接）
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("q") || "";
+    } catch {
+      return "";
+    }
+  });
   const [region, setRegion] = useState("台灣/港澳");
   const [hexagram, setHexagram] = useState(null);
 
