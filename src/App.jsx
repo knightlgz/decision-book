@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Analytics, track } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
@@ -6,7 +6,7 @@ import { generateHexagramIndex } from './lib/seed';
 import Paywall from './components/Paywall';
 
 export default function App() {
-  const [question, setQuestion] = useState(() => {
+  const [prefilled] = useState(() => {
     // 支持 ?q= 预填问题（来自卦页「真實職場提問」卡片的引导链接）
     try {
       const params = new URLSearchParams(window.location.search);
@@ -15,6 +15,7 @@ export default function App() {
       return "";
     }
   });
+  const [question, setQuestion] = useState(prefilled);
   const [region, setRegion] = useState("台灣/港澳");
   const [hexagram, setHexagram] = useState(null);
 
@@ -34,6 +35,22 @@ export default function App() {
       questionLength: question.length
     });
   };
+
+  // 预填问题自动起卦（付费解码仍由用户手动操作）
+  useEffect(() => {
+    if (prefilled.trim()) {
+      const index = generateHexagramIndex(prefilled);
+      const result = HEXAGRAMS[index];
+      setHexagram(result);
+      track('hexagram_generated', {
+        hexagram: result.number,
+        region,
+        questionLength: prefilled.length,
+        source: 'question_card'
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-dvh bg-[#FAFAFA] text-[#333333] font-sans p-4 sm:p-6 selection:bg-gray-200">
