@@ -177,11 +177,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
 
     if is_tc:
         title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業決策解讀"
-        desc = f"易經第{int(n)}卦{name}：{insight}。卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
+        desc = f"{name}卦在職場與商業上代表什麼？{insight}卦辭爻辭原文白話釋義、職場啟示一次看懂，幫你看清當下該怎麼走。"
         if pilot:
             p = pilot["tc"]
             title = f"{name}卦 {p['kw']}｜{p['kw2']}｜曾仕強易經解讀"
-            desc = f"易經第{int(n)}卦{name}：{p['kw']}、{p['kw2']}。{insight}基於曾仕強教授易經思想體系，卦辭爻辭原文與職場解讀。"
+            desc = f"{name}卦與{p['kw']}的關係？{insight}卦辭爻辭原文白話、職場啟示與{p['kw2']}解讀，基於曾仕強教授易經思想體系。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/{n}/"
         alt_url = f"{BASE_URL}/cn/hexagram/{n}/"
@@ -208,11 +208,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         interp_labels = ["白話釋義", "職場啟示", "行動建議"]
     else:
         title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
-        desc = f"易经第{int(n)}卦{name}：{insight}。卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
+        desc = f"{name}卦在职场与商业上代表什么？{insight}卦辞爻辞原文白话释义、职场启示一次看懂，帮你看清当下该怎么走。"
         if pilot:
             p = pilot["sc"]
             title = f"{name}卦 {p['kw']}｜{p['kw2']}｜曾仕强易经解读"
-            desc = f"易经第{int(n)}卦{name}：{p['kw']}、{p['kw2']}。{insight}基于曾仕强教授易经思想体系，卦辞爻辞原文与职场解读。"
+            desc = f"{name}卦与{p['kw']}的关系？{insight}卦辞爻辞原文白话、职场启示与{p['kw2']}解读，基于曾仕强教授易经思想体系。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/{n}/"
         alt_url = f"{BASE_URL}/hexagram/{n}/"
@@ -243,6 +243,17 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     if pilot:
         pf = pilot["tc"] if is_tc else pilot["sc"]
         faq_items = faq_items + [{"q": pf["faq_q"], "a": pf["faq_a"]}]
+    # 问题型 FAQ（从问题库取 2 个，与问题卡错开，答案用卦象洞察——SEO 长尾入口）
+    if QUESTIONS_BANK and HEX_TO_CATS:
+        _cats = HEX_TO_CATS.get(int(n), [])
+        _q_picks = []
+        if _cats:
+            _q_picks.extend(QUESTIONS_BANK.get(_cats[0], [])[2:3])
+            if len(_cats) > 1:
+                _q_picks.extend(QUESTIONS_BANK.get(_cats[1], [])[1:2])
+        for _q in _q_picks:
+            _a = f"「{insight}」——{name}卦對這個處境的提醒：先看清自己現在的位置與時機，再決定下一步怎麼走。"
+            faq_items = faq_items + [{"q": _q, "a": _a}]
     faq_lines = "\n".join(
         f'<div class="faq-item"><div class="faq-q">{item["q"]}</div><div class="faq-a">{item["a"]}</div></div>'
         for item in faq_items
