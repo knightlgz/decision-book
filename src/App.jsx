@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Analytics, track } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
@@ -18,8 +18,50 @@ export default function App() {
   const [question, setQuestion] = useState(prefilled);
   const [region, setRegion] = useState("台灣/港澳");
   const [hexagram, setHexagram] = useState(null);
+  // 会话内解锁一次即生效：新问题不再要求重新付费
+  const [unlocked, setUnlocked] = useState(false);
+  const [report, setReport] = useState(null);
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState(null);
 
   const lang = region.includes("台灣") ? "tc" : "sc";
+
+  const fetchReport = useCallback(async (q, reg, hex) => {
+    setGenerating(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/dify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          inputs: {
+            User_Question: q,
+            Region: reg,
+            Hexagram_Name: hex["sc"].name
+          },
+          response_mode: "blocking",
+          user: "web_user_" + Date.now()
+        })
+      });
+
+      const data = await response.json();
+      if (data?.data?.outputs) {
+        let text = data.data.outputs.Report || data.data.outputs.text || data.data.outputs.answer;
+        if (text) {
+          text = text.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
+          setReport(text);
+        } else {
+          setError(lang === "tc" ? "⚠️ 數據解析失敗" : "⚠️ 数据解析失败");
+        }
+      } else {
+        setError(lang === "tc" ? "⚠️ 數據解析失敗" : "⚠️ 数据解析失败");
+      }
+    } catch {
+      setError(lang === "tc" ? "系統繁忙，請稍後重試。" : "系统繁忙，请稍后重试。");
+    } finally {
+      setGenerating(false);
+    }
+  }, [lang]);
 
   const handleGenerate = () => {
     if (!question.trim()) {
@@ -28,12 +70,38 @@ export default function App() {
     const index = generateHexagramIndex(question);
     const result = HEXAGRAMS[index];
     setHexagram(result);
+    // 新问题：清空旧报告，进入生成中状态
+    setReport(null);
+    setError(null);
 
     track('hexagram_generated', {
       hexagram: result.number,
       region,
       questionLength: question.length
     });
+
+    // 会话内已解锁：自动生成新报告，不再显示支付墙
+    if (unlocked) {
+      fetchReport(question, region, result);
+    }
+  };
+
+  const handleUnlock = async (password) => {
+    track('unlock_attempted', { hexagram: hexagram?.number });
+
+    if (password.trim() !== "AURA-888") {
+      track('unlock_failed', { reason: 'wrong_password' });
+      alert(lang === "tc" ? "密碼驗證失敗，請確認購買後的感謝信內容。" : "密码验证失败，请确认购买后的感谢信内容。");
+      return false;
+    }
+    track('unlock_success');
+    setUnlocked(true);
+    fetchReport(question, region, hexagram);
+    return true;
+  };
+
+  const handleRetry = () => {
+    if (hexagram) fetchReport(question, region, hexagram);
   };
 
   // 预填问题自动起卦（付费解码仍由用户手动操作）
@@ -109,7 +177,12 @@ export default function App() {
             <Paywall
               lang={lang}
               hexagram={hexagram}
-              onUnlock={{ question, region }}
+              unlocked={unlocked}
+              generating={generating}
+              report={report}
+              error={error}
+              onUnlock={handleUnlock}
+              onRetry={handleRetry}
             />
           </section>
         )}

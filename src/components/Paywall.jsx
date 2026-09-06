@@ -1,61 +1,54 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics/react';
 
-export default function Paywall({ lang, hexagram, onUnlock }) {
+export default function Paywall({ lang, hexagram, unlocked, generating, report, error, onUnlock, onRetry }) {
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [fullReport, setFullReport] = useState("");
 
-  const handleUnlock = async () => {
-    track('unlock_attempted', { hexagram: hexagram?.number });
-
-    if (password.trim() !== "AURA-888") {
-      track('unlock_failed', { reason: 'wrong_password' });
-      return alert(lang === "tc" ? "密碼驗證失敗，請確認購買後的感謝信內容。" : "密码验证失败，请确认购买后的感谢信内容。");
-    }
-    track('unlock_success');
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/dify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          inputs: {
-            User_Question: onUnlock.question,
-            Region: onUnlock.region,
-            Hexagram_Name: hexagram["sc"].name
-          },
-          response_mode: "blocking",
-          user: "web_user_" + Date.now()
-        })
-      });
-
-      const data = await response.json();
-      if (data?.data?.outputs) {
-        let text = data.data.outputs.Report || data.data.outputs.text || data.data.outputs.answer;
-        if (text) {
-          text = text.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
-          setFullReport(text);
-        } else {
-          setFullReport(lang === "tc" ? "⚠️ 數據解析失敗" : "⚠️ 数据解析失败");
-        }
-      }
-    } catch {
-      setFullReport(lang === "tc" ? "系統繁忙，請稍後重試。" : "系统繁忙，请稍后重试。");
-    } finally {
-      setLoading(false);
-    }
+  const handleUnlockClick = () => {
+    onUnlock(password);
   };
 
-  if (fullReport) {
-    return (
-      <div className="mt-6 whitespace-pre-wrap text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">
-        {fullReport}
-      </div>
-    );
+  // 已解锁：显示生成中 / 报告 / 错误重试
+  if (unlocked) {
+    if (generating) {
+      return (
+        <div className="mt-6 border-t border-gray-100 pt-8 flex flex-col items-center justify-center py-8">
+          <span className="animate-pulse flex items-center space-x-2 text-sm text-gray-500">
+            <span className="h-2 w-2 bg-gray-400 rounded-full" />
+            <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-200" />
+            <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-400" />
+            {lang === "tc" ? "正在構建高維度決策報告..." : "正在构建高维度决策报告..."}
+          </span>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="mt-6 border-t border-gray-100 pt-8 text-center">
+          <p className="text-sm text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={onRetry}
+            className="bg-[#1A1A1A] text-white px-6 py-2.5 rounded-md text-sm font-medium hover:bg-black transition-colors"
+          >
+            {lang === "tc" ? "重新生成" : "重新生成"}
+          </button>
+        </div>
+      );
+    }
+
+    if (report) {
+      return (
+        <div className="mt-6 whitespace-pre-wrap text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">
+          {report}
+        </div>
+      );
+    }
+
+    return null;
   }
 
+  // 未解锁：支付墙
   return (
     <div className="relative mt-6 border-t border-gray-100 pt-4">
       <div className="blur-sm text-gray-400 text-sm leading-relaxed select-none opacity-60">
@@ -94,22 +87,12 @@ export default function Paywall({ lang, hexagram, onUnlock }) {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          onClick={handleUnlock}
+          onClick={handleUnlockClick}
           className="bg-[#1A1A1A] text-white px-8 py-2.5 rounded-md text-sm font-medium hover:bg-black transition-colors"
         >
           {lang === "tc" ? "解鎖深度推演" : "解锁深度推演"}
         </button>
       </div>
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/60">
-          <span className="animate-pulse flex items-center space-x-2 text-sm text-gray-500">
-            <span className="h-2 w-2 bg-gray-400 rounded-full" />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-200" />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-400" />
-            {lang === "tc" ? "正在構建高維度決策報告..." : "正在构建高维度决策报告..."}
-          </span>
-        </div>
-      )}
     </div>
   );
 }
