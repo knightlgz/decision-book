@@ -3,6 +3,7 @@ import { Analytics, track } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
 import ORIGINALS from './data/hexagram_originals.json';
+import INSIGHT_GEN from './data/insight_gen.json';
 import { generateHexagramIndex } from './lib/seed';
 import Paywall from './components/Paywall';
 
@@ -212,7 +213,10 @@ export default function App() {
             })()}
 
             <p className="text-sm font-medium text-gray-600 mb-6 leading-relaxed">
-              {hexagram[lang].insight}
+              {(() => {
+                const g = INSIGHT_GEN.find(o => String(o.id) === String(hexagram.number));
+                return g ? (lang === "tc" ? g.tc : g.sc) : hexagram[lang].insight;
+              })()}
             </p>
 
             <Paywall
