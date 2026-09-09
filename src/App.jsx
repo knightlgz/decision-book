@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Analytics, track } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
+import ORIGINALS from './data/hexagram_originals.json';
 import { generateHexagramIndex } from './lib/seed';
 import Paywall from './components/Paywall';
 
@@ -169,6 +170,46 @@ export default function App() {
                 🔮 {lang === "tc" ? "你的能量切片：" : "你的能量切片："}{hexagram[lang].name}
               </h2>
             </div>
+
+            {(() => {
+              const orig = ORIGINALS.find(o => String(o.id) === String(hexagram.number));
+              if (!orig) return null;
+              const l = lang === "tc" ? "tc" : "sc";
+              const lines = [...orig.array].reverse(); // 视觉从上到下 = 爻位从下到上反转
+              return (
+                <div className="flex items-center gap-5 mb-5 bg-stone-50 border border-stone-100 rounded-xl px-5 py-4">
+                  {/* 爻线图 */}
+                  <div className="flex flex-col gap-[3px] shrink-0" aria-label={`${hexagram[lang].name} 六爻`}>
+                    {lines.map((v, idx) => (
+                      <div key={idx} className="flex gap-[3px]">
+                        {v === 1 ? (
+                          <div className="w-9 h-[5px] rounded-[2px] bg-gray-800" />
+                        ) : (
+                          <>
+                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800" />
+                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800" />
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {/* 卦象信息 */}
+                  <div className="text-sm leading-relaxed">
+                    <div className="font-bold text-gray-800">
+                      {orig.symbol} {lang === "tc"
+                        ? `第${orig.id}卦 · 上${orig.upper_tc.name}${orig.upper_tc.nature}，下${orig.lower_tc.name}${orig.lower_tc.nature}`
+                        : `第${orig.id}卦 · 上${orig.upper_sc.name}${orig.upper_sc.nature}，下${orig.lower_sc.name}${orig.lower_sc.nature}`}
+                    </div>
+                    <div className="text-gray-500 mt-1">
+                      {lang === "tc" ? "卦辭：" : "卦辞："}
+                      <span className="text-gray-700 font-medium">
+                        「{lang === "tc" ? orig.guaci_tc : orig.guaci_sc}」
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             <p className="text-sm font-medium text-gray-600 mb-6 leading-relaxed">
               {hexagram[lang].insight}
