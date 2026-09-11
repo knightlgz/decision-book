@@ -15,8 +15,14 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    // 上游非 200 时附带状态码，便于前端/日志定位
+    if (!response.ok) {
+      console.error('[dify-proxy] upstream status', response.status, JSON.stringify(data).slice(0, 500));
+    }
     res.status(200).json(data);
-  } catch {
-    res.status(500).json({ error: 'Failed to fetch Dify API' });
+  } catch (error) {
+    // 关键：把真实错误写进 Vercel Functions 日志 + 返回给前端
+    console.error('[dify-proxy] fetch failed:', error?.message || String(error));
+    res.status(502).json({ error: error?.message || 'Failed to fetch Dify API' });
   }
 }

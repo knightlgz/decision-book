@@ -32,31 +32,35 @@ export default function App() {
     setGenerating(true);
     setError(null);
     try {
-      const response = await fetch('/api/dify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          inputs: {
-            User_Question: q,
-            Region: reg,
-            Hexagram_Name: hex["sc"].name
-          },
-          response_mode: "blocking",
-          user: "web_user_" + Date.now()
-        })
-      });
+      let data = null;
+      // 工作流失败自动重试一次（Dify 云端偶发瞬时失败：模型连接重置/插件抖动）
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const response = await fetch('/api/dify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            inputs: {
+              User_Question: q,
+              Region: reg,
+              Hexagram_Name: hex["sc"].name
+            },
+            response_mode: "blocking",
+            user: "web_user_" + Date.now()
+          })
+        });
+        data = await response.json();
+        const out = data?.data?.outputs;
+        if (out?.Report || out?.text || out?.answer) break;
+        if (attempt === 0 && data?.data?.status === "failed") continue; // 重试
+        break;
+      }
 
-      const data = await response.json();
-      if (data?.data?.outputs) {
-        let text = data.data.outputs.Report || data.data.outputs.text || data.data.outputs.answer;
-        if (text) {
-          text = text.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
-          setReport(text);
-        } else {
-          setError(lang === "tc" ? "⚠️ 數據解析失敗" : "⚠️ 数据解析失败");
-        }
+      let text = data?.data?.outputs?.Report || data?.data?.outputs?.text || data?.data?.outputs?.answer;
+      if (text) {
+        text = text.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
+        setReport(text);
       } else {
-        setError(lang === "tc" ? "⚠️ 數據解析失敗" : "⚠️ 数据解析失败");
+        setError(lang === "tc" ? "⚠️ 生成服務暫時不穩，請稍等片刻再點一次「生成」。" : "⚠️ 生成服务暂时不稳，请稍等片刻再点一次「生成」。");
       }
     } catch {
       setError(lang === "tc" ? "系統繁忙，請稍後重試。" : "系统繁忙，请稍后重试。");
