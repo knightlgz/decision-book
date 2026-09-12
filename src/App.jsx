@@ -59,6 +59,14 @@ export default function App() {
       if (text) {
         text = text.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
         setReport(text);
+      } else if (data?.code === "invalid_param") {
+        // 参数类错误（如问题超长）：显示服务端原因，人话化
+        const m = (data?.message || "").match(/less than (\d+)/);
+        setError(
+          m
+            ? (lang === "tc" ? `⚠️ 問題太長，請精簡到 ${m[1]} 字以內再生成。` : `⚠️ 问题太长，请精简到 ${m[1]} 字以内再生成。`)
+            : (lang === "tc" ? `⚠️ 請求參數有誤：${data?.message || ""}` : `⚠️ 请求参数有误：${data?.message || ""}`)
+        );
       } else {
         setError(lang === "tc" ? "⚠️ 生成服務暫時不穩，請稍等片刻再點一次「生成」。" : "⚠️ 生成服务暂时不稳，请稍等片刻再点一次「生成」。");
       }
@@ -143,10 +151,21 @@ export default function App() {
           <textarea
             className="w-full p-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white shadow-sm resize-none"
             rows="3"
+            maxLength={256}
             placeholder={lang === "tc" ? "請輸入你當下最糾結的抉擇..." : "请输入你当下最纠结的抉择..."}
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
           />
+          {/* 字数提示：上限与 Dify 工作流 User_Question 变量限制保持同步（当前 256） */}
+          <div className="flex justify-end -mt-2">
+            <span className={`text-xs ${question.length > 230 ? "text-amber-500" : "text-gray-400"}`}>
+              {question.length > 230
+                ? (lang === "tc"
+                    ? `已輸入 ${question.length}/256 字 — 接近上限，建議精簡`
+                    : `已输入 ${question.length}/256 字 — 接近上限，建议精简`)
+                : `${question.length}/256`}
+            </span>
+          </div>
 
           <select
             className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-gray-400"
