@@ -7,6 +7,9 @@ import INSIGHT_GEN from './data/insight_gen.json';
 import { generateHexagramIndex } from './lib/seed';
 import Paywall from './components/Paywall';
 
+// 卦号归一化匹配：hexagrams.js 用 "01" 格式、数据文件用 1 格式，String(1)≠String("01")
+const numKey = (v) => String(Number(v));
+
 export default function App() {
   const [prefilled] = useState(() => {
     // 支持 ?q= 预填问题（来自卦页「真實職場提問」卡片的引导链接）
@@ -196,7 +199,7 @@ export default function App() {
             </div>
 
             {(() => {
-              const orig = ORIGINALS.find(o => String(o.id) === String(hexagram.number));
+              const orig = ORIGINALS.find(o => numKey(o.id) === numKey(hexagram.number));
               if (!orig) return null;
               const l = lang === "tc" ? "tc" : "sc";
               const lines = [...orig.array].reverse(); // 视觉从上到下 = 爻位从下到上反转
@@ -237,7 +240,7 @@ export default function App() {
 
             <p className="text-sm font-medium text-gray-600 mb-6 leading-relaxed">
               {(() => {
-                const g = INSIGHT_GEN.find(o => String(o.id) === String(hexagram.number));
+                const g = INSIGHT_GEN.find(o => numKey(o.id) === numKey(hexagram.number));
                 return g ? (lang === "tc" ? g.tc : g.sc) : hexagram[lang].insight;
               })()}
             </p>
