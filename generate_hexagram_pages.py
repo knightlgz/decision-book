@@ -58,7 +58,7 @@ FAQ_TC = [
     },
     {
         "q": "如何獲得專屬於我的卦象解讀？",
-        "a": "在決策之書輸入你的具體困惑即可免費起卦；輸入解鎖密碼後，AI 會基於曾仕強教授易經思想體系，生成一份結合你情境的完整商業決策報告。",
+        "a": "在決策之書輸入你的具體困惑即可免費起卦；起卦後，AI 會基於曾仕強教授易經思想體系，生成一份結合你情境的完整商業決策報告。",
     },
     {
         "q": "卦象解讀可以代替專業意見嗎？",
@@ -73,7 +73,7 @@ FAQ_SC = [
     },
     {
         "q": "如何获得专属于我的卦象解读？",
-        "a": "在决策之书输入你的具体困惑即可免费起卦；输入解锁密码后，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的完整商业决策报告。",
+        "a": "在决策之书输入你的具体困惑即可免费起卦；起卦后，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的完整商业决策报告。",
     },
     {
         "q": "卦象解读可以代替专业意见吗？",
@@ -148,9 +148,9 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
 
 # 真實職場提問問題庫
 try:
-    from question_bank import QUESTIONS_BANK, HEX_TO_CATS
+    from question_bank import QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC
 except ImportError:
-    QUESTIONS_BANK, HEX_TO_CATS = {}, {}
+    QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC = {}, {}, {}, {}
 
 
 def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
@@ -194,7 +194,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         breadcrumb_idx = "六十四卦"
         insight_label = "核心解讀"
         cta_h2 = "你正在面對類似的職場或商業抉擇嗎？"
-        cta_p = "免費起卦，看看你的能量切片對應哪一卦；針對你處境的完整行動方案，可輸入解鎖密碼後查看。"
+        cta_p = "免費起卦，看看你的能量切片對應哪一卦；針對你處境的完整行動方案，起卦後即可免費查看。"
         cta_btn = "免費起卦 →"
         cta_mini_text = "你的困惑，也可以起一卦看看"
         orig_label = "《易經》原文"
@@ -203,6 +203,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         scripture_note = "原文出自《周易》，公版內容。"
         footer = "曾仕強教授易經思想體系"
         blog_footer_text = "職場決策筆記"
+        blog_footer_url = "/blog/"
         subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
         faq_heading = "常見問題"
         related_label = "相關卦象"
@@ -217,7 +218,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/{n}/"
         alt_url = f"{BASE_URL}/hexagram/{n}/"
-        home = "/"
+        home = "/cn/"
         idx_link = "/cn/hexagram/"
         prev_label = "← 上一卦"
         next_label = "下一卦 →"
@@ -226,7 +227,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         breadcrumb_idx = "六十四卦"
         insight_label = "核心解读"
         cta_h2 = "你正在面对类似的职场或商业抉择吗？"
-        cta_p = "免费起卦，看看你的能量切片对应哪一卦；针对你处境的完整行动方案，可输入解锁密码后查看。"
+        cta_p = "免费起卦，看看你的能量切片对应哪一卦；针对你处境的完整行动方案，起卦后即可免费查看。"
         cta_btn = "免费起卦 →"
         cta_mini_text = "你的困惑，也可以起一卦看看"
         orig_label = "《易经》原文"
@@ -235,6 +236,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         scripture_note = "原文出自《周易》，公版内容。"
         footer = "曾仕强教授易经思想体系"
         blog_footer_text = "职场决策笔记"
+        blog_footer_url = "/cn/blog/"
         subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
         faq_heading = "常见问题"
         related_label = "相关卦象"
@@ -246,13 +248,15 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         pf = pilot["tc"] if is_tc else pilot["sc"]
         faq_items = faq_items + [{"q": pf["faq_q"], "a": pf["faq_a"]}]
     # 问题型 FAQ（从问题库取 2 个，与问题卡错开，答案用卦象洞察——SEO 长尾入口）
-    if QUESTIONS_BANK and HEX_TO_CATS:
-        _cats = HEX_TO_CATS.get(int(n), [])
+    _bank = QUESTIONS_BANK if is_tc else (QUESTIONS_BANK_SC or QUESTIONS_BANK)
+    _h2c = HEX_TO_CATS if is_tc else (HEX_TO_CATS_SC or HEX_TO_CATS)
+    if _bank and _h2c:
+        _cats = _h2c.get(int(n), [])
         _q_picks = []
         if _cats:
-            _q_picks.extend(QUESTIONS_BANK.get(_cats[0], [])[2:3])
+            _q_picks.extend(_bank.get(_cats[0], [])[2:3])
             if len(_cats) > 1:
-                _q_picks.extend(QUESTIONS_BANK.get(_cats[1], [])[1:2])
+                _q_picks.extend(_bank.get(_cats[1], [])[1:2])
         for _q in _q_picks:
             _a = f"「{insight}」——{name}卦對這個處境的提醒：先看清自己現在的位置與時機，再決定下一步怎麼走。"
             faq_items = faq_items + [{"q": _q, "a": _a}]
@@ -348,15 +352,17 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
 
     # 真實職場提問板块（引导到产品起卦，不給答案）
     question_html = ""
-    if QUESTIONS_BANK and HEX_TO_CATS:
+    _bank_q = QUESTIONS_BANK if is_tc else (QUESTIONS_BANK_SC or QUESTIONS_BANK)
+    _h2c_q = HEX_TO_CATS if is_tc else (HEX_TO_CATS_SC or HEX_TO_CATS)
+    if _bank_q and _h2c_q:
         import urllib.parse
         num_int_q = int(n)
-        cats = HEX_TO_CATS.get(num_int_q, [])
+        cats = _h2c_q.get(num_int_q, [])
         picks = []
         if cats:
-            picks.extend(QUESTIONS_BANK.get(cats[0], [])[:2])
+            picks.extend(_bank_q.get(cats[0], [])[:2])
             for c in cats[1:]:
-                picks.extend(QUESTIONS_BANK.get(c, [])[:1])
+                picks.extend(_bank_q.get(c, [])[:1])
             picks = [p for p in picks if p][:4]
         if picks:
             q_label = "真實職場提問" if is_tc else "真实职场提问"
@@ -364,7 +370,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             q_cta = "免費起卦，看你的答案 →" if is_tc else "免费起卦，看你的答案 →"
             q_items = []
             for qi, q in enumerate(picks):
-                q_url = f"/?q={urllib.parse.quote(q)}"
+                q_url = f"{home}?q={urllib.parse.quote(q)}"
                 q_items.append(
                     f'<div class="q-card"><div class="q-num">Q{qi + 1}</div>'
                     f'<p class="q-text">{q}</p>'
@@ -582,7 +588,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   </div>
 </div>
 <footer>
-  <a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{home}">{breadcrumb_home}</a> · <a href="/blog/">{blog_footer_text}</a> · {footer}
+  <a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{home}">{breadcrumb_home}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a> · {footer}
 </footer>
 </body>
 </html>"""
@@ -607,6 +613,7 @@ def index_html(hexagrams, lang="tc"):
         subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
         footer = "曾仕強教授易經思想體系"
         blog_footer_text = "職場決策筆記"
+        blog_footer_url = "/blog/"
         back = "回到決策之書"
         lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
@@ -620,6 +627,7 @@ def index_html(hexagrams, lang="tc"):
         subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
         footer = "曾仕强教授易经思想体系"
         blog_footer_text = "职场决策笔记"
+        blog_footer_url = "/cn/blog/"
         back = "回到决策之书"
         lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
 
@@ -689,7 +697,7 @@ def index_html(hexagrams, lang="tc"):
   </div>
 </div>
 <footer>
-  <a href="/">{back}</a> · <a href="/blog/">{blog_footer_text}</a> · {footer}
+  <a href="/">{back}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a> · {footer}
 </footer>
 </body>
 </html>"""

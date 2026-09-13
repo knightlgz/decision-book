@@ -8,5 +8,9 @@
         { "key": "X-XSS-Protection", "value": "1; mode=block" }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/cn", "destination": "/index.html" },
+    { "source": "/cn/", "destination": "/index.html" }
   ]
 }

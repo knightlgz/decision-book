@@ -21,7 +21,9 @@ export default function App() {
     }
   });
   const [question, setQuestion] = useState(prefilled);
-  const [region, setRegion] = useState("台灣/港澳");
+  // 语言由 URL 驱动（2026-09-14 全局语言切换重构）：/ = 繁體、/cn/ = 简体；切换=页面跳转（SEO 干净）
+  const INIT_CN = typeof window !== "undefined" && window.location.pathname.startsWith("/cn");
+  const [region, setRegion] = useState(INIT_CN ? "新加坡/大馬" : "台灣/港澳");
   const [hexagram, setHexagram] = useState(null);
   // 会话内解锁一次即生效：新问题不再要求重新付费
   // 付费墙暂停（2026-09-14）：首卦体验免费，报告直接生成。
@@ -31,7 +33,10 @@ export default function App() {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState(null);
 
-  const lang = region.includes("台灣") ? "tc" : "sc";
+  const lang = INIT_CN ? "sc" : "tc";
+  const switchLang = () => {
+    window.location.href = lang === "tc" ? "/cn/" : "/";
+  };
 
   const fetchReport = useCallback(async (q, reg, hex) => {
     setGenerating(true);
@@ -143,7 +148,13 @@ export default function App() {
     <div className="min-h-dvh bg-[#FAFAFA] text-[#333333] font-sans p-4 sm:p-6 selection:bg-gray-200">
       <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
 
-        <header className="text-center space-y-2">
+        <header className="text-center space-y-2 relative">
+          <button
+            onClick={switchLang}
+            className="absolute right-0 top-0 text-xs text-gray-400 border border-gray-200 rounded-md px-2.5 py-1 hover:text-gray-700 hover:border-gray-400 transition-colors"
+          >
+            {lang === "tc" ? "简体中文" : "繁體中文"}
+          </button>
           <h1 className="text-3xl font-bold tracking-widest text-gray-900">
             {lang === "tc" ? "決策之書" : "决策之书"}
           </h1>
@@ -177,8 +188,8 @@ export default function App() {
             value={region}
             onChange={(e) => setRegion(e.target.value)}
           >
-            <option value="台灣/港澳">台灣/港澳地區 (繁體)</option>
-            <option value="新加坡/大馬">新加坡/大馬地区 (简体)</option>
+            <option value="台灣/港澳">台灣/港澳地區</option>
+            <option value="新加坡/大馬">新加坡/大馬地区</option>
           </select>
 
           <button
