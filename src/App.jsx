@@ -265,6 +265,14 @@ export default function App() {
           >
             {lang === "tc" ? "📖 易經六十四卦索引 · 卦辭爻辭原文" : "📖 易经六十四卦索引 · 卦辞爻辞原文"}
           </a>
+          <div>
+            <a
+              href="/blog/"
+              className="inline-block text-sm text-gray-500 hover:text-gray-800 underline underline-offset-4"
+            >
+              {lang === "tc" ? "✍️ 職場決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 职场决策笔记 · 离职、转职、迷茫的真实解法"}
+            </a>
+          </div>
           <p className="text-xs text-gray-400 tracking-wider">
             {lang === "tc" ? "曾仕強教授易經思想體系" : "曾仕强教授易经思想体系"}
           </p>

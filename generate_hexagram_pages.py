@@ -202,6 +202,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         yao_label = "爻辭"
         scripture_note = "原文出自《周易》，公版內容。"
         footer = "曾仕強教授易經思想體系"
+        blog_footer_text = "職場決策筆記"
         subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
         faq_heading = "常見問題"
         related_label = "相關卦象"
@@ -233,6 +234,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         yao_label = "爻辞"
         scripture_note = "原文出自《周易》，公版内容。"
         footer = "曾仕强教授易经思想体系"
+        blog_footer_text = "职场决策笔记"
         subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
         faq_heading = "常见问题"
         related_label = "相关卦象"
@@ -580,7 +582,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   </div>
 </div>
 <footer>
-  <a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{home}">{breadcrumb_home}</a> · {footer}
+  <a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{home}">{breadcrumb_home}</a> · <a href="/blog/">{blog_footer_text}</a> · {footer}
 </footer>
 </body>
 </html>"""
@@ -604,6 +606,7 @@ def index_html(hexagrams, lang="tc"):
         h1 = "易經六十四卦"
         subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
         footer = "曾仕強教授易經思想體系"
+        blog_footer_text = "職場決策筆記"
         back = "回到決策之書"
         lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
@@ -616,6 +619,7 @@ def index_html(hexagrams, lang="tc"):
         h1 = "易经六十四卦"
         subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
         footer = "曾仕强教授易经思想体系"
+        blog_footer_text = "职场决策笔记"
         back = "回到决策之书"
         lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
 
@@ -685,7 +689,7 @@ def index_html(hexagrams, lang="tc"):
   </div>
 </div>
 <footer>
-  <a href="/">{back}</a> · {footer}
+  <a href="/">{back}</a> · <a href="/blog/">{blog_footer_text}</a> · {footer}
 </footer>
 </body>
 </html>"""
