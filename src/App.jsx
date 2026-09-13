@@ -24,7 +24,9 @@ export default function App() {
   const [region, setRegion] = useState("台灣/港澳");
   const [hexagram, setHexagram] = useState(null);
   // 会话内解锁一次即生效：新问题不再要求重新付费
-  const [unlocked, setUnlocked] = useState(false);
+  // 付费墙暂停（2026-09-14）：首卦体验免费，报告直接生成。
+  // 恢复：改回 useState(false)。付费墙未来接入 Ko-fi（追问付费时再启用）。
+  const [unlocked, setUnlocked] = useState(true);
   const [report, setReport] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState(null);
