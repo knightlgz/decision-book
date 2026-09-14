@@ -1,5 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { track } from '@vercel/analytics/react';
+
+// ---- 生成中动态步骤文案（把处理过程翻译成"学者翻书"叙事；~7s/条，走完停在末条不循环）----
+const GEN_STEPS = {
+  tc: [
+    "正在理解你的問題...",
+    "正在翻閱《易經》，查看這一卦的卦象...",
+    "正在查閱古人對這一卦的解讀...",
+    "正在檢索所選地區的文化與社會現實...",
+    "正在草擬決策報告...",
+    "正在潤色報告文書...",
+  ],
+  sc: [
+    "正在理解你的问题...",
+    "正在翻阅《易经》，查看这一卦的卦象...",
+    "正在查阅古人对这一卦的解读...",
+    "正在检索所选地区的文化与社会现实...",
+    "正在草拟决策报告...",
+    "正在润色报告文书...",
+  ],
+};
 
 // ---- 轻量报告 Markdown 渲染（模型输出含 ** 加粗 / - 列表 / emoji 标题行，此前裸显示符号）----
 function inlineMd(text, keyBase = "s") {
@@ -48,6 +68,20 @@ function ReportBody({ text }) {
 
 export default function Paywall({ lang, hexagram, unlocked, generating, report, error, onUnlock, onRetry }) {
   const [password, setPassword] = useState("");
+  // 生成中步骤轮播（~7s/条；生成结束自动复位；重试不重置）
+  const steps = GEN_STEPS[lang] || GEN_STEPS.sc;
+  const [stepIdx, setStepIdx] = useState(0);
+  useEffect(() => {
+    if (!generating) {
+      setStepIdx(0);
+      return;
+    }
+    setStepIdx(0);
+    const t = setInterval(() => {
+      setStepIdx((i) => Math.min(i + 1, steps.length - 1));
+    }, 7000);
+    return () => clearInterval(t);
+  }, [generating, lang]);
 
   const handleUnlockClick = () => {
     onUnlock(password);
@@ -62,7 +96,7 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
             <span className="h-2 w-2 bg-gray-400 rounded-full" />
             <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-200" />
             <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-400" />
-            {lang === "tc" ? "正在推演你的決策報告..." : "正在推演你的决策报告..."}
+            {steps[stepIdx]}
           </span>
         </div>
       );
