@@ -23,7 +23,21 @@ export default function App() {
   const [question, setQuestion] = useState(prefilled);
   // 语言由 URL 驱动（2026-09-14 全局语言切换重构）：/ = 繁體、/cn/ = 简体；切换=页面跳转（SEO 干净）
   const INIT_CN = typeof window !== "undefined" && window.location.pathname.startsWith("/cn");
-  const [region, setRegion] = useState(INIT_CN ? "新加坡/大馬" : "台灣/港澳");
+  // 地区档位（2026-09-14 定稿）：文化距离圈内单列 + 圈外按华裔体量列；排序=用户体量。
+  // 与语言完全独立；localStorage 记忆（切语言往返后保住选择）。
+  const REGIONS = ["中国大陆", "港澳台", "东南亚", "日韩", "北美", "欧洲", "澳洲/新西兰", "其他地区"];
+  const [region, setRegion] = useState(() => {
+    if (typeof window === "undefined") return INIT_CN ? "中国大陆" : "港澳台";
+    try {
+      const saved = window.localStorage.getItem("db_region");
+      if (saved && REGIONS.includes(saved)) return saved;
+    } catch {}
+    return INIT_CN ? "中国大陆" : "港澳台";
+  });
+  const changeRegion = (v) => {
+    setRegion(v);
+    try { window.localStorage.setItem("db_region", v); } catch {}
+  };
   const [hexagram, setHexagram] = useState(null);
   // 会话内解锁一次即生效：新问题不再要求重新付费
   // 付费墙暂停（2026-09-14）：首卦体验免费，报告直接生成。
@@ -52,6 +66,7 @@ export default function App() {
             inputs: {
               User_Question: q,
               Region: reg,
+              Language: lang === "tc" ? "繁體中文" : "简体中文",
               Hexagram_Name: hex["sc"].name
             },
             response_mode: "blocking",
@@ -194,10 +209,11 @@ export default function App() {
           <select
             className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-gray-400"
             value={region}
-            onChange={(e) => setRegion(e.target.value)}
+            onChange={(e) => changeRegion(e.target.value)}
           >
-            <option value="台灣/港澳">台灣/港澳地區</option>
-            <option value="新加坡/大馬">新加坡/大馬地区</option>
+            {REGIONS.map((r) => (
+              <option key={r} value={r}>{r}</option>
+            ))}
           </select>
 
           <button
