@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { track } from '@vercel/analytics/react';
 
-// ---- 生成中动态步骤文案（把处理过程翻译成"学者翻书"叙事；~7s/条，走完停在末条不循环）----
+// ---- 生成中动态步骤文案（把处理过程翻译成"学者翻书"叙事；3.5s/条，走完停在末条不循环）----
 const GEN_STEPS = {
   tc: [
     "正在理解你的問題...",
@@ -79,7 +79,7 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
     setStepIdx(0);
     const t = setInterval(() => {
       setStepIdx((i) => Math.min(i + 1, steps.length - 1));
-    }, 7000);
+    }, 3500);
     return () => clearInterval(t);
   }, [generating, lang]);
 
