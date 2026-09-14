@@ -50,6 +50,10 @@ export default function App() {
   const [error, setError] = useState(null);
 
   const lang = INIT_CN ? "sc" : "tc";
+  // 浏览器标签标题跟随语言（/ 繁体站、/cn/ 简体站各自显示对应标题）
+  useEffect(() => {
+    document.title = lang === "tc" ? "決策之書 · 易經職場與商業決策助手" : "决策之书 · 易经职场与商业决策助手";
+  }, [lang]);
   const switchLang = () => {
     window.location.href = lang === "tc" ? "/cn/" : "/";
   };
