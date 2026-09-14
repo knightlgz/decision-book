@@ -180,9 +180,10 @@ export default function App() {
         <header className="text-center space-y-2 relative">
           <button
             onClick={switchLang}
+            title={lang === "tc" ? "切換至簡體中文 · Switch to Simplified Chinese" : "切換至繁體中文 · Switch to Traditional Chinese"}
             className="absolute right-0 top-0 text-xs text-gray-500 border border-gray-300 rounded-lg px-2.5 py-1 hover:text-gray-700 hover:border-gray-400 transition-colors"
           >
-            {lang === "tc" ? "简体中文" : "繁體中文"}
+            🌐 {lang === "tc" ? "简体中文" : "繁體中文"}
           </button>
           <h1 className="text-3xl font-bold tracking-widest text-gray-900">
             {lang === "tc" ? "決策之書" : "决策之书"}
