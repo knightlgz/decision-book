@@ -33,6 +33,7 @@ function ReportBody({ text }) {
   const lines = String(text || "").split("\n");
   const nodes = [];
   let listBuf = [];
+  let olBuf = [];
   const flushList = () => {
     if (listBuf.length) {
       nodes.push(
@@ -41,19 +42,35 @@ function ReportBody({ text }) {
       listBuf = [];
     }
   };
+  const flushOl = () => {
+    if (olBuf.length) {
+      nodes.push(
+        <ol key={"ol" + nodes.length} className="list-decimal pl-5 my-2 space-y-2">{olBuf}</ol>
+      );
+      olBuf = [];
+    }
+  };
+  const flushAll = () => { flushList(); flushOl(); };
   lines.forEach((raw, i) => {
     const line = raw.trim();
     if (!line) {
-      flushList();
+      flushAll();
       nodes.push(<div key={"g" + i} className="h-3" />);
       return;
     }
     const li = line.match(/^[-·•]\s+(.+)$/);
     if (li) {
+      flushOl();
       listBuf.push(<li key={"li" + i} className="leading-relaxed">{inlineMd(li[1], "l" + i)}</li>);
       return;
     }
-    flushList();
+    const oli = line.match(/^\d+[.、]\s+(.+)$/);
+    if (oli) {
+      flushList();
+      olBuf.push(<li key={"oli" + i} className="leading-relaxed">{inlineMd(oli[1], "o" + i)}</li>);
+      return;
+    }
+    flushAll();
     if (/^(?:🔮|👁️|⚠️|🚀|⏳)/.test(line)) {
       nodes.push(
         <p key={"t" + i} className="font-bold text-gray-900 mt-5 first:mt-0">{inlineMd(line, "t" + i)}</p>
@@ -62,7 +79,7 @@ function ReportBody({ text }) {
     }
     nodes.push(<p key={"p" + i} className="my-1.5 leading-relaxed">{inlineMd(line, "p" + i)}</p>);
   });
-  flushList();
+  flushAll();
   return <>{nodes}</>;
 }
 
