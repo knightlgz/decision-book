@@ -180,7 +180,7 @@ export default function App() {
         <header className="text-center space-y-2 relative">
           <button
             onClick={switchLang}
-            className="absolute right-0 top-0 text-xs text-gray-400 border border-gray-200 rounded-lg px-2.5 py-1 hover:text-gray-700 hover:border-gray-400 transition-colors"
+            className="absolute right-0 top-0 text-xs text-gray-500 border border-gray-300 rounded-lg px-2.5 py-1 hover:text-gray-700 hover:border-gray-400 transition-colors"
           >
             {lang === "tc" ? "简体中文" : "繁體中文"}
           </button>
@@ -202,7 +202,7 @@ export default function App() {
             onChange={(e) => setQuestion(e.target.value)}
           />
           {/* 字数提示：上限与 Dify 工作流 User_Question 变量限制保持同步（当前 256） */}
-          <div className="flex justify-end -mt-2">
+          <div className="flex justify-end -mt-3">
             <span className={`text-xs ${question.length > 230 ? "text-amber-500" : "text-gray-400"}`}>
               {question.length > 230
                 ? (lang === "tc"
@@ -212,7 +212,7 @@ export default function App() {
             </span>
           </div>
 
-          <div>
+          <div className="pt-2">
             <label className="block text-xs text-gray-500 mb-1.5">
               {lang === "tc" ? "你所在的地區" : "你所在的地区"}
             </label>
