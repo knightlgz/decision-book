@@ -92,11 +92,14 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
     if (generating) {
       return (
         <div className="mt-6 border-t border-gray-100 pt-8 flex flex-col items-center justify-center py-8">
-          <span className="animate-pulse flex items-center space-x-2 text-sm text-gray-500">
-            <span className="h-2 w-2 bg-gray-400 rounded-full" />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-200" />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-400" />
+          <span className="flex items-center space-x-2 text-sm text-gray-500">
+            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" />
+            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
+            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
             {steps[stepIdx]}
+            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
+            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
+            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.6s" }} />
           </span>
         </div>
       );
