@@ -239,7 +239,7 @@ export default function App() {
                 {hexagram.number}
               </span>
               <h2 className="text-lg font-bold">
-                🔮 {lang === "tc" ? "你的能量切片：" : "你的能量切片："}{hexagram[lang].name}
+                🔮 {lang === "tc" ? "你的卦象：" : "你的卦象："}{hexagram[lang].name}
               </h2>
             </div>
 

@@ -62,7 +62,7 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
             <span className="h-2 w-2 bg-gray-400 rounded-full" />
             <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-200" />
             <span className="h-2 w-2 bg-gray-400 rounded-full animation-delay-400" />
-            {lang === "tc" ? "正在構建高維度決策報告..." : "正在构建高维度决策报告..."}
+            {lang === "tc" ? "正在推演你的決策報告..." : "正在推演你的决策报告..."}
           </span>
         </div>
       );
