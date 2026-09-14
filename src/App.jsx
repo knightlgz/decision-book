@@ -26,6 +26,8 @@ export default function App() {
   // 地区档位（2026-09-14 定稿）：文化距离圈内单列 + 圈外按华裔体量列；排序=用户体量。
   // 与语言完全独立；localStorage 记忆（切语言往返后保住选择）。
   const REGIONS = ["中国大陆", "港澳台", "东南亚", "日韩", "北美", "欧洲", "澳洲/新西兰", "其他地区"];
+  // 繁体页面显示用标签（值恒为简体，与 Dify 端档位对齐）
+  const TC_REGION_LABELS = { "中国大陆": "中國大陸", "东南亚": "東南亞", "日韩": "日韓", "欧洲": "歐洲", "澳洲/新西兰": "澳洲/紐西蘭", "其他地区": "其他地區" };
   const [region, setRegion] = useState(() => {
     if (typeof window === "undefined") return INIT_CN ? "中国大陆" : "港澳台";
     try {
@@ -216,11 +218,17 @@ export default function App() {
               onChange={(e) => changeRegion(e.target.value)}
             >
               {REGIONS.map((r) => (
-                <option key={r} value={r}>{r}</option>
+                <option key={r} value={r}>{lang === "tc" ? (TC_REGION_LABELS[r] || r) : r}</option>
               ))}
             </select>
             <p className="text-xs text-gray-400 mt-1.5">
-              {lang === "tc" ? "報告會結合當地的職場與制度環境，給出更貼近你處境的建議" : "报告会结合当地的职场与制度环境，给出更贴近你处境的建议"}
+              {region === "其他地区"
+                ? (lang === "tc"
+                    ? "「其他地區」暫無本地化適配，報告將以通用框架分析，請結合所在地的實際情況參考——內容僅供參考，不構成任何專業建議"
+                    : "「其他地区」暂无本地化适配，报告将以通用框架分析，请结合所在地的实际情况参考——内容仅供参考，不构成任何专业建议")
+                : (lang === "tc"
+                    ? "報告會結合當地的職場與制度環境，給出更貼近你處境的建議"
+                    : "报告会结合当地的职场与制度环境，给出更贴近你处境的建议")}
             </p>
           </div>
 
