@@ -206,15 +206,23 @@ export default function App() {
             </span>
           </div>
 
-          <select
-            className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-gray-400"
-            value={region}
-            onChange={(e) => changeRegion(e.target.value)}
-          >
-            {REGIONS.map((r) => (
-              <option key={r} value={r}>{r}</option>
-            ))}
-          </select>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1.5">
+              {lang === "tc" ? "你所在的地區" : "你所在的地区"}
+            </label>
+            <select
+              className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-gray-400"
+              value={region}
+              onChange={(e) => changeRegion(e.target.value)}
+            >
+              {REGIONS.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-400 mt-1.5">
+              {lang === "tc" ? "報告會結合當地的職場與制度環境，給出更貼近你處境的建議" : "报告会结合当地的职场与制度环境，给出更贴近你处境的建议"}
+            </p>
+          </div>
 
           <button
             onClick={handleGenerate}
