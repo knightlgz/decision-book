@@ -20,6 +20,8 @@ ROOT = Path(__file__).parent
 DATA_FILE = ROOT / "src" / "data" / "hexagrams.js"
 ORIGINAL_FILE = ROOT / "src" / "data" / "iching_original.json"
 INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
+# 简体版=LLM 语际转译（由 translate_interp_sc.py 产出；禁机翻铁律——不得用 opencc 等机械转换替代）
+INTERP_SC_FILE = ROOT / "src" / "data" / "hexagram_interpretations_sc.json"
 PUBLIC = ROOT / "public"
 BASE_URL = "https://decision-book.vercel.app"
 
@@ -35,6 +37,13 @@ def parse_interpretations():
     if not INTERP_FILE.exists():
         return {}
     return json.loads(INTERP_FILE.read_text(encoding="utf-8"))
+
+
+def parse_interpretations_sc():
+    """读取简体白话解读（LLM 语际转译版，translate_interp_sc.py 产出）"""
+    if not INTERP_SC_FILE.exists():
+        return {}
+    return json.loads(INTERP_SC_FILE.read_text(encoding="utf-8"))
 
 
 def parse_hexagrams():
@@ -69,7 +78,7 @@ FAQ_TC = [
 FAQ_SC = [
     {
         "q": "这个卦象适合问什么问题？",
-        "a": "适合工作与事业上的抉择，例如转职、与主管同事相处、创业方向、升迁时机等情境。",
+        "a": "适合工作与事业上的抉择，例如跳槽、与主管同事相处、创业方向、晋升时机等情境。",
     },
     {
         "q": "如何获得专属于我的卦象解读？",
@@ -128,8 +137,8 @@ SEO_PILOT = {
         "tc": {"kw": "中年失業", "kw2": "被資遣",
                "faq_q": "中年被資遣怎麼辦？澤水困卦給什麼啟示？",
                "faq_a": "困卦講「困而不失其所亨」：困境中守住本心與專業，暫時的困頓反而是重新定位的契機。"},
-        "sc": {"kw": "中年失业", "kw2": "被资遣",
-               "faq_q": "中年被资遣怎么办？泽水困卦给什么启示？",
+        "sc": {"kw": "中年失业", "kw2": "被裁员",
+               "faq_q": "中年被裁员怎么办？泽水困卦给什么启示？",
                "faq_a": "困卦讲「困而不失其所亨」：困境中守住本心与专业，暂时的困顿反而是重新定位的契机。"},
     },
 }
@@ -146,7 +155,7 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
   </script>
 """
 
-# 真實職場提問問題庫
+# 真实职场提问问题库
 try:
     from question_bank import QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC
 except ImportError:
@@ -162,15 +171,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     insight = hx["tc"]["insight"] if is_tc else hx["sc"]["insight"]
     num_label = f"第 {int(n)} 卦"
 
-    # 白话解读（繁→简转换）
+    # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
-    if not is_tc:
-        try:
-            from opencc import OpenCC
-            cc = OpenCC("t2s")
-            interp_text = {k: cc.convert(v) for k, v in interp_text.items()}
-        except ImportError:
-            pass
 
     # 试点页 SEO 覆盖（标题场景词 + 描述关键词）
     pilot = SEO_PILOT.get(str(int(n)), {})
@@ -258,7 +260,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             if len(_cats) > 1:
                 _q_picks.extend(_bank.get(_cats[1], [])[1:2])
         for _q in _q_picks:
-            _a = f"「{insight}」——{name}卦對這個處境的提醒：先看清自己現在的位置與時機，再決定下一步怎麼走。"
+            _tail = "卦對這個處境的提醒：先看清自己現在的位置與時機，再決定下一步怎麼走。" if is_tc else "卦对这个处境的提醒：先看清自己现在的位置与时机，再决定下一步怎么走。"
+            _a = f"「{insight}」——{name}{_tail}"
             faq_items = faq_items + [{"q": _q, "a": _a}]
     faq_lines = "\n".join(
         f'<div class="faq-item"><div class="faq-q">{item["q"]}</div><div class="faq-a">{item["a"]}</div></div>'
@@ -315,7 +318,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         rel_links = []
         for rn, rtc, rsc, rlabel in related[:4]:
             r_name = rtc if is_tc else rsc
-            rel_links.append(f'<a href="{idx_link}{rn}/"><span class="rel-name">{r_name}</span><span class="rel-tag">{rlabel}</span></a>')
+            r_label = rlabel[0] if is_tc else rlabel[1]
+            rel_links.append(f'<a href="{idx_link}{rn}/"><span class="rel-name">{r_name}</span><span class="rel-tag">{r_label}</span></a>')
         if rel_links:
             related_html = f'<div class="related"><h3>{related_label}</h3><div class="grid">{"".join(rel_links)}</div></div>'
 
@@ -350,7 +354,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
             f'</div></div>'
         )
 
-    # 真實職場提問板块（引导到产品起卦，不給答案）
+    # 真实职场提问板块（引导到产品起卦，不给答案）
     question_html = ""
     _bank_q = QUESTIONS_BANK if is_tc else (QUESTIONS_BANK_SC or QUESTIONS_BANK)
     _h2c_q = HEX_TO_CATS if is_tc else (HEX_TO_CATS_SC or HEX_TO_CATS)
@@ -473,7 +477,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .cta-mini span {{ font-size:15px; color:var(--text); }}
   .cta-mini a {{ white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }}
   .cta-mini a:hover {{ background:var(--accent-hover); }}
-  /* 真實職場提問 */
+  /* 真实职场提问 */
   .questions {{ margin-bottom:48px; }}
   .questions-head {{ margin-bottom:16px; }}
   .q-note {{ color:var(--muted); font-size:14px; }}
@@ -484,7 +488,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .q-text {{ font-size:15px; color:var(--text-strong); line-height:1.8; flex:1; }}
   .q-link {{ color:var(--accent); text-decoration:none; font-size:14px; font-weight:700; }}
   .q-link:hover {{ color:var(--accent-hover); text-decoration:underline; }}
-  /* 相關卦象 */
+  /* 相关卦象 */
   .related {{ margin-bottom:48px; }}
   .related h3 {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:12px; }}
   .related .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; }}
@@ -722,6 +726,7 @@ def main():
     hexagrams = parse_hexagrams()
     original = parse_original()
     interpretations = parse_interpretations()
+    interpretations_sc = parse_interpretations_sc()
     print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
         print("⚠️ 卦象数量不对")
@@ -748,10 +753,10 @@ def main():
                 seen.add(target)
                 rels.append((target, label))
 
-        add([1 - x for x in arr], "錯卦")
-        add(arr[::-1], "綜卦")
-        add(arr[3:] + arr[:3], "交卦")
-        add([arr[1], arr[2], arr[3], arr[2], arr[3], arr[4]], "互卦")
+        add([1 - x for x in arr], ("錯卦", "错卦"))
+        add(arr[::-1], ("綜卦", "综卦"))
+        add(arr[3:] + arr[:3], ("交卦", "交卦"))
+        add([arr[1], arr[2], arr[3], arr[2], arr[3], arr[4]], ("互卦", "互卦"))
         return rels
 
     for i, hx in enumerate(hexagrams):
@@ -759,6 +764,7 @@ def main():
         num_int = int(n)
         orig = original.get(num_int)
         interp = interpretations.get(n, {})
+        interp_sc = interpretations_sc.get(n, {})
         prev_num = hexagrams[i - 1]["number"] if i > 0 else None
         next_num = hexagrams[i + 1]["number"] if i < 63 else None
 
@@ -778,7 +784,7 @@ def main():
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "sc", related), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")

@@ -265,7 +265,7 @@ def main():
                 f'<div class="t">{m["title"]}</div>'
                 f'<div class="d">{m.get("description","")[:80]}</div></a>'
             )
-        desc = "易經 × 職場決策的內容站：離職、轉職、迷茫、被裁員——用真實的判斷方法，陪你把難題想清楚。" if lang == "tc" else "易经 × 职场决策的内容站：离职、转职、迷茫、被裁员——用真实的判断方法，陪你把难题想清楚。"
+        desc = "易經 × 職場決策的內容站：離職、轉職、迷茫、被裁員——用真實的判斷方法，陪你把難題想清楚。" if lang == "tc" else "易经 × 职场决策的内容站：离职、跳槽、迷茫、被裁员——用真实的判断方法，陪你把难题想清楚。"
         idx_body = f'<h1>{cfg["index_title"]}</h1><p class="meta">{cfg["index_sub"]}</p>' + "\n".join(items)
         idx_html = page_shell(lang, cfg["index_title"], desc, "", idx_body)
         out = cfg["out"] / "index.html"

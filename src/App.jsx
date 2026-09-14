@@ -328,7 +328,7 @@ export default function App() {
               href="/blog/"
               className="inline-block text-sm text-gray-500 hover:text-gray-900 underline underline-offset-4"
             >
-              {lang === "tc" ? "✍️ 職場決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 职场决策笔记 · 离职、转职、迷茫的真实解法"}
+              {lang === "tc" ? "✍️ 職場決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 职场决策笔记 · 离职、跳槽、迷茫的真实解法"}
             </a>
           </div>
           <p className="text-xs text-gray-400 tracking-wider">
