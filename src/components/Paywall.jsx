@@ -1,6 +1,51 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics/react';
 
+// ---- 轻量报告 Markdown 渲染（模型输出含 ** 加粗 / - 列表 / emoji 标题行，此前裸显示符号）----
+function inlineMd(text, keyBase = "s") {
+  const parts = String(text).split(/\*\*(.+?)\*\*/g);
+  return parts.map((p, i) =>
+    i % 2 === 1 ? <strong key={keyBase + i} className="font-semibold text-gray-900">{p}</strong> : p
+  );
+}
+
+function ReportBody({ text }) {
+  const lines = String(text || "").split("\n");
+  const nodes = [];
+  let listBuf = [];
+  const flushList = () => {
+    if (listBuf.length) {
+      nodes.push(
+        <ul key={"ul" + nodes.length} className="list-disc pl-5 my-2 space-y-2">{listBuf}</ul>
+      );
+      listBuf = [];
+    }
+  };
+  lines.forEach((raw, i) => {
+    const line = raw.trim();
+    if (!line) {
+      flushList();
+      nodes.push(<div key={"g" + i} className="h-3" />);
+      return;
+    }
+    const li = line.match(/^[-·•]\s+(.+)$/);
+    if (li) {
+      listBuf.push(<li key={"li" + i} className="leading-relaxed">{inlineMd(li[1], "l" + i)}</li>);
+      return;
+    }
+    flushList();
+    if (/^(?:🔮|👁️|⚠️|🚀|⏳)/.test(line)) {
+      nodes.push(
+        <p key={"t" + i} className="font-bold text-gray-900 mt-5 first:mt-0">{inlineMd(line, "t" + i)}</p>
+      );
+      return;
+    }
+    nodes.push(<p key={"p" + i} className="my-1.5 leading-relaxed">{inlineMd(line, "p" + i)}</p>);
+  });
+  flushList();
+  return <>{nodes}</>;
+}
+
 export default function Paywall({ lang, hexagram, unlocked, generating, report, error, onUnlock, onRetry }) {
   const [password, setPassword] = useState("");
 
@@ -39,8 +84,8 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
 
     if (report) {
       return (
-        <div className="mt-6 whitespace-pre-wrap text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">
-          {report}
+        <div className="mt-6 text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">
+          <ReportBody text={report} />
         </div>
       );
     }
