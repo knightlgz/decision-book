@@ -181,7 +181,7 @@ export default function App() {
           <button
             onClick={switchLang}
             title={lang === "tc" ? "切換至簡體中文 · Switch to Simplified Chinese" : "切換至繁體中文 · Switch to Traditional Chinese"}
-            className="absolute right-0 top-0 text-xs text-gray-500 border border-gray-300 rounded-lg px-2.5 py-1 hover:text-gray-700 hover:border-gray-400 transition-colors"
+            className="absolute right-0 top-0 text-xs text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 hover:text-gray-700 hover:border-gray-400 transition-colors"
           >
             🌐 {lang === "tc" ? "简体中文" : "繁體中文"}
           </button>
