@@ -67,7 +67,15 @@ export default function App() {
 
       let text = data?.data?.outputs?.Report || data?.data?.outputs?.text || data?.data?.outputs?.answer;
       if (text) {
-        text = text.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
+        // 剥离推理段（DeepSeek reasoning 会混入输出；实测单次最长 6K+ 字）
+        text = text.replace(/<think\b[^>]*>[\s\S]*?<\/think\s*>\s*/gi, ''); // ① 成对标签（容忍大小写/空格变体）
+        text = text.replace(/<!--\s*dify-deepseek-reasoning\s*-->/gi, ''); // ② Dify 推理注释标记
+        if (/<think/i.test(text)) {
+          // ③ 兜底：未闭合（输出截断）→ 从【最后一个】正式抬头处截取（think 内引用的模板在更早位置）
+          const last = Math.max(text.lastIndexOf('【決策之書'), text.lastIndexOf('【决策之书'));
+          if (last > 0) text = text.slice(last);
+        }
+        text = text.trim();
         setReport(text);
       } else if (data?.code === "invalid_param") {
         // 参数类错误（如问题超长）：显示服务端原因，人话化
