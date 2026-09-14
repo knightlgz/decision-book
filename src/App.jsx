@@ -159,7 +159,7 @@ export default function App() {
             {lang === "tc" ? "決策之書" : "决策之书"}
           </h1>
           <p className="text-xs text-gray-500 tracking-[0.2em]">
-            {lang === "tc" ? "易經商業決策 · 曾仕強思想體系" : "易经商业决策 · 曾仕强思想体系"}
+            {lang === "tc" ? "職場與商業的抉擇 · 曾仕強思想體系" : "职场与商业的抉择 · 曾仕强思想体系"}
           </p>
         </header>
 

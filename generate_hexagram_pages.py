@@ -58,7 +58,7 @@ FAQ_TC = [
     },
     {
         "q": "如何獲得專屬於我的卦象解讀？",
-        "a": "在決策之書輸入你的具體困惑即可免費起卦；起卦後，AI 會基於曾仕強教授易經思想體系，生成一份結合你情境的完整商業決策報告。",
+        "a": "在決策之書輸入你的具體困惑即可免費起卦；起卦後，AI 會基於曾仕強教授易經思想體系，生成一份結合你情境的完整職場與商業決策報告。",
     },
     {
         "q": "卦象解讀可以代替專業意見嗎？",
@@ -73,7 +73,7 @@ FAQ_SC = [
     },
     {
         "q": "如何获得专属于我的卦象解读？",
-        "a": "在决策之书输入你的具体困惑即可免费起卦；起卦后，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的完整商业决策报告。",
+        "a": "在决策之书输入你的具体困惑即可免费起卦；起卦后，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的完整职场与商业决策报告。",
     },
     {
         "q": "卦象解读可以代替专业意见吗？",
@@ -176,7 +176,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     pilot = SEO_PILOT.get(str(int(n)), {})
 
     if is_tc:
-        title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業決策解讀"
+        title = f"{name}卦｜第{int(n)}卦｜曾仕強易經職場與商業解讀"
         desc = f"{name}卦在職場與商業上代表什麼？{insight}卦辭爻辭原文白話釋義、職場啟示一次看懂，幫你看清當下該怎麼走。"
         if pilot:
             p = pilot["tc"]
@@ -204,12 +204,12 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         footer = "曾仕強教授易經思想體系"
         blog_footer_text = "職場決策筆記"
         blog_footer_url = "/blog/"
-        subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
+        subtitle_line = "曾仕強易經思想體系 · 職場與商業解讀"
         faq_heading = "常見問題"
         related_label = "相關卦象"
         interp_labels = ["白話釋義", "職場啟示", "行動建議"]
     else:
-        title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
+        title = f"{name}卦｜第{int(n)}卦｜曾仕强易经职场与商业解读"
         desc = f"{name}卦在职场与商业上代表什么？{insight}卦辞爻辞原文白话释义、职场启示一次看懂，帮你看清当下该怎么走。"
         if pilot:
             p = pilot["sc"]
@@ -237,7 +237,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
         footer = "曾仕强教授易经思想体系"
         blog_footer_text = "职场决策笔记"
         blog_footer_url = "/cn/blog/"
-        subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
+        subtitle_line = "曾仕强易经思想体系 · 职场与商业解读"
         faq_heading = "常见问题"
         related_label = "相关卦象"
         interp_labels = ["白话释义", "职场启示", "行动建议"]
@@ -603,28 +603,28 @@ def index_html(hexagrams, lang="tc"):
         for h in hexagrams
     )
     if is_tc:
-        title = "易經六十四卦｜曾仕強商業決策解讀全索引"
-        desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
+        title = "易經六十四卦｜曾仕強職場與商業解讀全索引"
+        desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、職場與商業核心解讀，基於曾仕強教授易經思想體系。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/"
         home_label = "決策之書"
         idx_label = "六十四卦"
         h1 = "易經六十四卦"
-        subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
+        subtitle = "曾仕強教授易經思想體系 · 職場與商業雙語境解讀"
         footer = "曾仕強教授易經思想體系"
         blog_footer_text = "職場決策筆記"
         blog_footer_url = "/blog/"
         back = "回到決策之書"
         lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
-        title = "易经六十四卦｜曾仕强商业决策解读全索引"
-        desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
+        title = "易经六十四卦｜曾仕强职场与商业解读全索引"
+        desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、职场与商业核心解读，基于曾仕强教授易经思想体系。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/"
         home_label = "决策之书"
         idx_label = "六十四卦"
         h1 = "易经六十四卦"
-        subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
+        subtitle = "曾仕强教授易经思想体系 · 职场与商业双语境解读"
         footer = "曾仕强教授易经思想体系"
         blog_footer_text = "职场决策笔记"
         blog_footer_url = "/cn/blog/"
