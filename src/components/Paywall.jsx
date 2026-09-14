@@ -111,7 +111,7 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
           <p className="text-sm text-gray-600 mb-4">{error}</p>
           <button
             onClick={onRetry}
-            className="bg-[#1A1A1A] text-white px-6 py-2.5 rounded-md text-sm font-medium hover:bg-black transition-colors"
+            className="bg-[#1A1A1A] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-black transition-colors"
           >
             {lang === "tc" ? "重新生成" : "重新生成"}
           </button>
@@ -164,13 +164,13 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
         <input
           type="text"
           placeholder={lang === "tc" ? "輸入解鎖密碼" : "输入解锁密码"}
-          className="w-full max-w-[220px] text-center p-2.5 border border-gray-300 rounded-md mb-4 bg-white/90 focus:outline-none"
+          className="w-full max-w-[220px] text-center p-2.5 border border-gray-300 rounded-lg mb-4 bg-white/90 focus:outline-none"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
           onClick={handleUnlockClick}
-          className="bg-[#1A1A1A] text-white px-8 py-2.5 rounded-md text-sm font-medium hover:bg-black transition-colors"
+          className="bg-[#1A1A1A] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-black transition-colors"
         >
           {lang === "tc" ? "解鎖深度推演" : "解锁深度推演"}
         </button>

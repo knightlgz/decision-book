@@ -176,7 +176,7 @@ export default function App() {
         <header className="text-center space-y-2 relative">
           <button
             onClick={switchLang}
-            className="absolute right-0 top-0 text-xs text-gray-400 border border-gray-200 rounded-md px-2.5 py-1 hover:text-gray-700 hover:border-gray-400 transition-colors"
+            className="absolute right-0 top-0 text-xs text-gray-400 border border-gray-200 rounded-lg px-2.5 py-1 hover:text-gray-700 hover:border-gray-400 transition-colors"
           >
             {lang === "tc" ? "简体中文" : "繁體中文"}
           </button>
@@ -257,7 +257,7 @@ export default function App() {
               const l = lang === "tc" ? "tc" : "sc";
               const lines = [...orig.array].reverse(); // 视觉从上到下 = 爻位从下到上反转
               return (
-                <div className="flex items-center gap-5 mb-5 bg-stone-50 border border-stone-100 rounded-xl px-5 py-4">
+                <div className="flex items-center gap-5 mb-5 bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm">
                   {/* 爻线图 */}
                   <div className="flex flex-col gap-[3px] shrink-0" aria-label={`${hexagram[lang].name} 六爻`}>
                     {lines.map((v, idx) => (
@@ -275,7 +275,7 @@ export default function App() {
                   </div>
                   {/* 卦象信息 */}
                   <div className="text-sm leading-relaxed">
-                    <div className="font-bold text-gray-800">
+                    <div className="font-bold text-gray-900">
                       {orig.symbol} {lang === "tc"
                         ? `第${orig.id}卦 · 上${orig.upper_tc.name}${orig.upper_tc.nature}，下${orig.lower_tc.name}${orig.lower_tc.nature}`
                         : `第${orig.id}卦 · 上${orig.upper_sc.name}${orig.upper_sc.nature}，下${orig.lower_sc.name}${orig.lower_sc.nature}`}
@@ -314,14 +314,14 @@ export default function App() {
         <footer className="mt-10 pt-6 border-t border-gray-100 text-center space-y-1.5">
           <a
             href={lang === "tc" ? "/hexagram/" : "/cn/hexagram/"}
-            className="inline-block text-sm text-gray-500 hover:text-gray-800 underline underline-offset-4"
+            className="inline-block text-sm text-gray-500 hover:text-gray-900 underline underline-offset-4"
           >
             {lang === "tc" ? "📖 易經六十四卦索引 · 卦辭爻辭原文" : "📖 易经六十四卦索引 · 卦辞爻辞原文"}
           </a>
           <div>
             <a
               href="/blog/"
-              className="inline-block text-sm text-gray-500 hover:text-gray-800 underline underline-offset-4"
+              className="inline-block text-sm text-gray-500 hover:text-gray-900 underline underline-offset-4"
             >
               {lang === "tc" ? "✍️ 職場決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 职场决策笔记 · 离职、转职、迷茫的真实解法"}
             </a>
