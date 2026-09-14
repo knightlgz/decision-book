@@ -96,7 +96,7 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
             <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" />
             <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
             <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
-            {steps[stepIdx]}
+            <span>{steps[stepIdx]}</span>
             <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
             <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
             <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.6s" }} />
