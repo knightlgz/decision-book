@@ -37,6 +37,19 @@ const FAQ = {
     { q: "为什么要选择地区？", a: "职场规则、社会保障、人情压力因地而异。报告会结合你所在地区，给出更贴近现实的建议。" },
   ],
 };
+// 博客精选（2026-09-15 借鉴对标：首页直达内容，降低发现门槛）
+const BLOG_POSTS = {
+  tc: [
+    { title: "易經到底是不是用來算命的？", desc: "從「善易者不卜」說起——它不是水晶球，是一套看清處境的方法。", href: "/blog/is-i-ching-fortune-telling/" },
+    { title: "為什麼同一個問題，每個人抽到的卦不一樣？", desc: "同題不同卦，恰恰說明它照的是處境，不是答案。", href: "/blog/why-different-hexagram/" },
+    { title: "問卦之前，先把這三件事想清楚", desc: "處境、選項、最在意什麼——問題寫清楚，報告才有用。", href: "/blog/how-to-ask/" },
+  ],
+  sc: [
+    { title: "易经到底是不是用来算命的？", desc: "从「善易者不卜」说起——它不是水晶球，是一套看清处境的方法。", href: "/cn/blog/is-i-ching-fortune-telling/" },
+    { title: "为什么同一个问题，每个人抽到的卦不一样？", desc: "同题不同卦，恰恰说明它照的是处境，不是答案。", href: "/cn/blog/why-different-hexagram/" },
+    { title: "问卦之前，先把这三件事想清楚", desc: "处境、选项、最在意什么——问题写清楚，报告才有用。", href: "/cn/blog/how-to-ask/" },
+  ],
+};
 
 export default function App() {
   const [prefilled] = useState(() => {
@@ -382,6 +395,36 @@ export default function App() {
             />
           </section>
         )}
+
+        {/* 博客精选入口（2026-09-15 借鉴对标 tarotap：内容直达，降低发现门槛） */}
+        <section className="mt-10 pt-6 border-t border-gray-100">
+          <h2 className="text-sm font-medium text-gray-700 mb-1 text-center tracking-wider">
+            {lang === "tc" ? "決策筆記" : "决策笔记"}
+          </h2>
+          <p className="text-xs text-gray-400 text-center mb-4">
+            {lang === "tc" ? "易經入門 · 提問方法 · 真實案例" : "易经入门 · 提问方法 · 真实案例"}
+          </p>
+          <div className="space-y-2">
+            {BLOG_POSTS[lang].map(({ title, desc, href }) => (
+              <a
+                key={href}
+                href={href}
+                className="block bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-300 transition-colors"
+              >
+                <div className="text-sm text-gray-900 font-medium mb-1">{title}</div>
+                <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
+              </a>
+            ))}
+          </div>
+          <div className="text-center mt-3">
+            <a
+              href={lang === "tc" ? "/blog/" : "/cn/blog/"}
+              className="text-xs text-gray-500 hover:text-gray-900 underline underline-offset-4"
+            >
+              {lang === "tc" ? "查看全部文章 →" : "查看全部文章 →"}
+            </a>
+          </div>
+        </section>
 
         {/* 首页 FAQ（2026-09-15 借鉴对标）：合规声明 + 期望管理 */}
         <section className="mt-10 pt-6 border-t border-gray-100">
