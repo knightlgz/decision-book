@@ -37,17 +37,17 @@ const FAQ = {
     { q: "为什么要选择地区？", a: "职场规则、社会保障、人情压力因地而异。报告会结合你所在地区，给出更贴近现实的建议。" },
   ],
 };
-// 博客精选（2026-09-15 借鉴对标：首页直达内容，降低发现门槛）
+// 博客精选（2026-09-15 借鉴对标：首页直达内容，降低发现门槛；新品发布后必须同步本板块）
 const BLOG_POSTS = {
   tc: [
     { title: "易經到底是不是用來算命的？", desc: "從「善易者不卜」說起——它不是水晶球，是一套看清處境的方法。", href: "/blog/is-i-ching-fortune-telling/" },
-    { title: "為什麼同一個問題，每個人抽到的卦不一樣？", desc: "同題不同卦，恰恰說明它照的是處境，不是答案。", href: "/blog/why-different-hexagram/" },
-    { title: "問卦之前，先把這三件事想清楚", desc: "處境、選項、最在意什麼——問題寫清楚，報告才有用。", href: "/blog/how-to-ask/" },
+    { title: "易經解卦和算命，到底有什麼區別？", desc: "兩把尺子：算命問「準不準」，解卦問「有沒有用」。", href: "/blog/i-ching-vs-fortune-telling/" },
+    { title: "問卦教程：10 個複製即用的提問模板", desc: "照著填空就能問出高品質的問題——覆蓋職場最常見的十種糾結。", href: "/blog/question-templates/" },
   ],
   sc: [
     { title: "易经到底是不是用来算命的？", desc: "从「善易者不卜」说起——它不是水晶球，是一套看清处境的方法。", href: "/cn/blog/is-i-ching-fortune-telling/" },
-    { title: "为什么同一个问题，每个人抽到的卦不一样？", desc: "同题不同卦，恰恰说明它照的是处境，不是答案。", href: "/cn/blog/why-different-hexagram/" },
-    { title: "问卦之前，先把这三件事想清楚", desc: "处境、选项、最在意什么——问题写清楚，报告才有用。", href: "/cn/blog/how-to-ask/" },
+    { title: "易经解卦和算命，到底有什么区别？", desc: "两把尺子：算命问「准不准」，解卦问「有没有用」。", href: "/cn/blog/i-ching-vs-fortune-telling/" },
+    { title: "问卦教程：10 个复制即用的提问模板", desc: "照着填空就能问出高质量的问题——覆盖职场最常见的十种纠结。", href: "/cn/blog/question-templates/" },
   ],
 };
 
