@@ -184,6 +184,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}｜{cfg['brand']}</title>
 <meta name="description" content="{desc}">
+<meta name="keywords" content="{meta_extra.get('keywords', '')}">
 <link rel="canonical" href="{canonical}">
 <link rel="alternate" hreflang="{cfg['html_lang']}" href="{canonical}">
 <link rel="alternate" hreflang="{cfg['alternate_hreflang']}" href="{alt_url}">
