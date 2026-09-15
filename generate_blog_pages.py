@@ -283,7 +283,8 @@ def main():
     sm_path = PUBLIC / "sitemap.xml"
     if sm_path.exists():
         sm = sm_path.read_text(encoding="utf-8")
-        sm = re.sub(r"\n?\s*<url>\s*<loc>[^<]*/blog/[^<]*</loc>\s*<changefreq>[^<]*</changefreq>\s*</url>", "", sm)
+        # 清理：匹配完整 <url> 块（含 lastmod 等任意子元素），懒惰匹配到最近的 </url>
+        sm = re.sub(r"\n?\s*<url>\s*<loc>[^<]*/blog/[^<]*</loc>[\s\S]*?</url>", "", sm)
         today = datetime.date.today().isoformat()
         urls = []
         for lang, cfg in LANGS.items():
@@ -295,8 +296,23 @@ def main():
             for u in urls
         )
         sm = sm.replace("</urlset>", block + "\n</urlset>")
+        # 去重保险：按 <loc> 去重，防止历史重复累积
+        m = re.search(r"<urlset[^>]*>", sm)
+        if m:
+            head = sm[: m.end()]
+            tail = "</urlset>" + sm[sm.rindex("</urlset>") + len("</urlset>") :]
+            blocks, seen, keep = re.findall(r"<url>[\s\S]*?</url>", sm), set(), []
+            for b in blocks:
+                loc = re.search(r"<loc>([^<]+)</loc>", b)
+                k = loc.group(1) if loc else b
+                if k not in seen:
+                    seen.add(k)
+                    keep.append(b)
+            sm = head + "\n" + "\n".join(keep) + "\n" + tail.lstrip("\n")
+        else:
+            keep = []
         sm_path.write_text(sm, encoding="utf-8")
-        print(f"  ✓ sitemap.xml 已更新（+{len(urls)} 条 blog URL·两语言）")
+        print(f"  ✓ sitemap.xml 已更新（+{len(urls)} 条 blog URL·两语言，总 {len(keep)} 条去重后）")
     else:
         print("  ⚠️ sitemap.xml 不存在，跳过（先跑 generate_hexagram_pages.py）")
 
