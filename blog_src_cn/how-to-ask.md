@@ -7,6 +7,8 @@ date: 2026-09-15
 related: question-templates, is-i-ching-fortune-telling, why-different-hexagram
 ---
 
+（问卦系列 · 上篇）
+
 先说一个不客气的事实：
 
 **大部分人问卦问不出东西，不是卦不准，是问题太糊。**
@@ -71,3 +73,5 @@ related: question-templates, is-i-ching-fortune-telling, why-different-hexagram
 ---
 
 *如果你是第一次来，建议先看：[易经到底是不是用来算命的？](/blog/is-i-ching-fortune-telling/)*
+
+*想要现成的填空模板？直接看[下篇：10 个复制即用的提问模板](/cn/blog/question-templates/)。*

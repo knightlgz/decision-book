@@ -83,6 +83,8 @@ def parse_md(path):
 
 def inline_md(s, prefix=""):
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    # 斜体（单星号对，不跨星号/换行）
+    s = re.sub(r"\*(?!\s)([^*\n]+?)(?<!\s)\*", r"<em>\1</em>", s)
     def fix_link(m):
         text, href = m.group(1), m.group(2)
         # 站内绝对链接加语言前缀（外链/已有前缀/锚点不动）
@@ -165,6 +167,7 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 .list-item .d{color:var(--sub);font-size:13.5px}
 blockquote{margin:20px 0;padding:14px 18px;background:#f4f1ea;border-radius:8px;font-size:14.5px}
 hr{border:none;border-top:1px dashed var(--line);margin:32px 0}
+em{font-style:normal;color:var(--sub);font-size:13.5px}
 /* 白天/暗夜模式：跟随系统 */
 @media (prefers-color-scheme: dark){
 :root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
