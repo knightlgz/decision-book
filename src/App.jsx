@@ -57,6 +57,13 @@ export default function App() {
   const switchLang = () => {
     window.location.href = lang === "tc" ? "/cn/" : "/";
   };
+  // 回顶部浮动按钮（长报告页场景）：滚过 600px 后出现
+  const [showTop, setShowTop] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 600);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const fetchReport = useCallback(async (q, reg, hex) => {
     setGenerating(true);
@@ -342,6 +349,16 @@ export default function App() {
           </p>
         </footer>
       </div>
+      {showTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          title={lang === "tc" ? "回到頂部" : "回到顶部"}
+          aria-label={lang === "tc" ? "回到頂部" : "回到顶部"}
+          className="fixed bottom-6 right-6 w-11 h-11 rounded-full bg-white border border-gray-200 shadow-sm text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-colors flex items-center justify-center text-lg"
+        >
+          ↑
+        </button>
+      )}
       <Analytics />
       <SpeedInsights />
     </div>
