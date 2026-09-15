@@ -246,10 +246,10 @@ export default function App() {
           <p className="text-xs text-gray-500 tracking-[0.2em]">
             {lang === "tc" ? "職場與商業的抉擇 · 曾仕強思想體系" : "职场与商业的抉择 · 曾仕强思想体系"}
           </p>
-          {/* 卖点三连（2026-09-15 借鉴对标：pill 徽章样式） */}
+          {/* 卖点三连（2026-09-15 鎏金主题色） */}
           <div className="flex justify-center gap-2 pt-2">
             {(lang === "tc" ? ["免費", "免註冊", "30 秒出報告"] : ["免费", "免注册", "30 秒出报告"]).map((x) => (
-              <span key={x} className="text-xs text-gray-500 bg-white border border-gray-200 rounded-full px-3 py-1">
+              <span key={x} className="text-xs text-[#8A6D3B] bg-[#FAF6ED] border border-[#C9B896] rounded-full px-3 py-1">
                 {x}
               </span>
             ))}
@@ -289,10 +289,10 @@ export default function App() {
                 <button
                   key={ex}
                   onClick={() => setQuestion(ex)}
-                  className="group flex justify-between items-center gap-2 text-left text-xs text-gray-600 bg-white border border-gray-200 rounded-lg px-3 py-2.5 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                  className="group flex justify-between items-center gap-2 text-left text-xs text-gray-600 bg-white border border-gray-200 rounded-lg px-3 py-2.5 hover:border-[#C9B896] hover:text-gray-900 transition-colors"
                 >
                   <span>{ex}</span>
-                  <span className="text-gray-300 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all shrink-0">→</span>
+                  <span className="text-gray-300 group-hover:text-[#8A6D3B] group-hover:translate-x-0.5 transition-all shrink-0">→</span>
                 </button>
               ))}
             </div>
@@ -414,13 +414,13 @@ export default function App() {
               <a
                 key={href}
                 href={href}
-                className="group flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3.5 hover:border-gray-400 hover:shadow-sm transition-all"
+                className="group flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3.5 hover:border-[#C9B896] hover:shadow-sm transition-all"
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-gray-900 font-medium mb-1 leading-snug">{title}</div>
                   <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
                 </div>
-                <span className="text-gray-300 group-hover:text-gray-700 group-hover:translate-x-0.5 transition-all shrink-0">→</span>
+                <span className="text-gray-300 group-hover:text-[#8A6D3B] group-hover:translate-x-0.5 transition-all shrink-0">→</span>
               </a>
             ))}
           </div>
@@ -441,7 +441,7 @@ export default function App() {
           </h2>
           <div className="space-y-2">
             {FAQ[lang].map(({ q, a }) => (
-              <details key={q} className="bg-white border border-gray-200 rounded-xl px-4 py-3 group transition-colors hover:border-gray-300">
+              <details key={q} className="bg-white border border-gray-200 rounded-xl px-4 py-3 group transition-colors hover:border-[#C9B896]">
                 <summary className="text-sm text-gray-700 cursor-pointer list-none flex justify-between items-center hover:text-gray-900 transition-colors">
                   {q}
                   <span className="text-gray-400 group-open:rotate-180 transition-transform inline-block">▾</span>
