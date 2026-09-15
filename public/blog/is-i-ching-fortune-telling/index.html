@@ -44,6 +44,12 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 .list-item{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .list-item .t{font-size:17px;font-weight:700;margin-bottom:6px}
 .list-item .d{color:var(--sub);font-size:13.5px}
+/* 白天/暗夜模式：跟随系统 */
+@media (prefers-color-scheme: dark){
+:root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
+.cta{background:#171A22}
+.cta a.btn{background:var(--accent);color:#14120E}
+}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "易經到底是不是用來算命的？——從曾師「善易者不卜」說起", "description": "很多人一聽易經就問「準不準」。這篇從「善易者不卜」說起，講清楚易經的本來面目：它不是水晶球，是一套讓你把自己處境看清楚的方法。", "author": {"@type": "Person", "name": "凱森讀易"}, "publisher": {"@type": "Organization", "name": "決策之書"}, "mainEntityOfPage": "https://decision-book.vercel.app/blog/is-i-ching-fortune-telling/", "datePublished": "2026-09-15"}</script>
 </head>

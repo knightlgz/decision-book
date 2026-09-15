@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+/* 白天/暗夜模式：跟随系统（Tailwind v4 dark: 变体 = prefers-color-scheme） */
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+  body {
+    background-color: #fafafa;
+  }
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #0f1115;
+    }
+  }
+}

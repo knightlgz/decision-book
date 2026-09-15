@@ -25,7 +25,7 @@ const GEN_STEPS = {
 function inlineMd(text, keyBase = "s") {
   const parts = String(text).split(/\*\*(.+?)\*\*/g);
   return parts.map((p, i) =>
-    i % 2 === 1 ? <strong key={keyBase + i} className="font-semibold text-gray-900">{p}</strong> : p
+    i % 2 === 1 ? <strong key={keyBase + i} className="font-semibold text-gray-900 dark:text-[#F5F2EA]">{p}</strong> : p
   );
 }
 
@@ -73,7 +73,7 @@ function ReportBody({ text }) {
     flushAll();
     if (/^(?:🔮|👁️|⚠️|🚀|⏳)/.test(line)) {
       nodes.push(
-        <p key={"t" + i} className="font-bold text-gray-900 mt-5 first:mt-0">{inlineMd(line, "t" + i)}</p>
+        <p key={"t" + i} className="font-bold text-gray-900 dark:text-[#F5F2EA] mt-5 first:mt-0">{inlineMd(line, "t" + i)}</p>
       );
       return;
     }
@@ -108,15 +108,15 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
   if (unlocked) {
     if (generating) {
       return (
-        <div className="mt-6 border-t border-gray-100 pt-8 flex flex-col items-center justify-center py-8">
-          <span className="flex items-center space-x-2 text-sm text-gray-500">
-            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
+        <div className="mt-6 border-t border-gray-100 dark:border-[#1E222C] pt-8 flex flex-col items-center justify-center py-8">
+          <span className="flex items-center space-x-2 text-sm text-gray-500 dark:text-[#8B8F98]">
+            <span className="h-2 w-2 bg-gray-400 dark:bg-[#C8A96A] rounded-full animate-pulse" />
+            <span className="h-2 w-2 bg-gray-400 dark:bg-[#C8A96A] rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
+            <span className="h-2 w-2 bg-gray-400 dark:bg-[#C8A96A] rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
             <span>{steps[stepIdx]}</span>
-            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
-            <span className="h-2 w-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.6s" }} />
+            <span className="h-2 w-2 bg-gray-400 dark:bg-[#C8A96A] rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
+            <span className="h-2 w-2 bg-gray-400 dark:bg-[#C8A96A] rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
+            <span className="h-2 w-2 bg-gray-400 dark:bg-[#C8A96A] rounded-full animate-pulse" style={{ animationDelay: "0.6s" }} />
           </span>
         </div>
       );
@@ -124,11 +124,11 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
 
     if (error) {
       return (
-        <div className="mt-6 border-t border-gray-100 pt-8 text-center">
-          <p className="text-sm text-gray-600 mb-4">{error}</p>
+        <div className="mt-6 border-t border-gray-100 dark:border-[#1E222C] pt-8 text-center">
+          <p className="text-sm text-gray-600 dark:text-[#C5C1B8] mb-4">{error}</p>
           <button
             onClick={onRetry}
-            className="bg-[#1A1A1A] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-black transition-colors"
+            className="bg-[#1A1A1A] text-white dark:bg-[#C8A96A] dark:text-[#14120E] px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-black dark:hover:bg-[#D9BA7A] transition-colors"
           >
             {lang === "tc" ? "重新生成" : "重新生成"}
           </button>
@@ -138,7 +138,7 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
 
     if (report) {
       return (
-        <div className="mt-6 text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">
+        <div className="mt-6 text-sm text-gray-700 dark:text-[#DCD8CF] leading-relaxed border-t border-gray-100 dark:border-[#1E222C] pt-4">
           <ReportBody text={report} />
         </div>
       );
@@ -149,8 +149,8 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
 
   // 未解锁：支付墙
   return (
-    <div className="relative mt-6 border-t border-gray-100 pt-4">
-      <div className="blur-sm text-gray-400 text-sm leading-relaxed select-none opacity-60">
+    <div className="relative mt-6 border-t border-gray-100 dark:border-[#1E222C] pt-4">
+      <div className="blur-sm text-gray-400 dark:text-[#6A6E78] text-sm leading-relaxed select-none opacity-60">
         {lang === "tc" ? (
           <>
             【現狀刺透】這裏將輸出深度分析文本，直擊你的核心痛點與處境。<br/><br/>
@@ -168,26 +168,26 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
         )}
       </div>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white/50 backdrop-blur-xs">
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white/50 dark:bg-[#0F1115]/60 backdrop-blur-xs">
         <a
           href="https://ko-fi.com/s/c35a082076"
           target="_blank"
           rel="noreferrer"
           onClick={() => track('payment_link_clicked', { hexagram: hexagram?.number })}
-          className="mb-5 text-sm font-bold text-[#7C2D12] underline hover:text-black transition-colors"
+          className="mb-5 text-sm font-bold text-[#7C2D12] dark:text-[#E8A87C] underline hover:text-black dark:hover:text-[#F5F2EA] transition-colors"
         >
           🛒 {lang === "tc" ? "解鎖完整解讀 · $3.99/週" : "解锁完整解读 · $3.99/周"}
         </a>
         <input
           type="text"
           placeholder={lang === "tc" ? "輸入解鎖密碼" : "输入解锁密码"}
-          className="w-full max-w-[220px] text-center p-2.5 border border-gray-300 rounded-lg mb-4 bg-white/90 focus:outline-none"
+          className="w-full max-w-[220px] text-center p-2.5 border border-gray-300 dark:border-[#3A3E4A] rounded-lg mb-4 bg-white/90 dark:bg-[#171A22]/95 focus:outline-none"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
           onClick={handleUnlockClick}
-          className="bg-[#1A1A1A] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-black transition-colors"
+          className="bg-[#1A1A1A] text-white dark:bg-[#C8A96A] dark:text-[#14120E] px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-black dark:hover:bg-[#D9BA7A] transition-colors"
         >
           {lang === "tc" ? "解鎖深度推演" : "解锁深度推演"}
         </button>

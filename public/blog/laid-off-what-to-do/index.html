@@ -44,6 +44,12 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 .list-item{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .list-item .t{font-size:17px;font-weight:700;margin-bottom:6px}
 .list-item .d{color:var(--sub);font-size:13.5px}
+/* 白天/暗夜模式：跟随系统 */
+@media (prefers-color-scheme: dark){
+:root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
+.cta{background:#171A22}
+.cta a.btn{background:var(--accent);color:#14120E}
+}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "被裁員了怎麼辦？慌之前，先做好這三件事", "description": "被裁員後最貴的情緒是慌張。在投出第一份履歷之前，先把三件事做好：該拿的錢釘死在紙上、算清緊急預備金剩幾個月、分清這次是休息還是轉向。", "author": {"@type": "Person", "name": "凱森讀易"}, "publisher": {"@type": "Organization", "name": "決策之書"}, "mainEntityOfPage": "https://decision-book.vercel.app/blog/laid-off-what-to-do/", "datePublished": "2026-09-14"}</script>
 </head>

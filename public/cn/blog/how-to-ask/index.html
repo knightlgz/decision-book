@@ -44,6 +44,12 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 .list-item{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .list-item .t{font-size:17px;font-weight:700;margin-bottom:6px}
 .list-item .d{color:var(--sub);font-size:13.5px}
+/* 白天/暗夜模式：跟随系统 */
+@media (prefers-color-scheme: dark){
+:root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
+.cta{background:#171A22}
+.cta a.btn{background:var(--accent);color:#14120E}
+}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "问卦之前，先把这三件事想清楚", "description": "报告质量差，多半不是卦不准，是问题太模糊。问卦之前，把自己的处境、选项、和最在意什么这三件事写清楚——这是你能为自己做的最划算的一件事。", "author": {"@type": "Person", "name": "凯森读易"}, "publisher": {"@type": "Organization", "name": "决策之书"}, "mainEntityOfPage": "https://decision-book.vercel.app/cn/blog/how-to-ask/", "datePublished": "2026-09-15"}</script>
 </head>

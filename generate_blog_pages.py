@@ -155,6 +155,12 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 .list-item{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .list-item .t{font-size:17px;font-weight:700;margin-bottom:6px}
 .list-item .d{color:var(--sub);font-size:13.5px}
+/* 白天/暗夜模式：跟随系统 */
+@media (prefers-color-scheme: dark){
+:root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
+.cta{background:#171A22}
+.cta a.btn{background:var(--accent);color:#14120E}
+}
 """
 
 def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html=""):

@@ -223,18 +223,18 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-dvh bg-[#FAFAFA] text-[#333333] font-sans p-4 sm:p-6 selection:bg-gray-200">
+    <div className="min-h-dvh bg-[#FAFAFA] dark:bg-[#0F1115] text-[#333333] dark:text-[#E8E6E0] font-sans p-4 sm:p-6 selection:bg-gray-200 dark:selection:bg-[#2A2E3A]">
       <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
 
         <header className="text-center space-y-2 relative">
           <button
             onClick={switchLang}
             title={lang === "tc" ? "切換至簡體中文 · Switch to Simplified Chinese" : "切換至繁體中文 · Switch to Traditional Chinese"}
-            className="absolute right-0 top-0 text-xs text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 hover:text-gray-700 hover:border-gray-400 transition-colors"
+            className="absolute right-0 top-0 text-xs text-gray-500 dark:text-[#8B8F98] border border-gray-300 rounded-lg px-3 py-1.5 hover:text-gray-700 hover:border-gray-400 transition-colors"
           >
             🌐 {lang === "tc" ? "简体中文" : "繁體中文"}
           </button>
-          <h1 className="text-3xl font-bold tracking-widest text-gray-900">
+          <h1 className="text-3xl font-bold tracking-widest text-gray-900 dark:text-[#F5F2EA]">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               title={lang === "tc" ? "回到頂部" : "回到顶部"}
@@ -243,13 +243,13 @@ export default function App() {
               {lang === "tc" ? "決策之書" : "决策之书"}
             </button>
           </h1>
-          <p className="text-xs text-gray-500 tracking-[0.2em]">
+          <p className="text-xs text-gray-500 dark:text-[#8B8F98] tracking-[0.2em]">
             {lang === "tc" ? "職場與商業的抉擇 · 曾仕強思想體系" : "职场与商业的抉择 · 曾仕强思想体系"}
           </p>
           {/* 卖点三连（2026-09-15 鎏金主题色） */}
           <div className="flex justify-center gap-2 pt-2">
             {(lang === "tc" ? ["免費", "免註冊", "30 秒出報告"] : ["免费", "免注册", "30 秒出报告"]).map((x) => (
-              <span key={x} className="text-xs text-[#8A6D3B] bg-[#FAF6ED] border border-[#C9B896] rounded-full px-3 py-1">
+              <span key={x} className="text-xs text-[#8A6D3B] dark:text-[#C8A96A] bg-[#FAF6ED] dark:bg-[#C8A96A]/10 border border-[#C9B896] dark:border-[#C8A96A]/40 rounded-full px-3 py-1">
                 {x}
               </span>
             ))}
@@ -258,7 +258,7 @@ export default function App() {
 
         <section className="space-y-4">
           <textarea
-            className="w-full p-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white shadow-sm resize-none"
+            className="w-full p-4 border border-gray-200 dark:border-[#2A2E3A] rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white dark:bg-[#171A22] shadow-sm resize-none"
             rows="3"
             maxLength={256}
             placeholder={lang === "tc" ? "請輸入你當下最糾結的抉擇..." : "请输入你当下最纠结的抉择..."}
@@ -267,10 +267,10 @@ export default function App() {
           />
           {/* 提问指导 + 字数提示（上限与 Dify User_Question 变量同步，当前 256） */}
           <div className="flex justify-between items-center -mt-3">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 dark:text-[#6A6E78]">
               {lang === "tc" ? "寫清楚背景、你的選項、最在意什麼" : "写清楚背景、你的选项、最在意什么"}
             </span>
-            <span className={`text-xs ${question.length > 230 ? "text-amber-500" : "text-gray-400"}`}>
+            <span className={`text-xs ${question.length > 230 ? "text-amber-500" : "text-gray-400 dark:text-[#6A6E78]"}`}>
               {question.length > 230
                 ? (lang === "tc"
                     ? `已輸入 ${question.length}/256 字 — 接近上限，建議精簡`
@@ -281,7 +281,7 @@ export default function App() {
 
           {/* 示例问题（2026-09-15 借鉴对标）：降低启动门槛，点击直接填入 */}
           <div className="pt-2">
-            <p className="text-xs text-gray-400 mb-1.5">
+            <p className="text-xs text-gray-400 dark:text-[#6A6E78] mb-1.5">
               {lang === "tc" ? "不知道怎麼問？試試這些：" : "不知道怎么问？试试这些："}
             </p>
             <div className="flex flex-col gap-1.5">
@@ -289,21 +289,21 @@ export default function App() {
                 <button
                   key={ex}
                   onClick={() => setQuestion(ex)}
-                  className="group flex justify-between items-center gap-2 text-left text-xs text-gray-600 bg-white border border-gray-200 rounded-lg px-3 py-2.5 hover:border-[#C9B896] hover:text-gray-900 transition-colors"
+                  className="group flex justify-between items-center gap-2 text-left text-xs text-gray-600 dark:text-[#C5C1B8] bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] rounded-lg px-3 py-2.5 hover:border-[#C9B896] dark:hover:border-[#C8A96A]/60 hover:text-gray-900 dark:hover:text-[#F5F2EA] transition-colors"
                 >
                   <span>{ex}</span>
-                  <span className="text-gray-300 group-hover:text-[#8A6D3B] group-hover:translate-x-0.5 transition-all shrink-0">→</span>
+                  <span className="text-gray-300 dark:text-[#4A4E58] group-hover:text-[#8A6D3B] group-hover:translate-x-0.5 transition-all shrink-0">→</span>
                 </button>
               ))}
             </div>
           </div>
 
           <div className="pt-2">
-            <label className="block text-xs text-gray-500 mb-1.5">
+            <label className="block text-xs text-gray-500 dark:text-[#8B8F98] mb-1.5">
               {lang === "tc" ? "你所在的地區" : "你所在的地区"}
             </label>
             <select
-              className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-gray-400"
+              className="w-full p-3 border border-gray-200 dark:border-[#2A2E3A] rounded-lg bg-white dark:bg-[#171A22] focus:outline-none focus:ring-1 focus:ring-gray-400"
               value={region}
               onChange={(e) => changeRegion(e.target.value)}
             >
@@ -311,7 +311,7 @@ export default function App() {
                 <option key={r} value={r}>{lang === "tc" ? (TC_REGION_LABELS[r] || r) : r}</option>
               ))}
             </select>
-            <p className="text-xs text-gray-400 mt-1.5">
+            <p className="text-xs text-gray-400 dark:text-[#6A6E78] mt-1.5">
               {region === "其他地区"
                 ? (lang === "tc"
                     ? "「其他地區」暫無本地化適配，報告將以通用框架分析，請結合所在地的實際情況參考——內容僅供參考，不構成任何專業建議"
@@ -324,16 +324,16 @@ export default function App() {
 
           <button
             onClick={handleGenerate}
-            className="w-full bg-[#1A1A1A] text-white py-3.5 rounded-lg tracking-widest font-medium hover:bg-black active:scale-[0.99] transition-all"
+            className="w-full bg-[#1A1A1A] text-white dark:bg-[#C8A96A] dark:text-[#14120E] py-3.5 rounded-lg tracking-widest font-medium hover:bg-black dark:hover:bg-[#D9BA7A] active:scale-[0.99] transition-all"
           >
             {lang === "tc" ? "生成推演報告" : "生成推演报告"}
           </button>
         </section>
 
         {hexagram && (
-          <section className="mt-8 border border-gray-200 p-6 rounded-xl bg-white relative overflow-hidden shadow-sm">
+          <section className="mt-8 border border-gray-200 dark:border-[#2A2E3A] p-6 rounded-xl bg-white dark:bg-[#171A22] relative overflow-hidden shadow-sm">
             <div className="flex items-baseline space-x-3 mb-2">
-              <span className="text-3xl font-black text-gray-200 select-none">
+              <span className="text-3xl font-black text-gray-200 dark:text-[#2A2E3A] select-none">
                 {hexagram.number}
               </span>
               <h2 className="text-lg font-bold">
@@ -347,17 +347,17 @@ export default function App() {
               const l = lang === "tc" ? "tc" : "sc";
               const lines = [...orig.array].reverse(); // 视觉从上到下 = 爻位从下到上反转
               return (
-                <div className="flex items-center gap-5 mb-5 bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm">
+                <div className="flex items-center gap-5 mb-5 bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] rounded-xl px-5 py-4 shadow-sm">
                   {/* 爻线图 */}
                   <div className="flex flex-col gap-[3px] shrink-0" aria-label={`${hexagram[lang].name} 六爻`}>
                     {lines.map((v, idx) => (
                       <div key={idx} className="flex gap-[3px]">
                         {v === 1 ? (
-                          <div className="w-9 h-[5px] rounded-[2px] bg-gray-800" />
+                          <div className="w-9 h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
                         ) : (
                           <>
-                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800" />
-                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800" />
+                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
+                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
                           </>
                         )}
                       </div>
@@ -365,14 +365,14 @@ export default function App() {
                   </div>
                   {/* 卦象信息 */}
                   <div className="text-sm leading-relaxed">
-                    <div className="font-bold text-gray-900">
+                    <div className="font-bold text-gray-900 dark:text-[#F5F2EA]">
                       {orig.symbol} {lang === "tc"
                         ? `第${orig.id}卦 · 上${orig.upper_tc.name}${orig.upper_tc.nature}，下${orig.lower_tc.name}${orig.lower_tc.nature}`
                         : `第${orig.id}卦 · 上${orig.upper_sc.name}${orig.upper_sc.nature}，下${orig.lower_sc.name}${orig.lower_sc.nature}`}
                     </div>
-                    <div className="text-gray-500 mt-1">
+                    <div className="text-gray-500 dark:text-[#8B8F98] mt-1">
                       {lang === "tc" ? "卦辭：" : "卦辞："}
-                      <span className="text-gray-700 font-medium">
+                      <span className="text-gray-700 dark:text-[#DCD8CF] font-medium">
                         「{lang === "tc" ? orig.guaci_tc : orig.guaci_sc}」
                       </span>
                     </div>
@@ -381,7 +381,7 @@ export default function App() {
               );
             })()}
 
-            <p className="text-sm font-medium text-gray-600 mb-6 leading-relaxed">
+            <p className="text-sm font-medium text-gray-600 dark:text-[#C5C1B8] mb-6 leading-relaxed">
               {(() => {
                 const g = INSIGHT_GEN.find(o => numKey(o.id) === numKey(hexagram.number));
                 return g ? (lang === "tc" ? g.tc : g.sc) : hexagram[lang].insight;
@@ -402,11 +402,11 @@ export default function App() {
         )}
 
         {/* 博客精选入口（2026-09-15 借鉴对标 tarotap：内容直达，降低发现门槛） */}
-        <section className="mt-10 pt-6 border-t border-gray-100">
-          <h2 className="text-sm font-medium text-gray-700 mb-1 text-center tracking-wider">
+        <section className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C]">
+          <h2 className="text-sm font-medium text-gray-700 dark:text-[#DCD8CF] mb-1 text-center tracking-wider">
             {lang === "tc" ? "決策筆記" : "决策笔记"}
           </h2>
-          <p className="text-xs text-gray-400 text-center mb-4">
+          <p className="text-xs text-gray-400 dark:text-[#6A6E78] text-center mb-4">
             {lang === "tc" ? "易經入門 · 提問方法 · 真實案例" : "易经入门 · 提问方法 · 真实案例"}
           </p>
           <div className="space-y-2">
@@ -414,20 +414,20 @@ export default function App() {
               <a
                 key={href}
                 href={href}
-                className="group flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3.5 hover:border-[#C9B896] hover:shadow-sm transition-all"
+                className="group flex items-center gap-3 bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] rounded-xl px-4 py-3.5 hover:border-[#C9B896] dark:hover:border-[#C8A96A]/60 hover:shadow-sm transition-all"
               >
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-gray-900 font-medium mb-1 leading-snug">{title}</div>
-                  <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
+                  <div className="text-sm text-gray-900 dark:text-[#F5F2EA] font-medium mb-1 leading-snug">{title}</div>
+                  <div className="text-xs text-gray-500 dark:text-[#8B8F98] leading-relaxed">{desc}</div>
                 </div>
-                <span className="text-gray-300 group-hover:text-[#8A6D3B] group-hover:translate-x-0.5 transition-all shrink-0">→</span>
+                <span className="text-gray-300 dark:text-[#4A4E58] group-hover:text-[#8A6D3B] group-hover:translate-x-0.5 transition-all shrink-0">→</span>
               </a>
             ))}
           </div>
           <div className="text-center mt-3">
             <a
               href={lang === "tc" ? "/blog/" : "/cn/blog/"}
-              className="text-xs text-gray-500 hover:text-gray-900 underline underline-offset-4"
+              className="text-xs text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
             >
               {lang === "tc" ? "查看全部文章 →" : "查看全部文章 →"}
             </a>
@@ -435,39 +435,39 @@ export default function App() {
         </section>
 
         {/* 首页 FAQ（2026-09-15 借鉴对标）：合规声明 + 期望管理 */}
-        <section className="mt-10 pt-6 border-t border-gray-100">
-          <h2 className="text-sm font-medium text-gray-700 mb-3 text-center tracking-wider">
+        <section className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C]">
+          <h2 className="text-sm font-medium text-gray-700 dark:text-[#DCD8CF] mb-3 text-center tracking-wider">
             {lang === "tc" ? "常見問題" : "常见问题"}
           </h2>
           <div className="space-y-2">
             {FAQ[lang].map(({ q, a }) => (
-              <details key={q} className="bg-white border border-gray-200 rounded-xl px-4 py-3 group transition-colors hover:border-[#C9B896]">
-                <summary className="text-sm text-gray-700 cursor-pointer list-none flex justify-between items-center hover:text-gray-900 transition-colors">
+              <details key={q} className="bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] rounded-xl px-4 py-3 group transition-colors hover:border-[#C9B896] dark:hover:border-[#C8A96A]/60">
+                <summary className="text-sm text-gray-700 dark:text-[#DCD8CF] cursor-pointer list-none flex justify-between items-center hover:text-gray-900 dark:hover:text-[#F5F2EA] transition-colors">
                   {q}
-                  <span className="text-gray-400 group-open:rotate-180 transition-transform inline-block">▾</span>
+                  <span className="text-gray-400 dark:text-[#6A6E78] group-open:rotate-180 transition-transform inline-block">▾</span>
                 </summary>
-                <p className="text-xs text-gray-500 mt-2 leading-relaxed">{a}</p>
+                <p className="text-xs text-gray-500 dark:text-[#8B8F98] mt-2 leading-relaxed">{a}</p>
               </details>
             ))}
           </div>
         </section>
 
-        <footer className="mt-10 pt-6 border-t border-gray-100 text-center space-y-1.5">
+        <footer className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C] text-center space-y-1.5">
           <a
             href={lang === "tc" ? "/hexagram/" : "/cn/hexagram/"}
-            className="inline-block text-sm text-gray-500 hover:text-gray-900 underline underline-offset-4"
+            className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
           >
             {lang === "tc" ? "📖 易經六十四卦索引 · 卦辭爻辭原文" : "📖 易经六十四卦索引 · 卦辞爻辞原文"}
           </a>
           <div>
             <a
               href="/blog/"
-              className="inline-block text-sm text-gray-500 hover:text-gray-900 underline underline-offset-4"
+              className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
             >
               {lang === "tc" ? "✍️ 職場決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 职场决策笔记 · 离职、跳槽、迷茫的真实解法"}
             </a>
           </div>
-          <p className="text-xs text-gray-400 tracking-wider">
+          <p className="text-xs text-gray-400 dark:text-[#6A6E78] tracking-wider">
             {lang === "tc" ? "曾仕強教授易經思想體系" : "曾仕强教授易经思想体系"}
           </p>
         </footer>
@@ -477,7 +477,7 @@ export default function App() {
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           title={lang === "tc" ? "回到頂部" : "回到顶部"}
           aria-label={lang === "tc" ? "回到頂部" : "回到顶部"}
-          className="fixed bottom-6 right-6 w-11 h-11 rounded-full bg-white border border-gray-200 shadow-sm text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-colors flex items-center justify-center text-lg"
+          className="fixed bottom-6 right-6 w-11 h-11 rounded-full bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] shadow-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] hover:border-gray-300 dark:hover:border-[#4A4E58] transition-colors flex items-center justify-center text-lg"
         >
           ↑
         </button>
