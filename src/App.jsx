@@ -186,7 +186,13 @@ export default function App() {
             🌐 {lang === "tc" ? "简体中文" : "繁體中文"}
           </button>
           <h1 className="text-3xl font-bold tracking-widest text-gray-900">
-            {lang === "tc" ? "決策之書" : "决策之书"}
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              title={lang === "tc" ? "回到頂部" : "回到顶部"}
+              className="tracking-widest cursor-pointer hover:opacity-70 transition-opacity"
+            >
+              {lang === "tc" ? "決策之書" : "决策之书"}
+            </button>
           </h1>
           <p className="text-xs text-gray-500 tracking-[0.2em]">
             {lang === "tc" ? "職場與商業的抉擇 · 曾仕強思想體系" : "职场与商业的抉择 · 曾仕强思想体系"}
