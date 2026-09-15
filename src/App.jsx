@@ -10,6 +10,34 @@ import Paywall from './components/Paywall';
 // 卦号归一化匹配：hexagrams.js 用 "01" 格式、数据文件用 1 格式，String(1)≠String("01")
 const numKey = (v) => String(Number(v));
 
+// 示例问题与 FAQ（2026-09-15 借鉴对标 tarotap 首页）：降低启动门槛 + 期望管理
+const EXAMPLES = {
+  tc: [
+    "主管帶頭排擠我，重要項目都不讓我碰，該忍還是該走？",
+    "拿到兩個 offer：一個錢多但加班嚴重，一個錢少但穩定，該怎麼選？",
+    "在職十二年，想辭職做自己的生意，但家人反對，該不該賭一把？",
+  ],
+  sc: [
+    "领导带头排挤我，重要项目都不让我碰，该忍还是该走？",
+    "拿到两个 offer：一个钱多但加班严重，一个钱少但稳定，该怎么选？",
+    "在职十二年，想辞职做自己的生意，但家人反对，该不该赌一把？",
+  ],
+};
+const FAQ = {
+  tc: [
+    { q: "卦能預測未來嗎？", a: "不能。卦不是算盤，它不預測吉凶，只是把你自己看不清的處境翻給你看——答案，始終在你手上。" },
+    { q: "可以對同一問題重複起卦嗎？", a: "不建議。卦反映的是當下處境；短時間反覆問同一件事，只會讓自己更亂。處境真的變了，再起一卦。" },
+    { q: "報告能代替專業意見嗎？", a: "不能。醫療、法律、投資等專業問題，請諮詢持牌專業人士。本工具僅供決策思考參考。" },
+    { q: "為什麼要選擇地區？", a: "職場規則、社會保障、人情壓力因地而異。報告會結合你所在地區，給出更貼近現實的建議。" },
+  ],
+  sc: [
+    { q: "卦能预测未来吗？", a: "不能。卦不是算盘，它不预测吉凶，只是把你自己看不清的处境翻给你看——答案，始终在你手上。" },
+    { q: "可以对同一问题重复起卦吗？", a: "不建议。卦反映的是当下处境；短时间反复问同一件事，只会让自己更乱。处境真的变了，再起一卦。" },
+    { q: "报告能代替专业意见吗？", a: "不能。医疗、法律、投资等专业问题，请咨询持牌专业人士。本工具仅供决策思考参考。" },
+    { q: "为什么要选择地区？", a: "职场规则、社会保障、人情压力因地而异。报告会结合你所在地区，给出更贴近现实的建议。" },
+  ],
+};
+
 export default function App() {
   const [prefilled] = useState(() => {
     // 支持 ?q= 预填问题（来自卦页「真實職場提問」卡片的引导链接）
@@ -205,6 +233,10 @@ export default function App() {
           <p className="text-xs text-gray-500 tracking-[0.2em]">
             {lang === "tc" ? "職場與商業的抉擇 · 曾仕強思想體系" : "职场与商业的抉择 · 曾仕强思想体系"}
           </p>
+          {/* 卖点三连（2026-09-15 借鉴对标） */}
+          <p className="text-xs text-gray-400 tracking-[0.15em] pt-1">
+            {lang === "tc" ? "免費 · 免註冊 · 30 秒出報告" : "免费 · 免注册 · 30 秒出报告"}
+          </p>
         </header>
 
         <section className="space-y-4">
@@ -216,8 +248,11 @@ export default function App() {
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
           />
-          {/* 字数提示：上限与 Dify 工作流 User_Question 变量限制保持同步（当前 256） */}
-          <div className="flex justify-end -mt-3">
+          {/* 提问指导 + 字数提示（上限与 Dify User_Question 变量同步，当前 256） */}
+          <div className="flex justify-between items-center -mt-3">
+            <span className="text-xs text-gray-400">
+              {lang === "tc" ? "寫清楚背景、你的選項、最在意什麼" : "写清楚背景、你的选项、最在意什么"}
+            </span>
             <span className={`text-xs ${question.length > 230 ? "text-amber-500" : "text-gray-400"}`}>
               {question.length > 230
                 ? (lang === "tc"
@@ -225,6 +260,24 @@ export default function App() {
                     : `已输入 ${question.length}/256 字 — 接近上限，建议精简`)
                 : `${question.length}/256`}
             </span>
+          </div>
+
+          {/* 示例问题（2026-09-15 借鉴对标）：降低启动门槛，点击直接填入 */}
+          <div className="pt-2">
+            <p className="text-xs text-gray-400 mb-1.5">
+              {lang === "tc" ? "不知道怎麼問？試試這些：" : "不知道怎么问？试试这些："}
+            </p>
+            <div className="flex flex-col gap-1.5">
+              {EXAMPLES[lang].map((ex) => (
+                <button
+                  key={ex}
+                  onClick={() => setQuestion(ex)}
+                  className="text-left text-xs text-gray-500 bg-white border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 hover:text-gray-900 transition-colors"
+                >
+                  {ex}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="pt-2">
@@ -329,6 +382,24 @@ export default function App() {
             />
           </section>
         )}
+
+        {/* 首页 FAQ（2026-09-15 借鉴对标）：合规声明 + 期望管理 */}
+        <section className="mt-10 pt-6 border-t border-gray-100">
+          <h2 className="text-sm font-medium text-gray-700 mb-3 text-center tracking-wider">
+            {lang === "tc" ? "常見問題" : "常见问题"}
+          </h2>
+          <div className="space-y-2">
+            {FAQ[lang].map(({ q, a }) => (
+              <details key={q} className="bg-white border border-gray-200 rounded-xl px-4 py-3 group">
+                <summary className="text-sm text-gray-700 cursor-pointer list-none flex justify-between items-center">
+                  {q}
+                  <span className="text-gray-400 group-open:rotate-180 transition-transform inline-block">▾</span>
+                </summary>
+                <p className="text-xs text-gray-500 mt-2 leading-relaxed">{a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
 
         <footer className="mt-10 pt-6 border-t border-gray-100 text-center space-y-1.5">
           <a
