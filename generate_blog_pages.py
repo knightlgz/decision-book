@@ -93,11 +93,15 @@ def inline_md(s, prefix=""):
     return s
 
 def md_to_html(body, prefix=""):
-    html, para, in_ul = [], [], False
+    html, para, in_ul, in_bq = [], [], False, []
     def flush_para():
         if para:
             html.append("<p>" + inline_md(" ".join(para), prefix) + "</p>")
             para.clear()
+    def flush_bq():
+        if in_bq:
+            html.append("<blockquote>" + inline_md(" ".join(in_bq), prefix) + "</blockquote>")
+            in_bq.clear()
     def close_ul():
         nonlocal in_ul
         if in_ul:
@@ -106,21 +110,25 @@ def md_to_html(body, prefix=""):
     for line in body.split("\n"):
         line = line.rstrip()
         if not line:
-            flush_para(); close_ul(); continue
-        if line.startswith("### "):
-            flush_para(); close_ul(); html.append("<h3>" + inline_md(line[4:], prefix) + "</h3>")
+            flush_para(); flush_bq(); close_ul(); continue
+        if line.strip() == "---":
+            flush_para(); flush_bq(); close_ul(); html.append("<hr>")
+        elif line.startswith("### "):
+            flush_para(); flush_bq(); close_ul(); html.append("<h3>" + inline_md(line[4:], prefix) + "</h3>")
         elif line.startswith("## "):
-            flush_para(); close_ul(); html.append("<h2>" + inline_md(line[3:], prefix) + "</h2>")
+            flush_para(); flush_bq(); close_ul(); html.append("<h2>" + inline_md(line[3:], prefix) + "</h2>")
         elif line.startswith("# "):
-            flush_para(); close_ul(); html.append("<h2>" + inline_md(line[2:], prefix) + "</h2>")
+            flush_para(); flush_bq(); close_ul(); html.append("<h2>" + inline_md(line[2:], prefix) + "</h2>")
+        elif line.startswith("> "):
+            flush_para(); close_ul(); in_bq.append(line[2:])
         elif line.startswith("- "):
-            flush_para()
+            flush_para(); flush_bq()
             if not in_ul:
                 html.append("<ul>"); in_ul = True
             html.append("<li>" + inline_md(line[2:], prefix) + "</li>")
         else:
-            close_ul(); para.append(line)
-    flush_para(); close_ul()
+            flush_bq(); close_ul(); para.append(line)
+    flush_para(); flush_bq(); close_ul()
     return "\n".join(html)
 
 # ---------- 页面模板 ----------
@@ -155,10 +163,13 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 .list-item{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .list-item .t{font-size:17px;font-weight:700;margin-bottom:6px}
 .list-item .d{color:var(--sub);font-size:13.5px}
+blockquote{margin:20px 0;padding:14px 18px;background:#f4f1ea;border-radius:8px;font-size:14.5px}
+hr{border:none;border-top:1px dashed var(--line);margin:32px 0}
 /* 白天/暗夜模式：跟随系统 */
 @media (prefers-color-scheme: dark){
 :root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
 .cta{background:#171A22}
+blockquote{background:#171A22}
 .cta a.btn{background:var(--accent);color:#14120E}
 }
 """

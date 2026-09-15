@@ -44,10 +44,13 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 .list-item{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .list-item .t{font-size:17px;font-weight:700;margin-bottom:6px}
 .list-item .d{color:var(--sub);font-size:13.5px}
+blockquote{margin:20px 0;padding:14px 18px;background:#f4f1ea;border-radius:8px;font-size:14.5px}
+hr{border:none;border-top:1px dashed var(--line);margin:32px 0}
 /* 白天/暗夜模式：跟随系统 */
 @media (prefers-color-scheme: dark){
 :root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
 .cta{background:#171A22}
+blockquote{background:#171A22}
 .cta a.btn{background:var(--accent);color:#14120E}
 }
 </style>
@@ -98,14 +101,15 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
 <p>打开<a href="/cn/">决策之书</a>，把你最纠结的那件事，按上面三件事写下来——处境、选项、最在意什么。</p>
 <p>然后起一卦。</p>
 <p>卦负责照亮你的处境，怎么走——你自己定。</p>
-<p>---</p>
+<hr>
 <p>*如果你是第一次来，建议先看：<a href="/cn/blog/is-i-ching-fortune-telling/">易经到底是不是用来算命的？</a>*</p>
 <div class="cta">
 <p>你的处境，换一双眼睛看看？</p>
 <p style="margin-bottom:16px">输入你正在纠结的职场难题，起一卦，让易经给你一个不同的视角。</p>
 <a class="btn" href="https://decision-book.vercel.app/cn/">开始起卦 →</a>
 </div>
-<div class="related"><h3>延伸阅读</h3><a href="/cn/blog/is-i-ching-fortune-telling/">→ 易经到底是不是用来算命的？——从曾师「善易者不卜」说起</a>
+<div class="related"><h3>延伸阅读</h3><a href="/cn/blog/question-templates/">→ 问卦教程：10 个复制即用的提问模板</a>
+<a href="/cn/blog/is-i-ching-fortune-telling/">→ 易经到底是不是用来算命的？——从曾师「善易者不卜」说起</a>
 <a href="/cn/blog/why-different-hexagram/">→ 为什么同一个问题，每个人抽到的卦不一样？</a></div>
 <footer>
   <p><strong>关于本站</strong>：决策之书——把易经做成一枚陪你算账、也陪你下决定的镜子。卦不是算盘，不预测吉凶，只把你自己的处境翻给你看。</p>

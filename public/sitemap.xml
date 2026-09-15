@@ -535,7 +535,17 @@
     <changefreq>weekly</changefreq>
   </url>
 <url>
+    <loc>https://decision-book.vercel.app/blog/i-ching-vs-fortune-telling/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
     <loc>https://decision-book.vercel.app/blog/is-i-ching-fortune-telling/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/blog/question-templates/</loc>
     <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
   </url>
@@ -570,7 +580,17 @@
     <changefreq>weekly</changefreq>
   </url>
 <url>
+    <loc>https://decision-book.vercel.app/cn/blog/i-ching-vs-fortune-telling/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
     <loc>https://decision-book.vercel.app/cn/blog/is-i-ching-fortune-telling/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/cn/blog/question-templates/</loc>
     <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
   </url>

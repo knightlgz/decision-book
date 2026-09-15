@@ -4,7 +4,7 @@ slug: is-i-ching-fortune-telling
 description: 很多人一听易经就问「准不准」。这篇从「善易者不卜」说起，讲清楚易经的本来面目：它不是水晶球，是一套让你把自己处境看清楚的方法。
 keywords: 易经 算命, 易经是什么, 善易者不卜, 易经 决策, 易经怎么用
 date: 2026-09-15
-related: why-different-hexagram, how-to-ask
+related: why-different-hexagram, how-to-ask, i-ching-vs-fortune-telling
 ---
 
 如果你跟身边的人说「我在用易经做决策」，十个有八个的反应大概是：「哦，你还会算命啊？」

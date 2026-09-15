@@ -4,7 +4,7 @@ slug: how-to-ask
 description: 报告质量差，多半不是卦不准，是问题太模糊。问卦之前，把自己的处境、选项、和最在意什么这三件事写清楚——这是你能为自己做的最划算的一件事。
 keywords: 怎么问卦, 易经 提问, 问卦技巧, 决策问题 怎么问, 易经 决策
 date: 2026-09-15
-related: is-i-ching-fortune-telling, why-different-hexagram
+related: question-templates, is-i-ching-fortune-telling, why-different-hexagram
 ---
 
 先说一个不客气的事实：
