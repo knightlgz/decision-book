@@ -61,6 +61,7 @@ export default function App() {
   const [showTop, setShowTop] = useState(false);
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
+    onScroll(); // 挂载时先跑一次：刷新恢复滚动位置时按钮也可立即显示
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
