@@ -72,6 +72,10 @@
   .cta-mini span { font-size:15px; color:var(--text); }
   .cta-mini a { white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }
   .cta-mini a:hover { background:var(--accent-hover); }
+  /* 无图分享按钮 */
+  .cta .share-row { margin-top:18px; }
+  .cta .share-btn { background:none; border:1px solid var(--border); color:var(--muted); border-radius:20px; padding:8px 24px; font-size:14px; cursor:pointer; font-family:inherit; transition:all .2s; }
+  .cta .share-btn:hover { border-color:var(--accent); color:var(--accent); }
   /* 真实职场提问 */
   .questions { margin-bottom:48px; }
   .questions-head { margin-bottom:16px; }
@@ -180,6 +184,34 @@
     <h2>你正在面对类似的职场或商业抉择吗？</h2>
     <p>免费起卦，看看你的处境对应哪一卦；完整行动方案，起卦后即可免费查看。</p>
     <a class="btn" href="/cn/">免费起卦 →</a>
+    <div class="share-row"><button class="share-btn" id="shareBtn" type="button">分享这卦</button></div>
+<script>
+(function(){
+  var btn = document.getElementById("shareBtn");
+  var SHARE_TEXT = "泽水困：困卦主困穷。穷困之时，言语难取信于人；眼下宜少说多做、守正自处，熬过去，自见分晓。", SHARE_URL = "https://decision-book.vercel.app/cn/hexagram/47/", LABEL = "分享这卦", COPIED = "✓ 已复制";
+  function setCopied(){ btn.textContent = COPIED; setTimeout(function(){ btn.textContent = LABEL; }, 2500); }
+  function copyText(){
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(SHARE_TEXT + "\n" + SHARE_URL).then(function(){
+        setCopied();
+        if (window.gtag) { try { gtag("event", "share", { method: "copy_link" }); } catch(e){} }
+      }).catch(function(){});
+    }
+  }
+  btn.addEventListener("click", function(){
+    if (navigator.share) {
+      navigator.share({ text: SHARE_TEXT, url: SHARE_URL }).then(function(){
+        if (window.gtag) { try { gtag("event", "share", { method: "native" }); } catch(e){} }
+      }).catch(function(err){
+        if (err && err.name === "AbortError") return;
+        copyText();
+      });
+    } else {
+      copyText();
+    }
+  });
+})();
+</script>
   </div>
 
   <div class="faq">

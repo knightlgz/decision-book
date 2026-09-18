@@ -31,4 +31,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  // dev 代理：本地 npm run dev 没有 /api 函数，转发到线上 Vercel（dev-only，仅本地联调用）
+  server: {
+    proxy: {
+      '/api': { target: 'https://decision-book.vercel.app', changeOrigin: true },
+    },
+  },
 })

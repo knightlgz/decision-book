@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { track } from '@vercel/analytics/react';
+import ShareButton from './ShareButton';
 
 // ---- 生成中动态步骤文案（把处理过程翻译成"学者翻书"叙事；3.5s/条，走完停在末条不循环）----
 const GEN_STEPS = {
@@ -83,7 +84,7 @@ function ReportBody({ text }) {
   return <>{nodes}</>;
 }
 
-export default function Paywall({ lang, hexagram, unlocked, generating, report, error, onUnlock, onRetry }) {
+export default function Paywall({ lang, hexagram, unlocked, generating, report, error, onUnlock, onRetry, shareText, shareUrl }) {
   const [password, setPassword] = useState("");
   // 生成中步骤轮播（~7s/条；生成结束自动复位；重试不重置）
   const steps = GEN_STEPS[lang] || GEN_STEPS.sc;
@@ -140,6 +141,16 @@ export default function Paywall({ lang, hexagram, unlocked, generating, report, 
       return (
         <div className="mt-6 text-sm text-gray-700 dark:text-[#DCD8CF] leading-relaxed border-t border-gray-100 dark:border-[#1E222C] pt-4">
           <ReportBody text={report} />
+          {shareText && (
+            <div className="mt-6 pt-5 border-t border-gray-100 dark:border-[#1E222C] flex justify-center">
+              <ShareButton
+                lang={lang}
+                text={shareText}
+                url={shareUrl}
+                hint={lang === "tc" ? "只會分享卦名與金句，不會包含你的問題" : "只会分享卦名与金句，不会包含你的问题"}
+              />
+            </div>
+          )}
         </div>
       );
     }

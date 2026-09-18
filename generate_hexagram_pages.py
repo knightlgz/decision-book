@@ -22,6 +22,7 @@ ORIGINAL_FILE = ROOT / "src" / "data" / "iching_original.json"
 INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
 # 简体版=LLM 语际转译（由 translate_interp_sc.py 产出；禁机翻铁律——不得用 opencc 等机械转换替代）
 INTERP_SC_FILE = ROOT / "src" / "data" / "hexagram_interpretations_sc.json"
+INSIGHT_GEN_FILE = ROOT / "src" / "data" / "insight_gen.json"
 PUBLIC = ROOT / "public"
 BASE_URL = "https://decision-book.vercel.app"
 
@@ -44,6 +45,14 @@ def parse_interpretations_sc():
     if not INTERP_SC_FILE.exists():
         return {}
     return json.loads(INTERP_SC_FILE.read_text(encoding="utf-8"))
+
+
+def parse_insight_gen():
+    """通用版一句话金句（分享文案用；与起卦展示同源）"""
+    if not INSIGHT_GEN_FILE.exists():
+        return {}
+    data = json.loads(INSIGHT_GEN_FILE.read_text(encoding="utf-8"))
+    return {int(d["id"]): d for d in data}
 
 
 def parse_hexagrams():
@@ -204,6 +213,42 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
   </script>
 """
 
+# 无图分享按钮（2026-09-18）：系统分享面板 / 复制兜底；payload 只含 卦名+金句 与 本页链接
+SHARE_TEMPLATE = """<div class="share-row"><button class="share-btn" id="shareBtn" type="button">@@LABEL@@</button></div>
+<script>
+(function(){
+  var btn = document.getElementById("shareBtn");
+  var SHARE_TEXT = @@TEXT@@, SHARE_URL = @@URL@@, LABEL = @@LABELJS@@, COPIED = @@COPIEDJS@@;
+  function setCopied(){ btn.textContent = COPIED; setTimeout(function(){ btn.textContent = LABEL; }, 2500); }
+  function copyText(){
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(SHARE_TEXT + "\\n" + SHARE_URL).then(function(){
+        setCopied();
+        if (window.gtag) { try { gtag("event", "share", { method: "copy_link" }); } catch(e){} }
+      }).catch(function(){});
+    }
+  }
+  btn.addEventListener("click", function(){
+    if (navigator.share) {
+      navigator.share({ text: SHARE_TEXT, url: SHARE_URL }).then(function(){
+        if (window.gtag) { try { gtag("event", "share", { method: "native" }); } catch(e){} }
+      }).catch(function(err){
+        if (err && err.name === "AbortError") return;
+        copyText();
+      });
+    } else {
+      copyText();
+    }
+  });
+})();
+</script>"""
+
+
+def share_js_str(value):
+    """安全嵌入 <script> 的 JS 字符串字面量（json.dumps + 转义 <）"""
+    return json.dumps(value, ensure_ascii=False).replace("<", "\\u003c")
+
+
 # 真实职场提问问题库
 try:
     from question_bank import QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC
@@ -211,14 +256,22 @@ except ImportError:
     QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC = {}, {}, {}, {}
 
 
-def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
+def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None):
     """单个卦象页。lang: tc=繁体 / sc=简体
-    related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）"""
+    related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）
+    insight_gen: {int_id: {sc, tc}} 通用版金句（分享文案用）"""
     n = hx["number"]
     is_tc = lang == "tc"
     name = hx["tc"]["name"] if is_tc else hx["sc"]["name"]
     insight = hx["tc"]["insight"] if is_tc else hx["sc"]["insight"]
     num_label = f"第 {int(n)} 卦"
+
+    # 无图分享（2026-09-18）：文案=卦名+通用版金句（insight_gen 与起卦展示同源）；链接=本页 canonical
+    _ig = (insight_gen or {}).get(int(n), {})
+    share_insight = (_ig.get("tc") if is_tc else _ig.get("sc")) or insight
+    share_text = f"{name}：{share_insight}"
+    share_label = "分享這卦" if is_tc else "分享这卦"
+    share_copied = "✓ 已複製" if is_tc else "✓ 已复制"
 
     # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
@@ -452,6 +505,16 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     }, ensure_ascii=False)
     faq_ld = faq_jsonld(faq_items, url)
 
+    # 分享按钮片段（本页 canonical + 卦名金句；payload 禁含其他数据）
+    share_html = (
+        SHARE_TEMPLATE
+        .replace("@@TEXT@@", share_js_str(share_text))
+        .replace("@@URL@@", share_js_str(url))
+        .replace("@@LABELJS@@", share_js_str(share_label))
+        .replace("@@COPIEDJS@@", share_js_str(share_copied))
+        .replace("@@LABEL@@", share_label)
+    )
+
     return f"""<!DOCTYPE html>
 <html lang="{html_lang}">
 <head>
@@ -526,6 +589,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
   .cta-mini span {{ font-size:15px; color:var(--text); }}
   .cta-mini a {{ white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }}
   .cta-mini a:hover {{ background:var(--accent-hover); }}
+  /* 无图分享按钮 */
+  .cta .share-row {{ margin-top:18px; }}
+  .cta .share-btn {{ background:none; border:1px solid var(--border); color:var(--muted); border-radius:20px; padding:8px 24px; font-size:14px; cursor:pointer; font-family:inherit; transition:all .2s; }}
+  .cta .share-btn:hover {{ border-color:var(--accent); color:var(--accent); }}
   /* 真实职场提问 */
   .questions {{ margin-bottom:48px; }}
   .questions-head {{ margin-bottom:16px; }}
@@ -626,6 +693,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None):
     <h2>{cta_h2}</h2>
     <p>{cta_p}</p>
     <a class="btn" href="{home}">{cta_btn}</a>
+    {share_html}
   </div>
 
   <div class="faq">
@@ -775,6 +843,7 @@ def main():
     original = parse_original()
     interpretations = parse_interpretations()
     interpretations_sc = parse_interpretations_sc()
+    insight_gen = parse_insight_gen()
     print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
         print("⚠️ 卦象数量不对")
@@ -827,12 +896,12 @@ def main():
         # 繁体页
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")

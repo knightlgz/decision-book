@@ -222,6 +222,18 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 通用版金句（起卦展示与分享同源）：insight_gen → 兜底 hexagrams.js insight
+  const guaInsight = (() => {
+    if (!hexagram) return "";
+    const g = INSIGHT_GEN.find(o => numKey(o.id) === numKey(hexagram.number));
+    return g ? (lang === "tc" ? g.tc : g.sc) : hexagram[lang].insight;
+  })();
+  // 无图分享（2026-09-18）：文案=卦名+金句；链接=主页（报告侧规则）；payload 禁含问题/报告片段
+  const shareText = hexagram && guaInsight ? `${hexagram[lang].name}：${guaInsight}` : "";
+  const shareUrl = typeof window !== "undefined"
+    ? window.location.origin + (lang === "tc" ? "/" : "/cn/")
+    : "";
+
   return (
     <div className="min-h-dvh bg-[#FAFAFA] dark:bg-[#0F1115] text-[#333333] dark:text-[#E8E6E0] font-sans p-4 sm:p-6 selection:bg-gray-200 dark:selection:bg-[#2A2E3A]">
       <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
@@ -382,10 +394,7 @@ export default function App() {
             })()}
 
             <p className="text-sm font-medium text-gray-600 dark:text-[#C5C1B8] mb-6 leading-relaxed">
-              {(() => {
-                const g = INSIGHT_GEN.find(o => numKey(o.id) === numKey(hexagram.number));
-                return g ? (lang === "tc" ? g.tc : g.sc) : hexagram[lang].insight;
-              })()}
+              {guaInsight}
             </p>
 
             <Paywall
@@ -397,6 +406,8 @@ export default function App() {
               error={error}
               onUnlock={handleUnlock}
               onRetry={handleRetry}
+              shareText={shareText}
+              shareUrl={shareUrl}
             />
           </section>
         )}
