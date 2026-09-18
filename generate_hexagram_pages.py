@@ -216,7 +216,7 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
 # 无图分享按钮（2026-09-18）：系统分享面板 / 复制兜底；payload 只含 卦名+金句 与 本页链接
 SHARE_TEMPLATE = """<div class="float-stack">
 <button class="float-btn" id="shareBtn" type="button" title="@@TITLE@@" aria-label="@@LABEL@@">@@SHAREICON@@</button>
-<button class="float-btn" id="topBtn" type="button" title="@@TOPTITLE@@" aria-label="@@TOPTITLE@@" style="display:none">↑</button>
+<button class="float-btn" id="topBtn" type="button" title="@@TOPTITLE@@" aria-label="@@TOPTITLE@@" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="4.5" x2="18" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="9.5"/><polyline points="7.5 14 12 9.5 16.5 14"/></svg></button>
 </div>
 <script>
 (function(){

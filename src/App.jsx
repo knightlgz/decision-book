@@ -490,9 +490,13 @@ export default function App() {
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               title={lang === "tc" ? "回到頂部" : "回到顶部"}
               aria-label={lang === "tc" ? "回到頂部" : "回到顶部"}
-              className="w-11 h-11 rounded-full bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] shadow-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] hover:border-gray-300 dark:hover:border-[#4A4E58] transition-colors flex items-center justify-center text-lg"
+              className="w-11 h-11 rounded-full bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] shadow-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] hover:border-gray-300 dark:hover:border-[#4A4E58] transition-colors flex items-center justify-center"
             >
-              ↑
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="6" y1="4.5" x2="18" y2="4.5" />
+                <line x1="12" y1="19.5" x2="12" y2="9.5" />
+                <polyline points="7.5 14 12 9.5 16.5 14" />
+              </svg>
             </button>
           )}
         </div>
