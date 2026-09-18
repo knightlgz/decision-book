@@ -355,10 +355,10 @@ export default function App() {
                         {v === 1 ? (
                           <div className="w-9 h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
                         ) : (
-                          <>
-                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
-                            <div className="w-4 h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
-                          </>
+                          <div className="w-9 h-[5px] flex justify-between" aria-hidden="true">
+                            <div className="w-[43.75%] h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
+                            <div className="w-[43.75%] h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
+                          </div>
                         )}
                       </div>
                     ))}
