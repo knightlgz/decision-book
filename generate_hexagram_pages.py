@@ -214,7 +214,7 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
 """
 
 # 无图分享按钮（2026-09-18）：系统分享面板 / 复制兜底；payload 只含 卦名+金句 与 本页链接
-SHARE_TEMPLATE = """<div class="share-row"><button class="share-btn" id="shareBtn" type="button">@@LABEL@@</button></div>
+SHARE_TEMPLATE = """<button class="share-btn" id="shareBtn" type="button" title="@@TITLE@@">@@LABEL@@</button>
 <script>
 (function(){
   var btn = document.getElementById("shareBtn");
@@ -272,6 +272,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     share_text = f"{name}：{share_insight}"
     share_label = "分享這卦" if is_tc else "分享这卦"
     share_copied = "✓ 已複製" if is_tc else "✓ 已复制"
+    share_title = "分享這卦（只含卦名與金句）" if is_tc else "分享这卦（只含卦名与金句）"
 
     # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
@@ -510,6 +511,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         SHARE_TEMPLATE
         .replace("@@TEXT@@", share_js_str(share_text))
         .replace("@@URL@@", share_js_str(url))
+        .replace("@@TITLE@@", share_title)
         .replace("@@LABELJS@@", share_js_str(share_label))
         .replace("@@COPIEDJS@@", share_js_str(share_copied))
         .replace("@@LABEL@@", share_label)
@@ -589,10 +591,9 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .cta-mini span {{ font-size:15px; color:var(--text); }}
   .cta-mini a {{ white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }}
   .cta-mini a:hover {{ background:var(--accent-hover); }}
-  /* 无图分享按钮 */
-  .cta .share-row {{ margin-top:18px; }}
-  .cta .share-btn {{ background:none; border:1px solid var(--border); color:var(--muted); border-radius:20px; padding:8px 24px; font-size:14px; cursor:pointer; font-family:inherit; transition:all .2s; }}
-  .cta .share-btn:hover {{ border-color:var(--accent); color:var(--accent); }}
+  /* 无图分享按钮（悬浮常驻，2026-09-18 Kyson 定：工具类按钮须在视野中） */
+  .share-btn {{ position:fixed; right:16px; bottom:16px; z-index:50; background:var(--card); border:1px solid var(--border); color:var(--muted); border-radius:24px; padding:10px 18px; font-size:14px; cursor:pointer; font-family:inherit; box-shadow:0 4px 14px rgba(0,0,0,.12); transition:all .2s; }}
+  .share-btn:hover {{ border-color:var(--accent); color:var(--accent); }}
   /* 真实职场提问 */
   .questions {{ margin-bottom:48px; }}
   .questions-head {{ margin-bottom:16px; }}
@@ -649,6 +650,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     .cta-mini {{ flex-wrap:wrap; margin:16px 0 28px; }}
     .cta-mini a {{ flex:1; text-align:center; padding:12px 16px; font-size:16px; }}
     .cta a.btn {{ display:block; width:100%; padding:14px 0; font-size:17px; }}
+    .share-btn {{ right:12px; bottom:12px; padding:9px 16px; font-size:13px; }}
   }}
 </style>
   {ga_snippet}
@@ -693,7 +695,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     <h2>{cta_h2}</h2>
     <p>{cta_p}</p>
     <a class="btn" href="{home}">{cta_btn}</a>
-    {share_html}
   </div>
 
   <div class="faq">
@@ -710,6 +711,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
 <footer>
   <a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{home}">{breadcrumb_home}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a> · {footer}
 </footer>
+{share_html}
 </body>
 </html>"""
 

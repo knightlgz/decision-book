@@ -72,10 +72,9 @@
   .cta-mini span { font-size:15px; color:var(--text); }
   .cta-mini a { white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }
   .cta-mini a:hover { background:var(--accent-hover); }
-  /* 无图分享按钮 */
-  .cta .share-row { margin-top:18px; }
-  .cta .share-btn { background:none; border:1px solid var(--border); color:var(--muted); border-radius:20px; padding:8px 24px; font-size:14px; cursor:pointer; font-family:inherit; transition:all .2s; }
-  .cta .share-btn:hover { border-color:var(--accent); color:var(--accent); }
+  /* 无图分享按钮（悬浮常驻，2026-09-18 Kyson 定：工具类按钮须在视野中） */
+  .share-btn { position:fixed; right:16px; bottom:16px; z-index:50; background:var(--card); border:1px solid var(--border); color:var(--muted); border-radius:24px; padding:10px 18px; font-size:14px; cursor:pointer; font-family:inherit; box-shadow:0 4px 14px rgba(0,0,0,.12); transition:all .2s; }
+  .share-btn:hover { border-color:var(--accent); color:var(--accent); }
   /* 真实职场提问 */
   .questions { margin-bottom:48px; }
   .questions-head { margin-bottom:16px; }
@@ -132,6 +131,7 @@
     .cta-mini { flex-wrap:wrap; margin:16px 0 28px; }
     .cta-mini a { flex:1; text-align:center; padding:12px 16px; font-size:16px; }
     .cta a.btn { display:block; width:100%; padding:14px 0; font-size:17px; }
+    .share-btn { right:12px; bottom:12px; padding:9px 16px; font-size:13px; }
   }
 </style>
     <!-- Google tag (gtag.js) -->
@@ -184,7 +184,27 @@
     <h2>你正在面对类似的职场或商业抉择吗？</h2>
     <p>免费起卦，看看你的处境对应哪一卦；完整行动方案，起卦后即可免费查看。</p>
     <a class="btn" href="/cn/">免费起卦 →</a>
-    <div class="share-row"><button class="share-btn" id="shareBtn" type="button">分享这卦</button></div>
+  </div>
+
+  <div class="faq">
+    <h3>常见问题</h3>
+    <div class="faq-item"><div class="faq-q">这个卦象适合问什么问题？</div><div class="faq-a">适合工作与事业上的抉择，例如跳槽、与主管同事相处、创业方向、晋升时机等情境。</div></div>
+<div class="faq-item"><div class="faq-q">如何获得专属于我的卦象解读？</div><div class="faq-a">在决策之书输入你的具体困惑即可免费起卦；起卦后，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的完整易经决策报告。</div></div>
+<div class="faq-item"><div class="faq-q">卦象解读可以代替专业意见吗？</div><div class="faq-a">易经解读提供的是东方智慧视角与思考框架，重大商业或人生决策仍建议结合自身判断与专业意见。</div></div>
+<div class="faq-item"><div class="faq-q">面试时被问期望工资，开太高怕没机会，开太低又不甘心，怎么开？</div><div class="faq-a">「乘风口大举扩张的同时，必须建立利益共享机制以收拢上下游人心。」——风雷益卦对这个处境的提醒：先看清自己现在的位置与时机，再决定下一步怎么走。</div></div>
+<div class="faq-item"><div class="faq-q">责任制没有加班费，但事情永远做不完，我是不是被坑了？</div><div class="faq-a">「乘风口大举扩张的同时，必须建立利益共享机制以收拢上下游人心。」——风雷益卦对这个处境的提醒：先看清自己现在的位置与时机，再决定下一步怎么走。</div></div>
+  </div>
+
+  <div class="nav">
+    <a href="/cn/hexagram/41/" class="nav-link">← 上一卦</a>
+    <a href="/cn/hexagram/" class="nav-link">全部六十四卦</a>
+    <a href="/cn/hexagram/43/" class="nav-link">下一卦 →</a>
+  </div>
+</div>
+<footer>
+  <a href="/cn/hexagram/">六十四卦</a> · <a href="/cn/">决策之书</a> · <a href="/cn/blog/">职场决策笔记</a> · 曾仕强教授易经思想体系
+</footer>
+<button class="share-btn" id="shareBtn" type="button" title="分享这卦（只含卦名与金句）">分享这卦</button>
 <script>
 (function(){
   var btn = document.getElementById("shareBtn");
@@ -212,25 +232,5 @@
   });
 })();
 </script>
-  </div>
-
-  <div class="faq">
-    <h3>常见问题</h3>
-    <div class="faq-item"><div class="faq-q">这个卦象适合问什么问题？</div><div class="faq-a">适合工作与事业上的抉择，例如跳槽、与主管同事相处、创业方向、晋升时机等情境。</div></div>
-<div class="faq-item"><div class="faq-q">如何获得专属于我的卦象解读？</div><div class="faq-a">在决策之书输入你的具体困惑即可免费起卦；起卦后，AI 会基于曾仕强教授易经思想体系，生成一份结合你情境的完整易经决策报告。</div></div>
-<div class="faq-item"><div class="faq-q">卦象解读可以代替专业意见吗？</div><div class="faq-a">易经解读提供的是东方智慧视角与思考框架，重大商业或人生决策仍建议结合自身判断与专业意见。</div></div>
-<div class="faq-item"><div class="faq-q">面试时被问期望工资，开太高怕没机会，开太低又不甘心，怎么开？</div><div class="faq-a">「乘风口大举扩张的同时，必须建立利益共享机制以收拢上下游人心。」——风雷益卦对这个处境的提醒：先看清自己现在的位置与时机，再决定下一步怎么走。</div></div>
-<div class="faq-item"><div class="faq-q">责任制没有加班费，但事情永远做不完，我是不是被坑了？</div><div class="faq-a">「乘风口大举扩张的同时，必须建立利益共享机制以收拢上下游人心。」——风雷益卦对这个处境的提醒：先看清自己现在的位置与时机，再决定下一步怎么走。</div></div>
-  </div>
-
-  <div class="nav">
-    <a href="/cn/hexagram/41/" class="nav-link">← 上一卦</a>
-    <a href="/cn/hexagram/" class="nav-link">全部六十四卦</a>
-    <a href="/cn/hexagram/43/" class="nav-link">下一卦 →</a>
-  </div>
-</div>
-<footer>
-  <a href="/cn/hexagram/">六十四卦</a> · <a href="/cn/">决策之书</a> · <a href="/cn/blog/">职场决策笔记</a> · 曾仕强教授易经思想体系
-</footer>
 </body>
 </html>

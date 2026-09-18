@@ -6,6 +6,7 @@ import ORIGINALS from './data/hexagram_originals.json';
 import INSIGHT_GEN from './data/insight_gen.json';
 import { generateHexagramIndex } from './lib/seed';
 import Paywall from './components/Paywall';
+import ShareButton from './components/ShareButton';
 
 // 卦号归一化匹配：hexagrams.js 用 "01" 格式、数据文件用 1 格式，String(1)≠String("01")
 const numKey = (v) => String(Number(v));
@@ -406,8 +407,6 @@ export default function App() {
               error={error}
               onUnlock={handleUnlock}
               onRetry={handleRetry}
-              shareText={shareText}
-              shareUrl={shareUrl}
             />
           </section>
         )}
@@ -483,15 +482,20 @@ export default function App() {
           </p>
         </footer>
       </div>
-      {showTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          title={lang === "tc" ? "回到頂部" : "回到顶部"}
-          aria-label={lang === "tc" ? "回到頂部" : "回到顶部"}
-          className="fixed bottom-6 right-6 w-11 h-11 rounded-full bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] shadow-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] hover:border-gray-300 dark:hover:border-[#4A4E58] transition-colors flex items-center justify-center text-lg"
-        >
-          ↑
-        </button>
+      {(showTop || report) && (
+        <div className="fixed bottom-6 right-6 flex flex-col items-end gap-3">
+          {report && <ShareButton lang={lang} text={shareText} url={shareUrl} />}
+          {showTop && (
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              title={lang === "tc" ? "回到頂部" : "回到顶部"}
+              aria-label={lang === "tc" ? "回到頂部" : "回到顶部"}
+              className="w-11 h-11 rounded-full bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] shadow-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] hover:border-gray-300 dark:hover:border-[#4A4E58] transition-colors flex items-center justify-center text-lg"
+            >
+              ↑
+            </button>
+          )}
+        </div>
       )}
       <Analytics />
       <SpeedInsights />
