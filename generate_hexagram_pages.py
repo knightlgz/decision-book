@@ -214,12 +214,26 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
 """
 
 # 无图分享按钮（2026-09-18）：系统分享面板 / 复制兜底；payload 只含 卦名+金句 与 本页链接
-SHARE_TEMPLATE = """<button class="share-btn" id="shareBtn" type="button" title="@@TITLE@@">@@LABEL@@</button>
+SHARE_TEMPLATE = """<div class="float-stack">
+<button class="float-btn" id="shareBtn" type="button" title="@@TITLE@@" aria-label="@@LABEL@@">@@SHAREICON@@</button>
+<button class="float-btn" id="topBtn" type="button" title="@@TOPTITLE@@" aria-label="@@TOPTITLE@@" style="display:none">↑</button>
+</div>
 <script>
 (function(){
-  var btn = document.getElementById("shareBtn");
-  var SHARE_TEXT = @@TEXT@@, SHARE_URL = @@URL@@, LABEL = @@LABELJS@@, COPIED = @@COPIEDJS@@;
-  function setCopied(){ btn.textContent = COPIED; setTimeout(function(){ btn.textContent = LABEL; }, 2500); }
+  var shareBtn = document.getElementById("shareBtn");
+  var topBtn = document.getElementById("topBtn");
+  var SHARE_TEXT = @@TEXT@@, SHARE_URL = @@URL@@;
+  var SHARE_ICON = @@SHAREICONJS@@, COPIED_ICON = @@COPIEDICONJS@@;
+  var copiedT = null;
+  function onScroll(){ topBtn.style.display = (window.scrollY > 600) ? "flex" : "none"; }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+  topBtn.addEventListener("click", function(){ window.scrollTo({ top: 0, behavior: "smooth" }); });
+  function setCopied(){
+    shareBtn.innerHTML = COPIED_ICON;
+    if (copiedT) clearTimeout(copiedT);
+    copiedT = setTimeout(function(){ shareBtn.innerHTML = SHARE_ICON; }, 2500);
+  }
   function copyText(){
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(SHARE_TEXT + "\\n" + SHARE_URL).then(function(){
@@ -228,7 +242,7 @@ SHARE_TEMPLATE = """<button class="share-btn" id="shareBtn" type="button" title=
       }).catch(function(){});
     }
   }
-  btn.addEventListener("click", function(){
+  shareBtn.addEventListener("click", function(){
     if (navigator.share) {
       navigator.share({ text: SHARE_TEXT, url: SHARE_URL }).then(function(){
         if (window.gtag) { try { gtag("event", "share", { method: "native" }); } catch(e){} }
@@ -247,6 +261,11 @@ SHARE_TEMPLATE = """<button class="share-btn" id="shareBtn" type="button" title=
 def share_js_str(value):
     """安全嵌入 <script> 的 JS 字符串字面量（json.dumps + 转义 <）"""
     return json.dumps(value, ensure_ascii=False).replace("<", "\\u003c")
+
+
+# 悬浮按钮图标（stroke=currentColor 继承按钮颜色；分享=托盘+上箭头的通用分享符）
+SHARE_ICON_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>'
+CHECK_ICON_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>' 
 
 
 # 真实职场提问问题库
@@ -271,8 +290,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     share_insight = (_ig.get("tc") if is_tc else _ig.get("sc")) or insight
     share_text = f"{name}：{share_insight}"
     share_label = "分享這卦" if is_tc else "分享这卦"
-    share_copied = "✓ 已複製" if is_tc else "✓ 已复制"
     share_title = "分享這卦（只含卦名與金句）" if is_tc else "分享这卦（只含卦名与金句）"
+    top_title = "回到頂部" if is_tc else "回到顶部"
 
     # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
@@ -512,9 +531,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         .replace("@@TEXT@@", share_js_str(share_text))
         .replace("@@URL@@", share_js_str(url))
         .replace("@@TITLE@@", share_title)
-        .replace("@@LABELJS@@", share_js_str(share_label))
-        .replace("@@COPIEDJS@@", share_js_str(share_copied))
+        .replace("@@TOPTITLE@@", top_title)
+        .replace("@@SHAREICONJS@@", share_js_str(SHARE_ICON_SVG))
+        .replace("@@COPIEDICONJS@@", share_js_str(CHECK_ICON_SVG))
         .replace("@@LABEL@@", share_label)
+        .replace("@@SHAREICON@@", SHARE_ICON_SVG)
     )
 
     return f"""<!DOCTYPE html>
@@ -591,9 +612,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .cta-mini span {{ font-size:15px; color:var(--text); }}
   .cta-mini a {{ white-space:nowrap; background:var(--accent); color:var(--bg); text-decoration:none; padding:8px 20px; border-radius:20px; font-size:14px; font-weight:700; }}
   .cta-mini a:hover {{ background:var(--accent-hover); }}
-  /* 无图分享按钮（悬浮常驻，2026-09-18 Kyson 定：工具类按钮须在视野中） */
-  .share-btn {{ position:fixed; right:16px; bottom:16px; z-index:50; background:var(--card); border:1px solid var(--border); color:var(--muted); border-radius:24px; padding:10px 18px; font-size:14px; cursor:pointer; font-family:inherit; box-shadow:0 4px 14px rgba(0,0,0,.12); transition:all .2s; }}
-  .share-btn:hover {{ border-color:var(--accent); color:var(--accent); }}
+  /* 悬浮按钮组：分享 + 回到顶部（符号型，2026-09-18 Kyson 定） */
+  .float-stack {{ position:fixed; right:16px; bottom:16px; z-index:50; display:flex; flex-direction:column; align-items:flex-end; gap:10px; }}
+  .float-btn {{ width:44px; height:44px; border-radius:50%; background:var(--card); border:1px solid var(--border); color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; font-family:inherit; box-shadow:0 4px 14px rgba(0,0,0,.12); transition:all .2s; padding:0; }}
+  .float-btn:hover {{ border-color:var(--accent); color:var(--accent); }}
+  .float-btn svg {{ display:block; }}
   /* 真实职场提问 */
   .questions {{ margin-bottom:48px; }}
   .questions-head {{ margin-bottom:16px; }}
@@ -650,7 +673,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     .cta-mini {{ flex-wrap:wrap; margin:16px 0 28px; }}
     .cta-mini a {{ flex:1; text-align:center; padding:12px 16px; font-size:16px; }}
     .cta a.btn {{ display:block; width:100%; padding:14px 0; font-size:17px; }}
-    .share-btn {{ right:12px; bottom:12px; padding:9px 16px; font-size:13px; }}
+    .float-stack {{ right:12px; bottom:12px; gap:8px; }}
+    .float-btn {{ width:40px; height:40px; }}
   }}
 </style>
   {ga_snippet}

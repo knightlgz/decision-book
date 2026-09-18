@@ -1,11 +1,24 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics/react';
 
-// 分享按钮（无图版·悬浮样式，2026-09-18）：payload 只含 卦名+金句（text）与链接（url）——
+// 分享按钮（无图版·符号型悬浮，2026-09-18）：payload 只含 卦名+金句（text）与链接（url）——
 // 隐私=结构性不含：禁止在此组件里加入问题/报告任何片段。设计规格见
 // decision-book-dev/references/share-save-design.md。
 // 定位由外层容器负责（App 中与「回到顶部」叠放为右下角悬浮组）。
-// 移动端 = navigator.share 系统面板；桌面/不支持 = 复制 text+url 到剪贴板。
+// 移动端 = navigator.share 系统面板；桌面/不支持 = 复制 text+url 到剪贴板（图标短暂变 ✓）。
+const ShareIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+    <polyline points="16 6 12 2 8 6" />
+    <line x1="12" y1="2" x2="12" y2="15" />
+  </svg>
+);
+const CheckIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);
+
 export default function ShareButton({ lang, text, url }) {
   const [copied, setCopied] = useState(false);
 
@@ -39,11 +52,10 @@ export default function ShareButton({ lang, text, url }) {
     <button
       onClick={handleShare}
       title={lang === "tc" ? "分享這卦（只含卦名與金句）" : "分享这卦（只含卦名与金句）"}
-      className="bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] rounded-full px-4 py-2.5 text-sm text-gray-600 dark:text-[#C5C1B8] shadow-sm hover:border-[#C9B896] dark:hover:border-[#C8A96A]/60 hover:text-[#8A6D3B] dark:hover:text-[#C8A96A] active:scale-[0.99] transition-all"
+      aria-label={lang === "tc" ? "分享這卦" : "分享这卦"}
+      className="w-11 h-11 rounded-full bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] shadow-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] hover:border-gray-300 dark:hover:border-[#4A4E58] transition-colors flex items-center justify-center"
     >
-      {copied
-        ? (lang === "tc" ? "✓ 已複製" : "✓ 已复制")
-        : (lang === "tc" ? "分享這卦" : "分享这卦")}
+      {copied ? <CheckIcon /> : <ShareIcon />}
     </button>
   );
 }
