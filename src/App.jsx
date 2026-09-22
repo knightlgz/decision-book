@@ -4,7 +4,8 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
 import ORIGINALS from './data/hexagram_originals.json';
 import INSIGHT_GEN from './data/insight_gen.json';
-import { generateHexagramIndex } from './lib/seed';
+import { requestCast } from './lib/seed';
+import HexagramFigure from './components/HexagramFigure';
 import Paywall from './components/Paywall';
 import ShareButton from './components/ShareButton';
 
@@ -83,6 +84,7 @@ export default function App() {
     try { window.localStorage.setItem("db_region", v); } catch {}
   };
   const [hexagram, setHexagram] = useState(null);
+  const [cast, setCast] = useState(null); // 起卦结果：arr 本卦 + moving 动爻（○老阳/✕老阴）
   // 会话内解锁一次即生效：新问题不再要求重新付费
   // 付费墙暂停（2026-09-14）：首卦体验免费，报告直接生成。
   // 恢复：改回 useState(false)。付费墙未来接入 Ko-fi（追问付费时再启用）。
@@ -166,25 +168,35 @@ export default function App() {
     }
   }, [lang]);
 
-  const handleGenerate = () => {
-    if (!question.trim()) {
-      return alert(lang === "tc" ? "請輸入具體問題" : "请输入具体问题");
-    }
-    const index = generateHexagramIndex(question);
-    const result = HEXAGRAMS[index];
+  // 起卦（铜钱法 18 位，2026-09-22）：多要素确定性派生 → 本卦 + 动爻（悬念标记）
+  const runCast = useCallback(async (q, source) => {
+    const c = await requestCast(q);
+    const orig = ORIGINALS.find((o) => Array.isArray(o.array) && o.array.length === 6 && o.array.every((v, i) => v === c.arr[i]));
+    if (!orig) return null;
+    const result = HEXAGRAMS[Number(orig.id) - 1];
+    if (!result) return null;
     setHexagram(result);
-    // 新问题：清空旧报告，进入生成中状态
-    setReport(null);
-    setError(null);
-
+    setCast(c);
     track('hexagram_generated', {
       hexagram: result.number,
       region,
-      questionLength: question.length
+      questionLength: q.length,
+      movingCount: c.moving.filter(Boolean).length,
+      ...(source ? { source } : {})
     });
+    return result;
+  }, [region]);
 
+  const handleGenerate = async () => {
+    if (!question.trim()) {
+      return alert(lang === "tc" ? "請輸入具體問題" : "请输入具体问题");
+    }
+    // 新问题：清空旧报告，进入生成中状态
+    setReport(null);
+    setError(null);
+    const result = await runCast(question);
     // 会话内已解锁：自动生成新报告，不再显示支付墙
-    if (unlocked) {
+    if (result && unlocked) {
       fetchReport(question, region, result);
     }
   };
@@ -210,15 +222,7 @@ export default function App() {
   // 预填问题自动起卦（付费解码仍由用户手动操作）
   useEffect(() => {
     if (prefilled.trim()) {
-      const index = generateHexagramIndex(prefilled);
-      const result = HEXAGRAMS[index];
-      setHexagram(result);
-      track('hexagram_generated', {
-        hexagram: result.number,
-        region,
-        questionLength: prefilled.length,
-        source: 'question_card'
-      });
+      runCast(prefilled, 'question_card');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -357,25 +361,14 @@ export default function App() {
             {(() => {
               const orig = ORIGINALS.find(o => numKey(o.id) === numKey(hexagram.number));
               if (!orig) return null;
-              const l = lang === "tc" ? "tc" : "sc";
-              const lines = [...orig.array].reverse(); // 视觉从上到下 = 爻位从下到上反转
+              // 六爻（自下而上）：阳/阴 + 动爻（○老阳/✕老阴，来自 18 位起卦）
+              const lines = orig.array.map((v, i) => ({
+                yang: v === 1,
+                moving: !!(cast && cast.moving && cast.moving[i]),
+              }));
               return (
                 <div className="flex items-center gap-5 mb-5 bg-white dark:bg-[#171A22] border border-gray-200 dark:border-[#2A2E3A] rounded-xl px-5 py-4 shadow-sm">
-                  {/* 爻线图 */}
-                  <div className="flex flex-col gap-[3px] shrink-0" aria-label={`${hexagram[lang].name} 六爻`}>
-                    {lines.map((v, idx) => (
-                      <div key={idx} className="flex gap-[3px]">
-                        {v === 1 ? (
-                          <div className="w-9 h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
-                        ) : (
-                          <div className="w-9 h-[5px] flex justify-between" aria-hidden="true">
-                            <div className="w-[43.75%] h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
-                            <div className="w-[43.75%] h-[5px] rounded-[2px] bg-gray-800 dark:bg-[#DCD8CF]" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <HexagramFigure lines={lines} ariaLabel={`${hexagram[lang].name} 六爻`} />
                   {/* 卦象信息 */}
                   <div className="text-sm leading-relaxed">
                     <div className="font-bold text-gray-900 dark:text-[#F5F2EA]">
