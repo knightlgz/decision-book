@@ -4,7 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
 import ORIGINALS from './data/hexagram_originals.json';
 import INSIGHT_GEN from './data/insight_gen.json';
-import { requestCast } from './lib/seed';
+import { castQuestion } from './lib/seed';
 import HexagramFigure from './components/HexagramFigure';
 import Paywall from './components/Paywall';
 import ShareButton from './components/ShareButton';
@@ -170,7 +170,7 @@ export default function App() {
 
   // 起卦（铜钱法 18 位，2026-09-22）：多要素确定性派生 → 本卦 + 动爻（悬念标记）
   const runCast = useCallback(async (q, source) => {
-    const c = await requestCast(q);
+    const c = castQuestion(q, region);
     const orig = ORIGINALS.find((o) => Array.isArray(o.array) && o.array.length === 6 && o.array.every((v, i) => v === c.arr[i]));
     if (!orig) return null;
     const result = HEXAGRAMS[Number(orig.id) - 1];

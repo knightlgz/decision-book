@@ -6,8 +6,9 @@
  *   000 = 老阳（动，○）  100/010/001 = 少阴  110/101/011 = 少阳  111 = 老阴（动，✕）
  * 本卦 = 动前排（老阳/少阳=阳，少阴/老阴=阴）；变卦（动后排）留待变卦篇。
  *
- * 派生要素（全部非隐私项）：问题文本 + 设备系统时间（时辰粒度）+ 浏览器指纹 + IP（服务端注入）。
- * 全流程确定性：同问同人同窗 → 同卦同局；用户动作=揭晓，不是抽奖。
+ * 派生要素（全部非隐私项，纯前端计算、零网络依赖）：
+ *   问题文本 + 地区（用户发问时所选）+ 设备系统时间（时辰粒度）+ 浏览器指纹。
+ * 全流程确定性：同问同人同窗 → 同卦同局；用户动作＝揭晓，不是抽奖。
  */
 
 // 32 位字符串哈希（FNV-1a 变体；跨端稳定，不依赖平台中文编码）
@@ -51,8 +52,8 @@ export function arrFromStates(states) {
 }
 
 // 起卦主函数（纯函数、跨端）：要素 → { bits, states, arr, moving }
-export function castFromFactors({ question, fingerprint = '', shichen = 0, ipSalt = '' }) {
-  const base = ['cast', String(question || '').trim(), String(shichen), fingerprint, ipSalt].join('|');
+export function castFromFactors({ question, region = '', fingerprint = '', shichen = 0 }) {
+  const base = ['cast', String(question || '').trim(), region, String(shichen), fingerprint].join('|');
   let s = hash32(base) || 0x9e3779b9; // 兜底非零种子
   const next = () => {
     s ^= s << 13; s >>>= 0;
@@ -68,24 +69,9 @@ export function castFromFactors({ question, fingerprint = '', shichen = 0, ipSal
   return { bits, states, arr, moving };
 }
 
-// 客户端取卦：优先后端 /api/cast（含 IP 因子、不落地），失败降级本地（无 IP）
-export async function requestCast(question) {
+// 起卦入口（纯前端）：问题 + 用户所选地区 + 当前时辰 + 本机指纹 → 本卦与动爻
+export function castQuestion(question, region = '') {
   const shichen = shichenOf(Date.now());
   const fingerprint = deviceFingerprint();
-  try {
-    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    const timer = ctrl ? setTimeout(() => ctrl.abort(), 3000) : null;
-    const r = await fetch('/api/cast', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, fingerprint, shichen }),
-      ...(ctrl ? { signal: ctrl.signal } : {}),
-    });
-    if (timer) clearTimeout(timer);
-    if (r.ok) {
-      const d = await r.json();
-      if (d && d.ok && Array.isArray(d.arr) && Array.isArray(d.moving)) return d;
-    }
-  } catch { /* 降级本地 */ }
-  return { ...castFromFactors({ question, fingerprint, shichen }), ok: true, fallback: true };
+  return castFromFactors({ question, region, fingerprint, shichen });
 }
