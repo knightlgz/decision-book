@@ -55,6 +55,15 @@ def parse_insight_gen():
     return {int(d["id"]): d for d in data}
 
 
+def parse_related_pub():
+    """读取已发布内容关联（related_content.json：卦号 -> {tc:[...], sc:[...]}）
+    繁页渲染 tc（Blogger）、简页渲染 sc（公众号）；无内容的卦自动隐藏。"""
+    f = ROOT / "src" / "data" / "related_content.json"
+    if not f.exists():
+        return {}
+    return json.loads(f.read_text(encoding="utf-8"))
+
+
 def parse_hexagrams():
     """用 Node.js 解析 ES module"""
     tmp_js = Path(tempfile.gettempdir()) / "dump_hexagrams.mjs"
@@ -275,7 +284,7 @@ except ImportError:
     QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC = {}, {}, {}, {}
 
 
-def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None):
+def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None, pub_related=None):
     """单个卦象页。lang: tc=繁体 / sc=简体
     related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）
     insight_gen: {int_id: {sc, tc}} 通用版金句（分享文案用）"""
@@ -444,6 +453,20 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
             rel_links.append(f'<a href="{idx_link}{rn}/"><span class="rel-name">{r_name}</span><span class="rel-tag">{r_label}</span></a>')
         if rel_links:
             related_html = f'<div class="related"><h3>{related_label}</h3><div class="grid">{"".join(rel_links)}</div></div>'
+
+    # 延伸阅读（已发布内容：繁=Blogger / 简=公众号；无内容自动隐藏）
+    pub_html = ""
+    if pub_related:
+        _items = pub_related.get("tc" if is_tc else "sc", [])
+        if _items:
+            _pl = "延伸閱讀" if is_tc else "延伸阅读"
+            _pn = "關於這個卦的職場故事，我們寫過完整版：" if is_tc else "关于这个卦的职场故事，我们写过完整版："
+            _plat = "部落格" if is_tc else "公众号"
+            _links = []
+            for _it in _items[:5]:
+                _d = _it.get("date", "")
+                _links.append(f'<a href="{_it["url"]}" target="_blank" rel="noopener"><span class="pub-title">{_it["title"]}</span><span class="pub-meta">{_d} · {_plat} ↗</span></a>')
+            pub_html = f'<div class="related pub"><h3>{_pl}</h3><p class="pub-note">{_pn}</p><div class="grid">{"".join(_links)}</div></div>'
 
     # 六爻卦象图（小白也能看懂卦长什么样）
     TRI_SYMBOLS = {"乾": "☰", "兌": "☱", "離": "☲", "震": "☳", "巽": "☴", "坎": "☵", "艮": "☶", "坤": "☷"}
@@ -636,6 +659,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .related .grid a:hover {{ border-color:var(--accent); color:var(--accent); }}
   .related .rel-name {{ display:block; }}
   .related .rel-tag {{ display:inline-block; font-size:11px; color:var(--accent); border:1px solid var(--accent-border2); border-radius:10px; padding:1px 8px; margin-top:4px; }}
+  /* 延伸阅读（已发布内容） */
+  .related.pub .pub-note {{ font-size:13px; color:var(--muted); margin-bottom:12px; }}
+  .related.pub .pub-title {{ display:block; line-height:1.6; }}
+  .related.pub .pub-meta {{ display:block; font-size:11px; color:var(--muted); margin-top:6px; }}
   .faq {{ margin-bottom:48px; }}
   .faq h3 {{ font-size:16px; color:var(--muted); letter-spacing:2px; margin-bottom:16px; }}
   .faq-item {{ background:var(--card); border-radius:8px; padding:16px; margin-bottom:8px; }}
@@ -710,6 +737,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   </div>
 
   {interp_html}
+
+  {pub_html}
 
   {related_html}
 
@@ -870,6 +899,7 @@ def main():
     interpretations = parse_interpretations()
     interpretations_sc = parse_interpretations_sc()
     insight_gen = parse_insight_gen()
+    related_pub = parse_related_pub()
     print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
         print("⚠️ 卦象数量不对")
@@ -922,12 +952,12 @@ def main():
         # 繁体页
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {})), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen, related_pub.get(hx["number"], {})), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")
