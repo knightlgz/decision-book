@@ -23,6 +23,7 @@ INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
 # 简体版=LLM 语际转译（由 translate_interp_sc.py 产出；禁机翻铁律——不得用 opencc 等机械转换替代）
 INTERP_SC_FILE = ROOT / "src" / "data" / "hexagram_interpretations_sc.json"
 INSIGHT_GEN_FILE = ROOT / "src" / "data" / "insight_gen.json"
+WORK_FAQ_FILE = ROOT / "src" / "data" / "work_faq.json"
 PUBLIC = ROOT / "public"
 BASE_URL = "https://decision-book.vercel.app"
 
@@ -53,6 +54,14 @@ def parse_insight_gen():
         return {}
     data = json.loads(INSIGHT_GEN_FILE.read_text(encoding="utf-8"))
     return {int(d["id"]): d for d in data}
+
+
+def parse_work_faq():
+    """{卦名}卦×工作/事業 FAQ（非试点页；generate_work_faq.py 产出）"""
+    if not WORK_FAQ_FILE.exists():
+        return {}
+    data = json.loads(WORK_FAQ_FILE.read_text(encoding="utf-8"))
+    return {int(k): v for k, v in data.items()}
 
 
 def parse_related_pub():
@@ -284,7 +293,7 @@ except ImportError:
     QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC = {}, {}, {}, {}
 
 
-def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None, pub_related=None):
+def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None, pub_related=None, work_faq=None):
     """单个卦象页。lang: tc=繁体 / sc=简体
     related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）
     insight_gen: {int_id: {sc, tc}} 通用版金句（分享文案用）"""
@@ -380,6 +389,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     if pilot:
         pf = pilot["tc"] if is_tc else pilot["sc"]
         faq_items = faq_items + [{"q": pf["faq_q"], "a": pf["faq_a"]}]
+    # {卦名}卦×工作/事業 FAQ（非试点页；2026-09-26 扩词面改造）
+    if not pilot and work_faq:
+        _wf = work_faq.get(int(n), {}).get("tc" if is_tc else "sc")
+        if _wf:
+            faq_items = faq_items + [{"q": _wf["q"], "a": _wf["a"]}]
     # 问题型 FAQ（从问题库取 2 个，与问题卡错开，答案用卦象洞察——SEO 长尾入口）
     _bank = QUESTIONS_BANK if is_tc else (QUESTIONS_BANK_SC or QUESTIONS_BANK)
     _h2c = HEX_TO_CATS if is_tc else (HEX_TO_CATS_SC or HEX_TO_CATS)
@@ -900,6 +914,7 @@ def main():
     interpretations_sc = parse_interpretations_sc()
     insight_gen = parse_insight_gen()
     related_pub = parse_related_pub()
+    work_faq = parse_work_faq()
     print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
         print("⚠️ 卦象数量不对")
@@ -952,12 +967,12 @@ def main():
         # 繁体页
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {})), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen, related_pub.get(hx["number"], {})), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")
