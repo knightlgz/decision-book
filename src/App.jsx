@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
 import ORIGINALS from './data/hexagram_originals.json';
 import INSIGHT_GEN from './data/insight_gen.json';
+import REFRAME_GEN from './data/reframe_gen.json';
 import { castQuestion } from './lib/seed';
 import HexagramFigure from './components/HexagramFigure';
 import Paywall from './components/Paywall';
@@ -196,7 +197,7 @@ export default function App() {
   const handleGenerate = async () => {
     ga('cast_start', { hasQuestion: !!question.trim(), lang });
     if (!question.trim()) {
-      return alert(lang === "tc" ? "請輸入具體問題" : "请输入具体问题");
+      return alert(lang === "tc" ? "先寫一句心裡的事，多短都可以" : "先写一句心里的事，多短都可以");
     }
     // 新问题：清空旧报告，进入生成中状态
     setReport(null);
@@ -242,6 +243,13 @@ export default function App() {
     if (!hexagram) return "";
     const g = INSIGHT_GEN.find(o => numKey(o.id) === numKey(hexagram.number));
     return g ? (lang === "tc" ? g.tc : g.sc) : hexagram[lang].insight;
+  })();
+
+  // 安心话术（C 方案 2026-10-07）：结果区「处境不是判决」的逐卦安顿句（reframe_gen.json）
+  const reframeText = (() => {
+    if (!hexagram) return "";
+    const r = REFRAME_GEN[String(Number(hexagram.number))];
+    return r ? (lang === "tc" ? r.tc : r.sc) : "";
   })();
   // 无图分享（2026-09-18）：文案=卦名+金句；链接=主页（报告侧规则）；payload 禁含问题/报告片段
   const shareText = hexagram && guaInsight ? `${hexagram[lang].name}：${guaInsight}` : "";
@@ -350,7 +358,7 @@ export default function App() {
           {/* 提问指导 + 字数提示（上限与 Dify User_Question 变量同步，当前 256） */}
           <div className="flex justify-between items-center -mt-3">
             <span className="text-xs text-gray-400 dark:text-[#6A6E78]">
-              {lang === "tc" ? "寫清楚背景、你的選項、最在意什麼" : "写清楚背景、你的选项、最在意什么"}
+              {lang === "tc" ? "想到什麼就寫什麼，一句也行——越具體，報告越貼身" : "想到什么就写什么，一句也行——越具体，报告越贴身"}
             </span>
             <span className={`text-xs ${question.length > 230 ? "text-amber-500" : "text-gray-400 dark:text-[#6A6E78]"}`}>
               {question.length > 230
@@ -423,6 +431,11 @@ export default function App() {
               </h2>
             </div>
 
+            {/* 安心话术·总则（C 方案 2026-10-07）：处境定位，消解"判决"误读 */}
+            <p className="text-sm text-gray-500 dark:text-[#8B8F98] mb-4 leading-relaxed">
+              {lang === "tc" ? "這張圖畫的是你此刻的處境，不是判決。" : "这张图画的是你此刻的处境，不是判决。"}
+            </p>
+
             {(() => {
               const orig = ORIGINALS.find(o => numKey(o.id) === numKey(hexagram.number));
               if (!orig) return null;
@@ -451,6 +464,13 @@ export default function App() {
                 </div>
               );
             })()}
+
+            {/* 安心话术·逐卦句（C 方案 2026-10-07） */}
+            {reframeText && (
+              <p className="text-xs text-gray-500 dark:text-[#8B8F98] border-l-2 border-[#C9B896] dark:border-[#C8A96A]/60 pl-3 mb-5 leading-relaxed">
+                {reframeText}
+              </p>
+            )}
 
             <p className="text-sm font-medium text-gray-600 dark:text-[#C5C1B8] mb-6 leading-relaxed">
               {guaInsight}
