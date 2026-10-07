@@ -297,14 +297,27 @@ SHARE_TEMPLATE = """<div class="float-stack">
   var SHARE_TEXT = @@TEXT@@, SHARE_URL = @@URL@@;
   var SHARE_ICON = @@SHAREICONJS@@, COPIED_ICON = @@COPIEDICONJS@@;
   var copiedT = null;
+  var toastT = null;
   function onScroll(){ topBtn.style.display = (window.scrollY > 600) ? "flex" : "none"; }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
   topBtn.addEventListener("click", function(){ window.scrollTo({ top: 0, behavior: "smooth" }); });
+  function showToast(){
+    var old = document.getElementById("shareToast");
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+    var el = document.createElement("div");
+    el.id = "shareToast";
+    el.textContent = @@COPIEDTIP@@;
+    el.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);bottom:122px;z-index:98;background:var(--card);border:1px solid var(--accent-border2);color:var(--text);border-radius:20px;padding:8px 16px;font-size:13px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.28);max-width:86vw;text-align:center;";
+    document.body.appendChild(el);
+    if (toastT) clearTimeout(toastT);
+    toastT = setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 2400);
+  }
   function setCopied(){
     shareBtn.innerHTML = COPIED_ICON;
     if (copiedT) clearTimeout(copiedT);
     copiedT = setTimeout(function(){ shareBtn.innerHTML = SHARE_ICON; }, 2500);
+    showToast();
   }
   function trackShare(method){
     if (window.gtag) { try { gtag("event", "share", { method: method }); } catch(e){} }
@@ -420,6 +433,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     top_title = "回到頂部" if is_tc else "回到顶部"
     manual_tip = "長按選取以下文字複製，即可分享：" if is_tc else "长按选取以下文字复制，即可分享："
     close_label = "關閉" if is_tc else "关闭"
+    copied_tip = "已複製，貼到 LINE／微信即可分享" if is_tc else "已复制，粘贴到微信／LINE 即可分享"
 
     # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
@@ -689,6 +703,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         .replace("@@TOPTITLE@@", top_title)
         .replace("@@MANUALTIP@@", share_js_str(manual_tip))
         .replace("@@CLOSELABEL@@", share_js_str(close_label))
+        .replace("@@COPIEDTIP@@", share_js_str(copied_tip))
         .replace("@@SHAREICONJS@@", share_js_str(SHARE_ICON_SVG))
         .replace("@@COPIEDICONJS@@", share_js_str(CHECK_ICON_SVG))
         .replace("@@LABEL@@", share_label)
