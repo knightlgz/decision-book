@@ -249,25 +249,79 @@
     if (copiedT) clearTimeout(copiedT);
     copiedT = setTimeout(function(){ shareBtn.innerHTML = SHARE_ICON; }, 2500);
   }
-  function copyText(){
+  function trackShare(method){
+    if (window.gtag) { try { gtag("event", "share", { method: method }); } catch(e){} }
+  }
+  function legacyCopy(text){
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:-1000px;opacity:0;";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch(e){ return false; }
+  }
+  function showManual(){
+    var old = document.getElementById("shareManual");
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+    var d = document.createElement("div");
+    d.id = "shareManual";
+    d.style.cssText = "position:fixed;left:14px;right:14px;bottom:76px;z-index:99;background:var(--card);border:1px solid var(--accent-border2);border-radius:12px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;color:var(--text);line-height:1.8;";
+    var tip = document.createElement("div");
+    tip.style.cssText = "color:var(--accent);font-size:13px;margin-bottom:6px;";
+    tip.textContent = "长按选取以下文字复制，即可分享：";
+    var body = document.createElement("div");
+    body.style.cssText = "white-space:pre-wrap;word-break:break-all;-webkit-user-select:text;user-select:text;";
+    body.textContent = SHARE_TEXT + "\n" + SHARE_URL;
+    var close = document.createElement("button");
+    close.type = "button";
+    close.textContent = "关闭";
+    close.style.cssText = "margin-top:10px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:16px;padding:4px 14px;font-size:13px;cursor:pointer;";
+    close.addEventListener("click", function(){ d.parentNode.removeChild(d); });
+    d.appendChild(tip); d.appendChild(body); d.appendChild(close);
+    document.body.appendChild(d);
+    trackShare("manual");
+  }
+  function fallbackCopy(){
+    var text = SHARE_TEXT + "\n" + SHARE_URL;
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(SHARE_TEXT + "\n" + SHARE_URL).then(function(){
+      navigator.clipboard.writeText(text).then(function(){
         setCopied();
-        if (window.gtag) { try { gtag("event", "share", { method: "copy_link" }); } catch(e){} }
-      }).catch(function(){});
+        trackShare("copy_link");
+      }).catch(function(){
+        if (legacyCopy(text)) { setCopied(); trackShare("copy_link"); }
+        else { showManual(); }
+      });
+    } else if (legacyCopy(text)) {
+      setCopied();
+      trackShare("copy_link");
+    } else {
+      showManual();
     }
   }
   shareBtn.addEventListener("click", function(){
     if (navigator.share) {
-      navigator.share({ text: SHARE_TEXT, url: SHARE_URL }).then(function(){
-        if (window.gtag) { try { gtag("event", "share", { method: "native" }); } catch(e){} }
-      }).catch(function(err){
-        if (err && err.name === "AbortError") return;
-        copyText();
-      });
-    } else {
-      copyText();
+      try {
+        var p = navigator.share({ text: SHARE_TEXT, url: SHARE_URL });
+        if (p && typeof p.then === "function") {
+          p.then(function(){ trackShare("native"); }).catch(function(err){
+            if (err && err.name === "AbortError") return;
+            fallbackCopy();
+          });
+          return;
+        }
+        trackShare("native");
+        return;
+      } catch(e) {
+        /* 同步抛错（部分 WebView 禁用分享）：落入复制兜底 */
+      }
     }
+    fallbackCopy();
   });
 })();
 </script>

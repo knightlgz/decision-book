@@ -285,7 +285,7 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
   </script>
 """
 
-# 无图分享按钮（2026-09-18）：系统分享面板 / 复制兜底；payload 只含 卦名+金句 与 本页链接
+# 无图分享按钮（2026-09-18；2026-10-07 兜底链加固）：系统分享 → 剪贴板 → execCommand → 手动面板（消除全静默路径）；payload 只含 卦名+金句 与 本页链接
 SHARE_TEMPLATE = """<div class="float-stack">
 <button class="float-btn" id="shareBtn" type="button" title="@@TITLE@@" aria-label="@@LABEL@@">@@SHAREICON@@</button>
 <button class="float-btn" id="topBtn" type="button" title="@@TOPTITLE@@" aria-label="@@TOPTITLE@@" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="4.5" x2="18" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="9.5"/><polyline points="7.5 14 12 9.5 16.5 14"/></svg></button>
@@ -306,25 +306,79 @@ SHARE_TEMPLATE = """<div class="float-stack">
     if (copiedT) clearTimeout(copiedT);
     copiedT = setTimeout(function(){ shareBtn.innerHTML = SHARE_ICON; }, 2500);
   }
-  function copyText(){
+  function trackShare(method){
+    if (window.gtag) { try { gtag("event", "share", { method: method }); } catch(e){} }
+  }
+  function legacyCopy(text){
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:-1000px;opacity:0;";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch(e){ return false; }
+  }
+  function showManual(){
+    var old = document.getElementById("shareManual");
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+    var d = document.createElement("div");
+    d.id = "shareManual";
+    d.style.cssText = "position:fixed;left:14px;right:14px;bottom:76px;z-index:99;background:var(--card);border:1px solid var(--accent-border2);border-radius:12px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;color:var(--text);line-height:1.8;";
+    var tip = document.createElement("div");
+    tip.style.cssText = "color:var(--accent);font-size:13px;margin-bottom:6px;";
+    tip.textContent = @@MANUALTIP@@;
+    var body = document.createElement("div");
+    body.style.cssText = "white-space:pre-wrap;word-break:break-all;-webkit-user-select:text;user-select:text;";
+    body.textContent = SHARE_TEXT + "\\n" + SHARE_URL;
+    var close = document.createElement("button");
+    close.type = "button";
+    close.textContent = @@CLOSELABEL@@;
+    close.style.cssText = "margin-top:10px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:16px;padding:4px 14px;font-size:13px;cursor:pointer;";
+    close.addEventListener("click", function(){ d.parentNode.removeChild(d); });
+    d.appendChild(tip); d.appendChild(body); d.appendChild(close);
+    document.body.appendChild(d);
+    trackShare("manual");
+  }
+  function fallbackCopy(){
+    var text = SHARE_TEXT + "\\n" + SHARE_URL;
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(SHARE_TEXT + "\\n" + SHARE_URL).then(function(){
+      navigator.clipboard.writeText(text).then(function(){
         setCopied();
-        if (window.gtag) { try { gtag("event", "share", { method: "copy_link" }); } catch(e){} }
-      }).catch(function(){});
+        trackShare("copy_link");
+      }).catch(function(){
+        if (legacyCopy(text)) { setCopied(); trackShare("copy_link"); }
+        else { showManual(); }
+      });
+    } else if (legacyCopy(text)) {
+      setCopied();
+      trackShare("copy_link");
+    } else {
+      showManual();
     }
   }
   shareBtn.addEventListener("click", function(){
     if (navigator.share) {
-      navigator.share({ text: SHARE_TEXT, url: SHARE_URL }).then(function(){
-        if (window.gtag) { try { gtag("event", "share", { method: "native" }); } catch(e){} }
-      }).catch(function(err){
-        if (err && err.name === "AbortError") return;
-        copyText();
-      });
-    } else {
-      copyText();
+      try {
+        var p = navigator.share({ text: SHARE_TEXT, url: SHARE_URL });
+        if (p && typeof p.then === "function") {
+          p.then(function(){ trackShare("native"); }).catch(function(err){
+            if (err && err.name === "AbortError") return;
+            fallbackCopy();
+          });
+          return;
+        }
+        trackShare("native");
+        return;
+      } catch(e) {
+        /* 同步抛错（部分 WebView 禁用分享）：落入复制兜底 */
+      }
     }
+    fallbackCopy();
   });
 })();
 </script>"""
@@ -364,6 +418,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     share_label = "分享這卦" if is_tc else "分享这卦"
     share_title = "分享這卦（只含卦名與金句）" if is_tc else "分享这卦（只含卦名与金句）"
     top_title = "回到頂部" if is_tc else "回到顶部"
+    manual_tip = "長按選取以下文字複製，即可分享：" if is_tc else "长按选取以下文字复制，即可分享："
+    close_label = "關閉" if is_tc else "关闭"
 
     # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
@@ -631,6 +687,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         .replace("@@URL@@", share_js_str(url))
         .replace("@@TITLE@@", share_title)
         .replace("@@TOPTITLE@@", top_title)
+        .replace("@@MANUALTIP@@", share_js_str(manual_tip))
+        .replace("@@CLOSELABEL@@", share_js_str(close_label))
         .replace("@@SHAREICONJS@@", share_js_str(SHARE_ICON_SVG))
         .replace("@@COPIEDICONJS@@", share_js_str(CHECK_ICON_SVG))
         .replace("@@LABEL@@", share_label)
