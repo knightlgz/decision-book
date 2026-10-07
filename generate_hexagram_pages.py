@@ -19,6 +19,8 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 DATA_FILE = ROOT / "src" / "data" / "hexagrams.js"
 ORIGINAL_FILE = ROOT / "src" / "data" / "iching_original.json"
+# 繁体原文：权威源=ctext.org「周易」逐卦页（2026-10 建立，抽取配方见 decision-book-dev 技能）
+ORIGINAL_TC_FILE = ROOT / "src" / "data" / "iching_original_tc.json"
 INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
 # 简体版=LLM 语际转译（由 translate_interp_sc.py 产出；禁机翻铁律——不得用 opencc 等机械转换替代）
 INTERP_SC_FILE = ROOT / "src" / "data" / "hexagram_interpretations_sc.json"
@@ -31,6 +33,12 @@ BASE_URL = "https://decision-book.vercel.app"
 def parse_original():
     """读取原文数据（卦辞+爻辞），按卦序号索引"""
     data = json.loads(ORIGINAL_FILE.read_text(encoding="utf-8"))
+    return {d["id"]: d for d in data}
+
+
+def parse_original_tc():
+    """读取繁体原文（ctext.org 权威源），按卦序号索引"""
+    data = json.loads(ORIGINAL_TC_FILE.read_text(encoding="utf-8"))
     return {d["id"]: d for d in data}
 
 
@@ -1069,13 +1077,14 @@ def build_sitemap(hexagrams):
 def main():
     hexagrams = parse_hexagrams()
     original = parse_original()
+    original_tc = parse_original_tc()
     interpretations = parse_interpretations()
     interpretations_sc = parse_interpretations_sc()
     insight_gen = parse_insight_gen()
     related_pub = parse_related_pub()
     work_faq = parse_work_faq()
     scenario_faq = parse_scenario_faq()
-    print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文, {len(interpretations)} 条白话解读")
+    print(f"解析到 {len(hexagrams)} 个卦象, {len(original)}+{len(original_tc)} 条原文（简+繁）, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
         print("⚠️ 卦象数量不对")
         return
@@ -1124,10 +1133,11 @@ def main():
             if rh:
                 related.append((rn, rh["tc"]["name"], rh["sc"]["name"], label))
 
-        # 繁体页
+        # 繁体页（原文用 ctext.org 繁体权威源）
+        orig_tc = original_tc.get(num_int)
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq, scenario_faq=scenario_faq), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig_tc, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq, scenario_faq=scenario_faq), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
