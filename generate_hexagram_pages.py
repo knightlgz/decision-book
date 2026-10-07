@@ -220,6 +220,36 @@ SEO_PILOT = {
 }
 
 
+# 第一页页群场景标题扩张（2026-10-07 Kyson 批准 A 方案）：非试点 20 卦
+# 词均经 Google suggest 实测（2026-10-07）；配不上痛点的用通用尾部（31/63 无 kw2=不改 desc）
+SEO_SCENARIO = {
+    "24": {"tc": {"kw": "低谷期怎麼辦", "kw2": "低谷期"}, "sc": {"kw": "低谷期怎么办", "kw2": "低谷期"}},
+    "9": {"tc": {"kw": "職業瓶頸怎麼辦", "kw2": "職業瓶頸"}, "sc": {"kw": "职业瓶颈怎么办", "kw2": "职业瓶颈"}},
+    "63": {"tc": {"kw": "職場與商業解讀"}, "sc": {"kw": "职场与商业解读"}},
+    "18": {"tc": {"kw": "公司管理混亂怎麼辦", "kw2": "管理混亂"}, "sc": {"kw": "公司管理混乱怎么办", "kw2": "管理混乱"}},
+    "30": {"tc": {"kw": "人生迷茫怎麼辦", "kw2": "人生迷茫"}, "sc": {"kw": "人生迷茫怎么办", "kw2": "人生迷茫"}},
+    "43": {"tc": {"kw": "猶豫不決怎麼辦", "kw2": "猶豫不決"}, "sc": {"kw": "犹豫不决怎么办", "kw2": "犹豫不决"}},
+    "58": {"tc": {"kw": "嘴笨怎麼辦", "kw2": "不會說話"}, "sc": {"kw": "嘴笨怎么办", "kw2": "不会说话"}},
+    "49": {"tc": {"kw": "想轉行怎麼辦", "kw2": "轉行"}, "sc": {"kw": "想转行怎么办", "kw2": "转行"}},
+    "13": {"tc": {"kw": "同事不合怎麼辦", "kw2": "同事不合"}, "sc": {"kw": "同事不合怎么办", "kw2": "同事不合"}},
+    "31": {"tc": {"kw": "職場與商業解讀"}, "sc": {"kw": "职场与商业解读"}},
+    "15": {"tc": {"kw": "老實人吃虧怎麼辦", "kw2": "老實人吃虧"}, "sc": {"kw": "老实人吃亏怎么办", "kw2": "老实人吃亏"}},
+    "36": {"tc": {"kw": "被排擠怎麼辦", "kw2": "被排擠"}, "sc": {"kw": "被排挤怎么办", "kw2": "被排挤"}},
+    "17": {"tc": {"kw": "如何跟對老闆", "kw2": "跟對老闆"}, "sc": {"kw": "如何跟对老板", "kw2": "跟对老板"}},
+    "8": {"tc": {"kw": "怎麼累積人脈", "kw2": "人脈"}, "sc": {"kw": "怎么积累人脉", "kw2": "人脉"}},
+    "56": {"tc": {"kw": "異地工作怎麼辦", "kw2": "異地工作"}, "sc": {"kw": "异地工作怎么办", "kw2": "异地工作"}},
+    "44": {"tc": {"kw": "職場小人怎麼辦", "kw2": "職場小人"}, "sc": {"kw": "职场小人怎么办", "kw2": "职场小人"}},
+    "7": {"tc": {"kw": "怎麼帶團隊", "kw2": "帶團隊"}, "sc": {"kw": "怎么带团队", "kw2": "带团队"}},
+    "53": {"tc": {"kw": "升遷無望怎麼辦", "kw2": "升遷無望"}, "sc": {"kw": "升职无望怎么办", "kw2": "升职无望"}},
+    "57": {"tc": {"kw": "不會拒絕別人怎麼辦", "kw2": "不會拒絕"}, "sc": {"kw": "不会拒绝别人怎么办", "kw2": "不会拒绝"}},
+    "50": {"tc": {"kw": "職業轉型怎麼辦", "kw2": "職業轉型"}, "sc": {"kw": "职业转型怎么办", "kw2": "职业转型"}},
+}
+
+# 索引页「熱門場景」精选（2026-10-07 Kyson 批准 C 方案）：(锚文本, 卦号)
+HOT_SCENES_TC = [("被主管針對怎麼辦", "38"), ("中年失業怎麼辦", "47"), ("被排擠怎麼辦", "36"), ("想轉行怎麼辦", "49"), ("職場小人怎麼辦", "44"), ("老實人吃虧怎麼辦", "15"), ("上班內耗怎麼辦", "27"), ("升遷無望怎麼辦", "53")]
+HOT_SCENES_SC = [("被主管针对怎么办", "38"), ("中年失业怎么办", "47"), ("被排挤怎么办", "36"), ("想转行怎么办", "49"), ("职场小人怎么办", "44"), ("老实人吃亏怎么办", "15"), ("上班内耗怎么办", "27"), ("升职无望怎么办", "53")]
+
+
 # GA4 埋码（G-SGYWZGNCSH，2026-08-28 添加；2026-10-07 增 cta_click CTA 点击事件）
 GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGYWZGNCSH"></script>
@@ -329,16 +359,18 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
 
-    # 试点页 SEO 覆盖（标题场景词 + 描述关键词）
+    # 试点页 SEO 覆盖（标题场景词 + 描述关键词）；2026-10-07：第一页页群 20 卦并入（SEO_SCENARIO）
     pilot = SEO_PILOT.get(str(int(n)), {})
+    seo = pilot or SEO_SCENARIO.get(str(int(n)), {})
 
     if is_tc:
         title = f"{name}卦｜第{int(n)}卦｜曾仕強易經職場與商業解讀"
         desc = f"{name}卦在職場與商業上代表什麼？{insight}卦辭爻辭原文白話釋義、職場啟示一次看懂，幫你看清當下該怎麼走。"
-        if pilot:
-            p = pilot["tc"]
+        if seo:
+            p = seo["tc"]
             title = f"{name}卦是什麼意思？{p['kw']}"
-            desc = f"{name}卦是什麼意思？{insight}卦辭爻辭原文白話、遇到{p['kw2']}時的職場啟示。想看清自己的處境，免費起一卦對照看看。"
+            if p.get("kw2"):
+                desc = f"{name}卦是什麼意思？{insight}卦辭爻辭原文白話、遇到{p['kw2']}時的職場啟示。想看清自己的處境，免費起一卦對照看看。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/{n}/"
         alt_url = f"{BASE_URL}/cn/hexagram/{n}/"
@@ -368,10 +400,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     else:
         title = f"{name}卦｜第{int(n)}卦｜曾仕强易经职场与商业解读"
         desc = f"{name}卦在职场与商业上代表什么？{insight}卦辞爻辞原文白话释义、职场启示一次看懂，帮你看清当下该怎么走。"
-        if pilot:
-            p = pilot["sc"]
+        if seo:
+            p = seo["sc"]
             title = f"{name}卦是什么意思？{p['kw']}"
-            desc = f"{name}卦是什么意思？{insight}卦辞爻辞原文白话、遇到{p['kw2']}时的职场启示。想看清自己的处境，免费起一卦对照看看。"
+            if p.get("kw2"):
+                desc = f"{name}卦是什么意思？{insight}卦辞爻辞原文白话、遇到{p['kw2']}时的职场启示。想看清自己的处境，免费起一卦对照看看。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/{n}/"
         alt_url = f"{BASE_URL}/hexagram/{n}/"
@@ -818,6 +851,7 @@ def index_html(hexagrams, lang="tc"):
         footer = "曾仕強教授易經思想體系"
         blog_footer_text = "職場決策筆記"
         blog_footer_url = "/blog/"
+        hot_html = '<div class="hot"><div class="hot-title">熱門場景 · 大家正在面對的處境</div><div class="hot-links">' + "".join(f'<a href="/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_TC) + '</div></div>'
         back = "回到決策之書"
         lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
@@ -832,6 +866,7 @@ def index_html(hexagrams, lang="tc"):
         footer = "曾仕强教授易经思想体系"
         blog_footer_text = "职场决策笔记"
         blog_footer_url = "/cn/blog/"
+        hot_html = '<div class="hot"><div class="hot-title">热门场景 · 大家正在面对的处境</div><div class="hot-links">' + "".join(f'<a href="/cn/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_SC) + '</div></div>'
         back = "回到决策之书"
         lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
 
@@ -879,6 +914,11 @@ def index_html(hexagrams, lang="tc"):
   .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
   h1 {{ font-size:32px; margin-bottom:8px; color:var(--text-strong); }}
   .subtitle {{ color:var(--muted); font-size:15px; margin-bottom:40px; }}
+  .hot {{ margin:-16px 0 32px; padding:16px 18px; background:var(--card); border:1px solid var(--border); border-radius:12px; }}
+  .hot-title {{ font-size:13px; color:var(--muted); letter-spacing:1px; margin-bottom:10px; }}
+  .hot-links {{ display:flex; flex-wrap:wrap; gap:8px; }}
+  .hot-links a {{ font-size:14px; color:var(--text); text-decoration:none; border:1px solid var(--border); border-radius:16px; padding:4px 12px; transition:border-color .2s; }}
+  .hot-links a:hover {{ color:var(--accent); border-color:var(--accent); }}
   .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }}
   .grid a {{ display:block; background:var(--card); border:1px solid var(--border); color:var(--text); text-decoration:none; padding:16px; border-radius:10px; font-size:15px; transition:border-color .2s; }}
   .grid a:hover {{ border-color:var(--accent); color:var(--accent); }}
@@ -896,6 +936,7 @@ def index_html(hexagrams, lang="tc"):
   </div>
   <h1>{h1}</h1>
   <p class="subtitle">{subtitle}</p>
+  {hot_html}
   <div class="grid">
 {items}
   </div>
