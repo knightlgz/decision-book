@@ -118,6 +118,15 @@ FAQ_SC = [
 ]
 
 
+def parse_scenario_faq():
+    """场景痛点 FAQ（第一页页群 B 方案；2026-10-07）→ {卦号int: value}"""
+    p = ROOT / "src/data/scenario_faq.json"
+    if not p.exists():
+        return {}
+    data = json.loads(p.read_text(encoding="utf-8"))
+    return {int(k): v for k, v in data.items()}
+
+
 def faq_jsonld(faq_items, url):
     return json.dumps({
         "@context": "https://schema.org",
@@ -338,7 +347,7 @@ except ImportError:
     QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC = {}, {}, {}, {}
 
 
-def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None, pub_related=None, work_faq=None):
+def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None, pub_related=None, work_faq=None, scenario_faq=None):
     """单个卦象页。lang: tc=繁体 / sc=简体
     related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）
     insight_gen: {int_id: {sc, tc}} 通用版金句（分享文案用）"""
@@ -442,6 +451,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         _wf = work_faq.get(int(n), {}).get("tc" if is_tc else "sc")
         if _wf:
             faq_items = faq_items + [{"q": _wf["q"], "a": _wf["a"]}]
+    # 场景痛点 FAQ（第一页页群 B 方案；2026-10-07）——问题取自标题同源场景词
+    if scenario_faq:
+        _sf = scenario_faq.get(int(n), {}).get("tc" if is_tc else "sc")
+        if _sf:
+            faq_items = faq_items + [{"q": _sf["q"], "a": _sf["a"]}]
     # 问题型 FAQ（从问题库取 2 个，与问题卡错开，答案用卦象洞察——SEO 长尾入口）
     _bank = QUESTIONS_BANK if is_tc else (QUESTIONS_BANK_SC or QUESTIONS_BANK)
     _h2c = HEX_TO_CATS if is_tc else (HEX_TO_CATS_SC or HEX_TO_CATS)
@@ -987,6 +1001,7 @@ def main():
     insight_gen = parse_insight_gen()
     related_pub = parse_related_pub()
     work_faq = parse_work_faq()
+    scenario_faq = parse_scenario_faq()
     print(f"解析到 {len(hexagrams)} 个卦象, {len(original)} 条原文, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
         print("⚠️ 卦象数量不对")
@@ -1039,12 +1054,12 @@ def main():
         # 繁体页
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq, scenario_faq=scenario_faq), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq, scenario_faq=scenario_faq), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")
