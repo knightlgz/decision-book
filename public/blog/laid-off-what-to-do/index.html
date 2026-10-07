@@ -56,6 +56,30 @@ blockquote{background:#171A22}
 }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "被裁員了怎麼辦？慌之前，先做好這三件事", "description": "被裁員後最貴的情緒是慌張。在投出第一份履歷之前，先把三件事做好：該拿的錢釘死在紙上、算清緊急預備金剩幾個月、分清這次是休息還是轉向。", "author": {"@type": "Person", "name": "凱森讀易"}, "publisher": {"@type": "Organization", "name": "決策之書"}, "mainEntityOfPage": "https://decision-book.vercel.app/blog/laid-off-what-to-do/", "datePublished": "2026-09-14"}</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGYWZGNCSH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SGYWZGNCSH');
+  </script>
+  <script>
+  (function(){
+    document.addEventListener('click', function(e){
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a, .q-card a') : null;
+        if (!a || !window.gtag) return;
+        var c = a.closest('.cta-mini') || a.closest('.cta') || a.closest('.q-card');
+        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : ((c && c.classList.contains('cta')) ? 'bottom' : 'question_card');
+        var parts = location.pathname.split('hexagram/');
+        var hx = parts.length > 1 ? (parseInt(parts[1], 10) || '') : '';
+        gtag('event', 'cta_click', { pos: pos, hexagram: String(hx), page_lang: document.documentElement.lang || '' });
+      } catch (err) {}
+    }, true);
+  })();
+  </script>
+
 </head>
 <body>
 <div class="wrap">

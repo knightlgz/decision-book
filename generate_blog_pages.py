@@ -15,6 +15,7 @@ import json
 import re
 import datetime
 from pathlib import Path
+from generate_hexagram_pages import GA_SNIPPET  # GA4 埋码复用（含 cta_click 监听，2026-10-07）
 
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
@@ -197,6 +198,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
         ld["datePublished"] = meta_extra["date"]
     ld_json = json.dumps(ld, ensure_ascii=False)
     xdefault = f"{BASE_URL}/blog/{slug}/" if slug else f"{BASE_URL}/blog/"
+    ga_snippet = GA_SNIPPET
     return f"""<!DOCTYPE html>
 <html lang="{cfg['html_lang']}">
 <head>
@@ -215,6 +217,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 <meta property="og:url" content="{canonical}">
 <style>{CSS}</style>
 <script type="application/ld+json">{ld_json}</script>
+{ga_snippet}
 </head>
 <body>
 <div class="wrap">

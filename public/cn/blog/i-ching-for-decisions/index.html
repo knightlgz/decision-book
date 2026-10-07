@@ -56,6 +56,30 @@ blockquote{background:#171A22}
 }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "易经决策准吗？用易经做职场决策的完整指南", "description": "易经不是拿来「算准」的。这篇完整指南讲清楚：易经决策的三个层次、一个离职两难的真实推演、以及为什么「卦是镜子，不是算盘」。", "author": {"@type": "Person", "name": "凯森读易"}, "publisher": {"@type": "Organization", "name": "决策之书"}, "mainEntityOfPage": "https://decision-book.vercel.app/cn/blog/i-ching-for-decisions/", "datePublished": "2026-09-14"}</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGYWZGNCSH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SGYWZGNCSH');
+  </script>
+  <script>
+  (function(){
+    document.addEventListener('click', function(e){
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a, .q-card a') : null;
+        if (!a || !window.gtag) return;
+        var c = a.closest('.cta-mini') || a.closest('.cta') || a.closest('.q-card');
+        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : ((c && c.classList.contains('cta')) ? 'bottom' : 'question_card');
+        var parts = location.pathname.split('hexagram/');
+        var hx = parts.length > 1 ? (parseInt(parts[1], 10) || '') : '';
+        gtag('event', 'cta_click', { pos: pos, hexagram: String(hx), page_lang: document.documentElement.lang || '' });
+      } catch (err) {}
+    }, true);
+  })();
+  </script>
+
 </head>
 <body>
 <div class="wrap">

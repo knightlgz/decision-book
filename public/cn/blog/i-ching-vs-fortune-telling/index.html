@@ -56,6 +56,30 @@ blockquote{background:#171A22}
 }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "易经解卦和算命，到底有什么区别？", "description": "都说「不准」，为什么解卦还有人用？因为它和算命根本是两件事——一个替你预测答案，一个帮你看清处境。这篇把区别一次讲清楚。", "author": {"@type": "Person", "name": "凯森读易"}, "publisher": {"@type": "Organization", "name": "决策之书"}, "mainEntityOfPage": "https://decision-book.vercel.app/cn/blog/i-ching-vs-fortune-telling/", "datePublished": "2026-09-15"}</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGYWZGNCSH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SGYWZGNCSH');
+  </script>
+  <script>
+  (function(){
+    document.addEventListener('click', function(e){
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a, .q-card a') : null;
+        if (!a || !window.gtag) return;
+        var c = a.closest('.cta-mini') || a.closest('.cta') || a.closest('.q-card');
+        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : ((c && c.classList.contains('cta')) ? 'bottom' : 'question_card');
+        var parts = location.pathname.split('hexagram/');
+        var hx = parts.length > 1 ? (parseInt(parts[1], 10) || '') : '';
+        gtag('event', 'cta_click', { pos: pos, hexagram: String(hx), page_lang: document.documentElement.lang || '' });
+      } catch (err) {}
+    }, true);
+  })();
+  </script>
+
 </head>
 <body>
 <div class="wrap">

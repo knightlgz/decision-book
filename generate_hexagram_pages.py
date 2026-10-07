@@ -220,7 +220,7 @@ SEO_PILOT = {
 }
 
 
-# GA4 埋码（G-SGYWZGNCSH，2026-08-28 添加）
+# GA4 埋码（G-SGYWZGNCSH，2026-08-28 添加；2026-10-07 增 cta_click CTA 点击事件）
 GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGYWZGNCSH"></script>
   <script>
@@ -228,6 +228,21 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-SGYWZGNCSH');
+  </script>
+  <script>
+  (function(){
+    document.addEventListener('click', function(e){
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a, .q-card a') : null;
+        if (!a || !window.gtag) return;
+        var c = a.closest('.cta-mini') || a.closest('.cta') || a.closest('.q-card');
+        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : ((c && c.classList.contains('cta')) ? 'bottom' : 'question_card');
+        var parts = location.pathname.split('hexagram/');
+        var hx = parts.length > 1 ? (parseInt(parts[1], 10) || '') : '';
+        gtag('event', 'cta_click', { pos: pos, hexagram: String(hx), page_lang: document.documentElement.lang || '' });
+      } catch (err) {}
+    }, true);
+  })();
   </script>
 """
 
@@ -901,9 +916,25 @@ def build_sitemap(hexagrams):
         f"  <url>\n    <loc>{u}</loc>\n    <changefreq>weekly</changefreq>\n  </url>"
         for u in urls
     )
+    # 保留既有 blog 条目（由 generate_blog_pages.py 维护；单独重跑本脚本时不可丢失）
+    blog_blocks = ""
+    sm_path = PUBLIC / "sitemap.xml"
+    if sm_path.exists():
+        import re as _re
+        old = sm_path.read_text(encoding="utf-8")
+        blocks = _re.findall(r"<url>\s*<loc>[^<]*/blog/[^<]*</loc>[\s\S]*?</url>", old)
+        seen, kept = set(), []
+        for b in blocks:
+            loc = _re.search(r"<loc>([^<]+)</loc>", b)
+            k = loc.group(1) if loc else b
+            if k not in seen:
+                seen.add(k)
+                kept.append(b)
+        if kept:
+            blog_blocks = "\n" + "\n".join("  " + b for b in kept)
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{body}
+{body}{blog_blocks}
 </urlset>"""
 
 

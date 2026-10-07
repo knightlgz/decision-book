@@ -12,6 +12,9 @@ import ShareButton from './components/ShareButton';
 // 卦号归一化匹配：hexagrams.js 用 "01" 格式、数据文件用 1 格式，String(1)≠String("01")
 const numKey = (v) => String(Number(v));
 
+// GA4 事件镜像（2026-10-07）：track() 走 Vercel Analytics；此函数同步上报 GA4——转化分析统一在 GA4 看
+const ga = (name, params = {}) => { try { if (typeof window !== 'undefined' && window.gtag) window.gtag('event', name, params); } catch (e) {} };
+
 // 示例问题与 FAQ（2026-09-15 借鉴对标 tarotap 首页）：降低启动门槛 + 期望管理
 const EXAMPLES = {
   tc: [
@@ -177,17 +180,20 @@ export default function App() {
     if (!result) return null;
     setHexagram(result);
     setCast(c);
-    track('hexagram_generated', {
+    const castEvent = {
       hexagram: result.number,
       region,
       questionLength: q.length,
       movingCount: c.moving.filter(Boolean).length,
       ...(source ? { source } : {})
-    });
+    };
+    track('hexagram_generated', castEvent);
+    ga('hexagram_generated', castEvent);
     return result;
   }, [region]);
 
   const handleGenerate = async () => {
+    ga('cast_start', { hasQuestion: !!question.trim(), lang });
     if (!question.trim()) {
       return alert(lang === "tc" ? "請輸入具體問題" : "请输入具体问题");
     }
@@ -203,13 +209,16 @@ export default function App() {
 
   const handleUnlock = async (password) => {
     track('unlock_attempted', { hexagram: hexagram?.number });
+    ga('unlock_attempted', { hexagram: hexagram?.number });
 
     if (password.trim() !== "AURA-888") {
       track('unlock_failed', { reason: 'wrong_password' });
+      ga('unlock_failed', { reason: 'wrong_password' });
       alert(lang === "tc" ? "密碼驗證失敗，請確認購買後的感謝信內容。" : "密码验证失败，请确认购买后的感谢信内容。");
       return false;
     }
     track('unlock_success');
+    ga('unlock_success');
     setUnlocked(true);
     fetchReport(question, region, hexagram);
     return true;
