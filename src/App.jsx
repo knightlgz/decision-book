@@ -8,6 +8,7 @@ import { castQuestion } from './lib/seed';
 import HexagramFigure from './components/HexagramFigure';
 import Paywall from './components/Paywall';
 import ShareButton from './components/ShareButton';
+import { renderCard } from './lib/resultCard';
 
 // 卦号归一化匹配：hexagrams.js 用 "01" 格式、数据文件用 1 格式，String(1)≠String("01")
 const numKey = (v) => String(Number(v));
@@ -248,6 +249,61 @@ export default function App() {
     ? window.location.origin + (lang === "tc" ? "/" : "/cn/")
     : "";
 
+  // 卦象结果卡（2026-10-07）：1080×1920 分享图——保存 / 分享（隐私：卡面不含问题与报告）
+  const buildCardCanvas = async () => {
+    if (!hexagram) return null;
+    const orig = ORIGINALS.find((o) => numKey(o.id) === numKey(hexagram.number));
+    if (!orig) return null;
+    const canvas = document.createElement("canvas");
+    await renderCard(canvas, { hexagram, orig, cast, insight: guaInsight, lang });
+    return canvas;
+  };
+  const downloadBlob = (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  };
+  const handleSaveCard = async () => {
+    const canvas = await buildCardCanvas();
+    if (!canvas) return;
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      downloadBlob(blob, `decision-book-${hexagram.number}-${hexagram[lang].name}.png`);
+      track('card_saved', { hexagram: hexagram.number });
+      ga('card_saved', { hexagram: hexagram.number });
+    }, "image/png");
+  };
+  const handleShareCard = async () => {
+    const canvas = await buildCardCanvas();
+    if (!canvas) return;
+    const blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
+    if (!blob) return;
+    const file = new File([blob], `decision-book-${hexagram.number}.png`, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        // 图片 + 文字白名单（卦名+金句，同无图分享口径）+ 主页链接：卡片给体面，链接给可达
+        await navigator.share({
+          files: [file],
+          text: `${hexagram[lang].name}：${guaInsight}`,
+          url: shareUrl,
+        });
+        track('card_shared', { hexagram: hexagram.number, method: 'native_file' });
+        ga('card_shared', { hexagram: hexagram.number, method: 'native_file' });
+        return;
+      } catch (err) {
+        if (err && err.name === "AbortError") return; // 用户取消：不兜底
+      }
+    }
+    downloadBlob(blob, `decision-book-${hexagram.number}.png`);
+    track('card_shared', { hexagram: hexagram.number, method: 'download_fallback' });
+    ga('card_shared', { hexagram: hexagram.number, method: 'download_fallback' });
+  };
+
   return (
     <div className="min-h-dvh bg-[#FAFAFA] dark:bg-[#0F1115] text-[#333333] dark:text-[#E8E6E0] font-sans p-4 sm:p-6 selection:bg-gray-200 dark:selection:bg-[#2A2E3A]">
       <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
@@ -399,6 +455,22 @@ export default function App() {
             <p className="text-sm font-medium text-gray-600 dark:text-[#C5C1B8] mb-6 leading-relaxed">
               {guaInsight}
             </p>
+
+            {/* 卦象结果卡（2026-10-07）：保存/分享 1080×1920 图卡 */}
+            <div className="flex gap-2 mb-6">
+              <button
+                onClick={handleSaveCard}
+                className="flex-1 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-[#2A2E3A] bg-white dark:bg-[#171A22] text-gray-600 dark:text-[#C5C1B8] hover:border-[#C9B896] dark:hover:border-[#C8A96A]/60 hover:text-gray-900 dark:hover:text-[#F5F2EA] transition-colors"
+              >
+                {lang === "tc" ? "保存卦象卡" : "保存卦象卡"}
+              </button>
+              <button
+                onClick={handleShareCard}
+                className="flex-1 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-[#2A2E3A] bg-white dark:bg-[#171A22] text-gray-600 dark:text-[#C5C1B8] hover:border-[#C9B896] dark:hover:border-[#C8A96A]/60 hover:text-gray-900 dark:hover:text-[#F5F2EA] transition-colors"
+              >
+                {lang === "tc" ? "分享卦象卡" : "分享卦象卡"}
+              </button>
+            </div>
 
             <Paywall
               lang={lang}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>卦象卡预览（dev 专用，不参与构建产物）</title>
+</head>
+<body style="background:#2a2a2a;margin:0;padding:24px;">
+  <canvas id="c" style="width:1080px;height:1920px;display:block;margin:0 auto;border:1px solid #555;"></canvas>
+  <div style="text-align:center;padding:14px;">
+    <a id="dl" download="card.png" style="color:#ccc;font-size:13px;">下载 PNG</a>
+  </div>
+  <script type="module">
+    import { renderCard } from '/src/lib/resultCard.js';
+    import HEXAGRAMS from '/src/data/hexagrams.js';
+    import ORIGINALS from '/src/data/hexagram_originals.json';
+    import INSIGHT from '/src/data/insight_gen.json';
+
+    const p = new URLSearchParams(location.search);
+    const num = parseInt(p.get('n') || '27', 10);
+    const lang = p.get('lang') || 'tc';
+    const numK = (v) => String(Number(v));
+
+    const hx = HEXAGRAMS.find((h) => numK(h.number) === numK(num));
+    const orig = ORIGINALS.find((o) => numK(o.id) === numK(num));
+    const ig = INSIGHT.find((o) => numK(o.id) === numK(num));
+    const insight = ig ? (lang === 'tc' ? ig.tc : ig.sc) : '';
+    const cast = { moving: [false, true, false, false, true, false] };
+
+    const canvas = document.getElementById('c');
+    await renderCard(canvas, { hexagram: hx, orig, cast, insight, lang });
+    document.getElementById('dl').href = canvas.toDataURL('image/png');
+  </script>
+</body>
+</html>
