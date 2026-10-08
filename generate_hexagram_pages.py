@@ -468,6 +468,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         all_label = "全部六十四卦"
         breadcrumb_home = "決策之書"
         breadcrumb_idx = "六十四卦"
+        nav_ask = "提問"
+        nav_hex = "易經"
+        nav_blog = "筆記"
+        blog_index = "/blog/"
         insight_label = "核心解讀"
         cta_h2 = "你正在面對類似的職場或商業抉擇嗎？"
         cta_p = "免費起卦，看看你的處境對應哪一卦；完整行動方案，起卦後即可免費查看。"
@@ -502,6 +506,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         all_label = "全部六十四卦"
         breadcrumb_home = "决策之书"
         breadcrumb_idx = "六十四卦"
+        nav_ask = "提问"
+        nav_hex = "易经"
+        nav_blog = "笔记"
+        blog_index = "/cn/blog/"
         insight_label = "核心解读"
         cta_h2 = "你正在面对类似的职场或商业抉择吗？"
         cta_p = "免费起卦，看看你的处境对应哪一卦；完整行动方案，起卦后即可免费查看。"
@@ -558,9 +566,9 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
 
     # 语言切换链接
     if is_tc:
-        lang_switch = f'<span class="lang-switch"><a href="{alt_url}" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
+        lang_switch = f'<span class="lang-switch"><a href="/cn/hexagram/{n}/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
-        lang_switch = f'<span class="lang-switch"><a href="{alt_url}" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
+        lang_switch = f'<span class="lang-switch"><a href="/hexagram/{n}/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
 
     # 原文
     scripture_html = ""
@@ -764,6 +772,17 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .lang-switch a {{ color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; transition:all .2s; }}
   .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
   .lang-switch a.active {{ color:var(--accent); border-color:var(--accent); }}
+  /* 三栏目常驻导航（2026-10-08）：提问｜易经｜笔记 */
+  .site-nav {{ position:sticky; top:0; z-index:40; background:rgba(15,17,21,.86); -webkit-backdrop-filter:blur(12px) saturate(1.6); backdrop-filter:blur(12px) saturate(1.6); border-bottom:1px solid var(--border); }}
+  .site-nav-inner {{ max-width:900px; margin:0 auto; padding:0 24px; height:48px; display:flex; align-items:center; justify-content:center; gap:36px; position:relative; }}
+  .site-nav a.nav-item {{ color:var(--muted); text-decoration:none; font-size:14px; letter-spacing:3px; padding:6px 2px; transition:color .2s; }}
+  .site-nav a.nav-item:hover {{ color:var(--accent); }}
+  .site-nav a.nav-item.active {{ color:var(--accent); font-weight:700; text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:2px; }}
+  .site-nav .lang-switch {{ position:absolute; right:24px; top:50%; transform:translateY(-50%); }}
+  .site-nav .lang-switch a {{ font-size:12.5px; padding:3px 10px; }}
+  @media (prefers-color-scheme: light) {{ .site-nav {{ background:rgba(250,248,244,.86); }} }}
+  @media (max-width:640px) {{ .site-nav-inner {{ padding:0 16px; gap:22px; }} .site-nav .lang-switch {{ right:16px; }} .site-nav a.nav-item {{ letter-spacing:2px; }} }}
+
   .hexagram-badge {{ display:inline-block; background:var(--card); border:1px solid var(--accent-border); color:var(--accent); padding:4px 14px; border-radius:20px; font-size:13px; letter-spacing:2px; white-space:nowrap; }}
   .title-row {{ display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap; }}
   h1 {{ font-size:40px; margin:0; color:var(--text-strong); line-height:1.3; }}
@@ -864,11 +883,15 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   {ga_snippet}
  </head>
  <body>
- <div class="container">
-  <div class="topbar">
-    <div class="breadcrumb"><a href="{home}">{breadcrumb_home}</a> / <a href="{idx_link}">{breadcrumb_idx}</a> / {name}</div>
-    {lang_switch}
-  </div>
+ <nav class="site-nav">
+ <div class="site-nav-inner">
+  <a class="nav-item" href="{home}">{nav_ask}</a>
+  <a class="nav-item active" href="{idx_link}">{nav_hex}</a>
+  <a class="nav-item" href="{blog_index}">{nav_blog}</a>
+  {lang_switch}
+ </div>
+</nav>
+<div class="container">
   <div class="title-row">
     <span class="hexagram-badge">{num_label}</span>
     <h1>{name}</h1>
@@ -948,7 +971,13 @@ def index_html(hexagrams, lang="tc"):
         blog_footer_url = "/blog/"
         hot_html = '<div class="hot"><div class="hot-title">熱門場景 · 大家正在面對的處境</div><div class="hot-links">' + "".join(f'<a href="/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_TC) + '</div></div>'
         back = "回到決策之書"
-        lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
+        nav_home = "/"
+        nav_hex_href = "/hexagram/"
+        nav_blog_href = "/blog/"
+        nav_ask = "提問"
+        nav_hex = "易經"
+        nav_blog = "筆記"
+        lang_switch = f'<span class="lang-switch"><a href="/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
         title = "易经六十四卦｜曾仕强职场与商业解读全索引"
         desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、职场与商业核心解读，基于曾仕强教授易经思想体系。"
@@ -963,7 +992,13 @@ def index_html(hexagrams, lang="tc"):
         blog_footer_url = "/cn/blog/"
         hot_html = '<div class="hot"><div class="hot-title">热门场景 · 大家正在面对的处境</div><div class="hot-links">' + "".join(f'<a href="/cn/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_SC) + '</div></div>'
         back = "回到决策之书"
-        lang_switch = f'<span class="lang-switch"><a href="{BASE_URL}/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
+        nav_home = "/cn/"
+        nav_hex_href = "/cn/hexagram/"
+        nav_blog_href = "/cn/blog/"
+        nav_ask = "提问"
+        nav_hex = "易经"
+        nav_blog = "笔记"
+        lang_switch = f'<span class="lang-switch"><a href="/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
 
     ld = json.dumps({
         "@context": "https://schema.org",
@@ -1007,6 +1042,16 @@ def index_html(hexagrams, lang="tc"):
   .breadcrumb a {{ color:var(--accent); text-decoration:none; }}
   .lang-switch a {{ color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; }}
   .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
+  /* 三栏目常驻导航（2026-10-08）：提问｜易经｜笔记 */
+  .site-nav {{ position:sticky; top:0; z-index:40; background:rgba(15,17,21,.86); -webkit-backdrop-filter:blur(12px) saturate(1.6); backdrop-filter:blur(12px) saturate(1.6); border-bottom:1px solid var(--border); }}
+  .site-nav-inner {{ max-width:900px; margin:0 auto; padding:0 24px; height:48px; display:flex; align-items:center; justify-content:center; gap:36px; position:relative; }}
+  .site-nav a.nav-item {{ color:var(--muted); text-decoration:none; font-size:14px; letter-spacing:3px; padding:6px 2px; transition:color .2s; }}
+  .site-nav a.nav-item:hover {{ color:var(--accent); }}
+  .site-nav a.nav-item.active {{ color:var(--accent); font-weight:700; text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:2px; }}
+  .site-nav .lang-switch {{ position:absolute; right:24px; top:50%; transform:translateY(-50%); }}
+  .site-nav .lang-switch a {{ font-size:12.5px; padding:3px 10px; }}
+  @media (prefers-color-scheme: light) {{ .site-nav {{ background:rgba(250,248,244,.86); }} }}
+  @media (max-width:640px) {{ .site-nav-inner {{ padding:0 16px; gap:22px; }} .site-nav .lang-switch {{ right:16px; }} .site-nav a.nav-item {{ letter-spacing:2px; }} }}
   h1 {{ font-size:32px; margin-bottom:8px; color:var(--text-strong); }}
   .subtitle {{ color:var(--muted); font-size:15px; margin-bottom:40px; }}
   .hot {{ margin:-16px 0 32px; padding:16px 18px; background:var(--card); border:1px solid var(--border); border-radius:12px; }}
@@ -1024,11 +1069,15 @@ def index_html(hexagrams, lang="tc"):
   {ga_snippet}
 </head>
 <body>
+<nav class="site-nav">
+ <div class="site-nav-inner">
+  <a class="nav-item" href="{nav_home}">{nav_ask}</a>
+  <a class="nav-item active" href="{nav_hex_href}">{nav_hex}</a>
+  <a class="nav-item" href="{nav_blog_href}">{nav_blog}</a>
+  {lang_switch}
+ </div>
+</nav>
 <div class="container">
-  <div class="topbar">
-    <div class="breadcrumb"><a href="/">{home_label}</a> / {idx_label}</div>
-    {lang_switch}
-  </div>
   <h1>{h1}</h1>
   <p class="subtitle">{subtitle}</p>
   {hot_html}

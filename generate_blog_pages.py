@@ -31,6 +31,9 @@ LANGS = {
         "alternate_hreflang": "zh-Hans",
         "brand": "決策之書",
         "nav_sub": "易經 × 職場決策",
+        "label_ask": "提問",
+        "label_hex": "易經",
+        "label_blog": "筆記",
         "switch_label": "简体中文",
         "switch_lang": "sc",
         "author_line": "凱森讀易",
@@ -51,6 +54,9 @@ LANGS = {
         "alternate_hreflang": "zh-Hant",
         "brand": "决策之书",
         "nav_sub": "易经 × 职场决策",
+        "label_ask": "提问",
+        "label_hex": "易经",
+        "label_blog": "笔记",
         "switch_label": "繁體中文",
         "switch_lang": "tc",
         "author_line": "凯森读易",
@@ -146,6 +152,15 @@ body{font-family:-apple-system,"PingFang TC","PingFang SC","Noto Sans TC","Noto 
 .nav .sub{color:var(--sub);font-size:12px;letter-spacing:.2em}
 .nav .lang-switch{font-weight:400;font-size:12.5px;color:var(--sub);letter-spacing:0;border:1px solid var(--line);border-radius:6px;padding:3px 10px;margin-left:12px}
 .nav .lang-switch:hover{color:var(--accent);border-color:var(--accent)}
+/* 三栏目常驻导航（2026-10-08） */
+.site-nav{position:sticky;top:0;z-index:40;background:rgba(250,250,248,.86);-webkit-backdrop-filter:blur(12px) saturate(1.6);backdrop-filter:blur(12px) saturate(1.6);border-bottom:1px solid var(--line)}
+.site-nav-inner{max-width:680px;margin:0 auto;padding:0 22px;height:48px;display:flex;align-items:center;justify-content:center;gap:36px;position:relative}
+.site-nav a.nav-item{color:var(--sub);text-decoration:none;font-size:14px;letter-spacing:.2em;padding:6px 2px;transition:color .2s}
+.site-nav a.nav-item:hover{color:var(--accent)}
+.site-nav a.nav-item.active{color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+.site-nav .lang-switch{position:absolute;right:22px;top:50%;transform:translateY(-50%);font-weight:400;font-size:12.5px;color:var(--sub);letter-spacing:0;border:1px solid var(--line);border-radius:6px;padding:3px 10px}
+.site-nav .lang-switch:hover{color:var(--accent);border-color:var(--accent)}
+@media (max-width:640px){.site-nav-inner{padding:0 16px;gap:22px}.site-nav .lang-switch{right:16px}.site-nav a.nav-item{letter-spacing:.15em}}
 h1{font-size:26px;line-height:1.5;margin-bottom:10px;letter-spacing:.02em}
 .meta{color:var(--sub);font-size:13px;margin-bottom:34px}
 h2{font-size:19px;margin:36px 0 14px;padding-left:10px;border-left:3px solid var(--ink)}
@@ -172,6 +187,7 @@ em{font-style:normal;color:var(--sub);font-size:13.5px}
 /* 白天/暗夜模式：跟随系统 */
 @media (prefers-color-scheme: dark){
 :root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
+.site-nav{background:rgba(15,17,21,.86)}
 .cta{background:#171A22}
 blockquote{background:#171A22}
 .cta a.btn{background:var(--accent);color:#14120E}
@@ -220,12 +236,15 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 {ga_snippet}
 </head>
 <body>
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a class="nav-item" href="{prefix}/">{cfg['label_ask']}</a>
+    <a class="nav-item" href="{prefix}/hexagram/">{cfg['label_hex']}</a>
+    <a class="nav-item active" href="{prefix}/blog/">{cfg['label_blog']}</a>
+    <a class="lang-switch" href="{alt_path}">{cfg['switch_label']}</a>
+  </div>
+</nav>
 <div class="wrap">
-<div class="nav">
-  <a href="{BASE_URL}{prefix}/">{cfg['brand']}</a>
-  <span class="sub">{cfg['nav_sub']}</span>
-  <a class="lang-switch" href="{alt_url}">{cfg['switch_label']}</a>
-</div>
 {body_html}
 {related_html}
 <footer>
@@ -264,7 +283,7 @@ def main():
             cta = f"""<div class="cta">
 <p>{cfg['cta_h']}</p>
 <p style="margin-bottom:16px">{cfg['cta_p']}</p>
-<a class="btn" href="{BASE_URL}{prefix}/">{cfg['cta_btn']}</a>
+<a class="btn" href="{prefix}/">{cfg['cta_btn']}</a>
 </div>"""
             rel = []
             for rslug in [s.strip() for s in m.get("related", "").split(",") if s.strip()]:

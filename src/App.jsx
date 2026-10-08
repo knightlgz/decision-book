@@ -314,16 +314,39 @@ export default function App() {
 
   return (
     <div className="min-h-dvh bg-[#FAFAFA] dark:bg-[#0F1115] text-[#333333] dark:text-[#E8E6E0] font-sans p-4 sm:p-6 selection:bg-gray-200 dark:selection:bg-[#2A2E3A]">
-      <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
-
-        <header className="text-center space-y-2 relative">
+      {/* 三栏目常驻导航（2026-10-08）：提问｜易经｜笔记 */}
+      <nav className="sticky top-0 z-40 -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 px-4 sm:px-6 backdrop-blur-md bg-[#FAFAFA]/85 dark:bg-[#0F1115]/85 border-b border-gray-200 dark:border-[#2A2E3A]">
+        <div className="max-w-md mx-auto h-12 flex items-center justify-center gap-8 relative">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="text-sm tracking-[0.25em] text-[#8A6D3B] dark:text-[#C8A96A] font-bold cursor-pointer"
+          >
+            {lang === "tc" ? "提問" : "提问"}
+          </button>
+          <a
+            href={lang === "tc" ? "/hexagram/" : "/cn/hexagram/"}
+            className="text-sm tracking-[0.25em] text-gray-500 dark:text-[#8B8F98] hover:text-[#8A6D3B] dark:hover:text-[#C8A96A] transition-colors"
+          >
+            {lang === "tc" ? "易經" : "易经"}
+          </a>
+          <a
+            href={lang === "tc" ? "/blog/" : "/cn/blog/"}
+            className="text-sm tracking-[0.25em] text-gray-500 dark:text-[#8B8F98] hover:text-[#8A6D3B] dark:hover:text-[#C8A96A] transition-colors"
+          >
+            {lang === "tc" ? "筆記" : "笔记"}
+          </a>
           <button
             onClick={switchLang}
             title={lang === "tc" ? "切換至簡體中文 · Switch to Simplified Chinese" : "切換至繁體中文 · Switch to Traditional Chinese"}
-            className="absolute right-0 top-0 text-xs text-gray-500 dark:text-[#8B8F98] border border-gray-300 rounded-lg px-3 py-1.5 hover:text-gray-700 hover:border-gray-400 transition-colors"
+            className="absolute right-0 text-xs text-gray-500 dark:text-[#8B8F98] border border-gray-300 dark:border-[#3A3E4A] rounded-lg px-2.5 py-1 hover:text-gray-700 dark:hover:text-[#F5F2EA] transition-colors"
           >
             🌐 {lang === "tc" ? "简体中文" : "繁體中文"}
           </button>
+        </div>
+      </nav>
+      <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
+
+        <header className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-widest text-gray-900 dark:text-[#F5F2EA]">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -528,10 +551,10 @@ export default function App() {
               </a>
             ))}
           </div>
-          <div className="text-center mt-3">
+          <div className="text-center mt-4">
             <a
               href={lang === "tc" ? "/blog/" : "/cn/blog/"}
-              className="text-xs text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
+              className="inline-flex items-center gap-1 text-sm font-medium text-[#8A6D3B] dark:text-[#C8A96A] hover:underline underline-offset-4"
             >
               {lang === "tc" ? "查看全部文章 →" : "查看全部文章 →"}
             </a>
