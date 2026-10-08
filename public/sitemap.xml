@@ -13,6 +13,30 @@
     <changefreq>weekly</changefreq>
   </url>
 <url>
+    <loc>https://decision-book.vercel.app/about/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/cn/about/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/privacy/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/cn/privacy/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/disclaimer/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/cn/disclaimer/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
     <loc>https://decision-book.vercel.app/hexagram/01/</loc>
     <changefreq>weekly</changefreq>
   </url>

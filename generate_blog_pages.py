@@ -178,6 +178,7 @@ a{color:var(--accent)}
 .related a{display:block;padding:10px 0;border-bottom:1px dashed var(--line);text-decoration:none;color:var(--ink)}
 .related a:hover{color:var(--accent)}
 footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:var(--sub);font-size:12.5px;line-height:1.8}
+.f-links{margin-bottom:2px}.f-links a{color:var(--sub);text-decoration:none}.f-links a:hover{color:var(--accent)}.f-brand{margin-top:6px}
 .list-item{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .list-item .t{font-size:17px;font-weight:700;margin-bottom:6px}
 .list-item .d{color:var(--sub);font-size:13.5px}
@@ -248,8 +249,9 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 {body_html}
 {related_html}
 <footer>
-  <p><strong>{'關於本站' if lang == 'tc' else '关于本站'}</strong>：{cfg['footer_about']}</p>
-  <p style="margin-top:8px">{cfg['footer_disclaimer']}</p>
+  <div class="f-links"><a href="{prefix}/about/">{'關於本站' if lang == 'tc' else '关于本站'}</a> · <a href="{prefix}/privacy/">{'隱私聲明' if lang == 'tc' else '隐私声明'}</a> · <a href="{prefix}/disclaimer/">{'免責聲明' if lang == 'tc' else '免责声明'}</a></div>
+  <div class="f-links"><a href="{prefix}/hexagram/">{'易經六十四卦' if lang == 'tc' else '易经六十四卦'}</a> · <a href="{prefix}/blog/">{'職場決策筆記' if lang == 'tc' else '职场决策笔记'}</a></div>
+  <p style="margin-top:10px">{cfg['footer_disclaimer']}</p>
 </footer>
 </div>
 </body>

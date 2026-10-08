@@ -849,6 +849,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .muted {{ color:var(--muted2); }}
   footer {{ text-align:center; padding:24px; color:var(--muted2); font-size:13px; }}
   footer a {{ color:var(--muted); }}
+  footer .f-links {{ margin-bottom:4px; }}
+  footer .f-links a {{ color:var(--muted); text-decoration:none; }}
+  footer .f-links a:hover {{ color:var(--accent); }}
+  footer .f-brand {{ margin-top:6px; }}
   /* 六爻卦象图（Hero 视觉焦点） */
   .hexagram-visual {{ display:flex; align-items:center; justify-content:center; gap:32px; margin-bottom:32px; padding:32px 28px; background:linear-gradient(135deg,var(--card),var(--card2)); border:1px solid var(--accent-border2); border-radius:16px; box-shadow:0 6px 24px rgba(0,0,0,.06); }}
   .hexagram-lines {{ display:flex; flex-direction:column; gap:7px; }}
@@ -942,7 +946,9 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   </div>
 </div>
 <footer>
-  <a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{home}">{breadcrumb_home}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a> · {footer}
+  <div class="f-links"><a href="{home}about/">{'關於本站' if is_tc else '关于本站'}</a> · <a href="{home}privacy/">{'隱私聲明' if is_tc else '隐私声明'}</a> · <a href="{home}disclaimer/">{'免責聲明' if is_tc else '免责声明'}</a></div>
+  <div class="f-links"><a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a></div>
+  <div class="f-brand">{footer}</div>
 </footer>
 {share_html}
 </body>
@@ -972,6 +978,9 @@ def index_html(hexagrams, lang="tc"):
         hot_html = '<div class="hot"><div class="hot-title">熱門場景 · 大家正在面對的處境</div><div class="hot-links">' + "".join(f'<a href="/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_TC) + '</div></div>'
         back = "回到決策之書"
         nav_home = "/"
+        f_about = "關於本站"
+        f_privacy = "隱私聲明"
+        f_disclaimer = "免責聲明"
         nav_hex_href = "/hexagram/"
         nav_blog_href = "/blog/"
         nav_ask = "提問"
@@ -993,6 +1002,9 @@ def index_html(hexagrams, lang="tc"):
         hot_html = '<div class="hot"><div class="hot-title">热门场景 · 大家正在面对的处境</div><div class="hot-links">' + "".join(f'<a href="/cn/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_SC) + '</div></div>'
         back = "回到决策之书"
         nav_home = "/cn/"
+        f_about = "关于本站"
+        f_privacy = "隐私声明"
+        f_disclaimer = "免责声明"
         nav_hex_href = "/cn/hexagram/"
         nav_blog_href = "/cn/blog/"
         nav_ask = "提问"
@@ -1065,6 +1077,10 @@ def index_html(hexagrams, lang="tc"):
   .grid a .num {{ display:block; font-size:12px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }}
   footer {{ text-align:center; padding:24px; color:var(--muted2); font-size:13px; }}
   footer a {{ color:var(--muted); }}
+  footer .f-links {{ margin-bottom:4px; }}
+  footer .f-links a {{ color:var(--muted); text-decoration:none; }}
+  footer .f-links a:hover {{ color:var(--accent); }}
+  footer .f-brand {{ margin-top:6px; }}
 </style>
   {ga_snippet}
 </head>
@@ -1086,7 +1102,9 @@ def index_html(hexagrams, lang="tc"):
   </div>
 </div>
 <footer>
-  <a href="/">{back}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a> · {footer}
+  <div class="f-links"><a href="{nav_home}about/">{f_about}</a> · <a href="{nav_home}privacy/">{f_privacy}</a> · <a href="{nav_home}disclaimer/">{f_disclaimer}</a></div>
+  <div class="f-links"><a href="{nav_home}">{back}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a></div>
+  <div class="f-brand">{footer}</div>
 </footer>
 </body>
 </html>"""
@@ -1094,6 +1112,9 @@ def index_html(hexagrams, lang="tc"):
 
 def build_sitemap(hexagrams):
     urls = [f"{BASE_URL}/", f"{BASE_URL}/hexagram/", f"{BASE_URL}/cn/hexagram/"]
+    for _p in ("about", "privacy", "disclaimer"):
+        urls.append(f"{BASE_URL}/{_p}/")
+        urls.append(f"{BASE_URL}/cn/{_p}/")
     for h in hexagrams:
         urls.append(f"{BASE_URL}/hexagram/{h['number']}/")
         urls.append(f"{BASE_URL}/cn/hexagram/{h['number']}/")

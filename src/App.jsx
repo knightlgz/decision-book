@@ -580,6 +580,19 @@ export default function App() {
         </section>
 
         <footer className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C] text-center space-y-1.5">
+          <div className="flex justify-center gap-3 text-xs text-gray-400 dark:text-[#8B8F98]">
+            <a href={lang === "tc" ? "/about/" : "/cn/about/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
+              {lang === "tc" ? "關於本站" : "关于本站"}
+            </a>
+            <span>·</span>
+            <a href={lang === "tc" ? "/privacy/" : "/cn/privacy/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
+              {lang === "tc" ? "隱私聲明" : "隐私声明"}
+            </a>
+            <span>·</span>
+            <a href={lang === "tc" ? "/disclaimer/" : "/cn/disclaimer/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
+              {lang === "tc" ? "免責聲明" : "免责声明"}
+            </a>
+          </div>
           <a
             href={lang === "tc" ? "/hexagram/" : "/cn/hexagram/"}
             className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
@@ -588,7 +601,7 @@ export default function App() {
           </a>
           <div>
             <a
-              href="/blog/"
+              href={lang === "tc" ? "/blog/" : "/cn/blog/"}
               className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
             >
               {lang === "tc" ? "✍️ 職場決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 职场决策笔记 · 离职、跳槽、迷茫的真实解法"}

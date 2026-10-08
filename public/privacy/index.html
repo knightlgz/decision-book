@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>隱私聲明｜決策之書</title>
+<meta name="description" content="決策之書的隱私聲明：我們收集哪些資料、如何使用、第三方服務與資料刪除方式。">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://decision-book.vercel.app/privacy/">
+<link rel="alternate" hreflang="zh-Hant" href="https://decision-book.vercel.app/privacy/">
+<link rel="alternate" hreflang="zh-Hans" href="https://decision-book.vercel.app/cn/privacy/">
+<link rel="alternate" hreflang="x-default" href="https://decision-book.vercel.app/privacy/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="隱私聲明｜決策之書">
+<meta property="og:description" content="決策之書的隱私聲明：我們收集哪些資料、如何使用、第三方服務與資料刪除方式。">
+<meta property="og:url" content="https://decision-book.vercel.app/privacy/">
+<meta property="og:site_name" content="決策之書">
+<style>
+:root{--ink:#1a1a1a;--sub:#666;--line:#e5e5e5;--bg:#fafaf8;--accent:#8a6d3b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang TC","PingFang SC","Noto Sans TC","Noto Sans SC",sans-serif;background:var(--bg);color:var(--ink);line-height:1.9;font-size:16px}
+.site-nav{position:sticky;top:0;z-index:40;background:rgba(250,250,248,.86);-webkit-backdrop-filter:blur(12px) saturate(1.6);backdrop-filter:blur(12px) saturate(1.6);border-bottom:1px solid var(--line)}
+.site-nav-inner{max-width:680px;margin:0 auto;padding:0 22px;height:48px;display:flex;align-items:center;justify-content:center;gap:36px;position:relative}
+.site-nav a.nav-item{color:var(--sub);text-decoration:none;font-size:14px;letter-spacing:.2em;padding:6px 2px;transition:color .2s}
+.site-nav a.nav-item:hover{color:var(--accent)}
+.site-nav .lang-switch{position:absolute;right:22px;top:50%;transform:translateY(-50%);font-weight:400;font-size:12.5px;color:var(--sub);letter-spacing:0;border:1px solid var(--line);border-radius:6px;padding:3px 10px}
+.site-nav .lang-switch:hover{color:var(--accent);border-color:var(--accent)}
+.wrap{max-width:680px;margin:0 auto;padding:44px 22px 80px}
+h1{font-size:28px;letter-spacing:.06em;margin-bottom:8px}
+.meta{color:var(--sub);font-size:13px;letter-spacing:.06em;margin-bottom:36px}
+article h2{font-size:19px;margin:36px 0 14px;padding-left:10px;border-left:3px solid var(--ink)}
+article p{margin-bottom:14px}
+article ul{padding-left:22px;margin-bottom:14px}
+article li{margin-bottom:6px}
+article a{color:var(--accent)}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:var(--sub);font-size:12.5px;line-height:1.9;text-align:center}
+.f-links{margin-bottom:2px}
+.f-links a{color:var(--sub);text-decoration:none}
+.f-links a:hover{color:var(--accent)}
+.f-brand{color:var(--sub);margin-top:6px}
+@media (prefers-color-scheme: dark){
+:root{--ink:#E8E6E0;--sub:#8B8F98;--line:#2A2E3A;--bg:#0F1115;--accent:#C8A96A}
+.site-nav{background:rgba(15,17,21,.86)}
+}
+@media (max-width:640px){
+.site-nav-inner{padding:0 16px;gap:22px}
+.site-nav .lang-switch{right:16px}
+.site-nav a.nav-item{letter-spacing:.15em}
+}
+</style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGYWZGNCSH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SGYWZGNCSH');
+  </script>
+  <script>
+  (function(){
+    document.addEventListener('click', function(e){
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a, .q-card a') : null;
+        if (!a || !window.gtag) return;
+        var c = a.closest('.cta-mini') || a.closest('.cta') || a.closest('.q-card');
+        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : ((c && c.classList.contains('cta')) ? 'bottom' : 'question_card');
+        var parts = location.pathname.split('hexagram/');
+        var hx = parts.length > 1 ? (parseInt(parts[1], 10) || '') : '';
+        gtag('event', 'cta_click', { pos: pos, hexagram: String(hx), page_lang: document.documentElement.lang || '' });
+      } catch (err) {}
+    }, true);
+  })();
+  </script>
+
+</head>
+<body>
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a class="nav-item" href="/">提問</a>
+    <a class="nav-item" href="/hexagram/">易經</a>
+    <a class="nav-item" href="/blog/">筆記</a>
+    <a class="lang-switch" href="/cn/privacy/">简体中文</a>
+  </div>
+</nav>
+<div class="wrap">
+  <h1>隱私聲明</h1>
+  <p class="meta">最後更新：2026 年 10 月</p>
+  <article>
+<h2>我們收集哪些資料</h2>
+<ul>
+<li>你輸入的問題：僅用於生成你的報告；</li>
+<li>你選擇的地區與語言：用於讓報告貼近你的處境；</li>
+<li>匿名使用統計：頁面瀏覽與按鈕點擊（Google Analytics、Vercel Analytics，含 Cookie 及類似技術），用於了解使用情況、改進產品。</li>
+</ul>
+<p>說明：本站不需要註冊；我們不收集你的姓名、電話、郵箱；起卦的推演過程在你自己的瀏覽器裡完成，不上傳任何資料。</p>
+<h2>這些資料怎麼被使用</h2>
+<ul>
+<li>問題文本會傳送給 AI 服務（Dify）以生成報告，報告只在你的瀏覽器呈現；</li>
+<li>我們不會把資料賣給任何人，也不會用於廣告投放；</li>
+<li>統計數據為匿名匯總，用於產品改進。</li>
+</ul>
+<h2>第三方服務</h2>
+<p>本站使用以下第三方服務，它們會依各自規範處理數據：Vercel（網站託管）、Dify（AI 報告生成）、Google Analytics（流量統計）。你可以在瀏覽器設定中管理或清除 Cookie。</p>
+<h2>資料的保留與刪除</h2>
+<p>本站不建立用戶帳戶資料庫。如需查詢或刪除與你相關的處理記錄，請 IG 私訊 <a href="https://www.instagram.com/kyson_yijing/">@kyson_yijing</a>，我們會盡快處理。</p>
+<h2>變更</h2>
+<p>本聲明如有更新，將直接更新於本頁。</p>
+  </article>
+  <footer>
+  <div class="f-links"><a href="/about/">關於本站</a> · <a href="/privacy/">隱私聲明</a> · <a href="/disclaimer/">免責聲明</a></div>
+  <div class="f-links"><a href="/hexagram/">易經六十四卦</a> · <a href="/blog/">職場決策筆記</a></div>
+  <div class="f-brand">曾仕強教授易經思想體系</div>
+</footer>
+</div>
+</body>
+</html>
