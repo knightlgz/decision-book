@@ -4,7 +4,7 @@ slug: should-i-quit
 description: 该不该离职？与其自己纠结三个月，不如用 5 个信号帮自己判断：成长曲线、谈薪结果、身体反应、讨厌的是工作还是玩法、以及你已经在偷偷做的事。
 keywords: 该不该离职, 离职 判断, 想离职, 离职 时机, 职场决策
 date: 2026-09-14
-related: laid-off-what-to-do, career-confusion
+related: laid-off-what-to-do, how-to-ask
 ---
 
 会点开这篇文章，你大概已经在心里离职一百遍了。

@@ -4,7 +4,7 @@ slug: laid-off-what-to-do
 description: 被裁員後最貴的情緒是慌張。在投出第一份履歷之前，先把三件事做好：該拿的錢釘死在紙上、算清緊急預備金剩幾個月、分清這次是休息還是轉向。
 keywords: 被裁員怎麼辦, 資遣費, 非自願離職, 失業給付, 被裁員 下一步
 date: 2026-09-14
-related: should-i-quit, career-confusion
+related: should-i-quit, how-to-ask
 ---
 
 被裁員不是你的錯——在這種景氣裡，它甚至不是任何人的錯。

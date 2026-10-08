@@ -4,7 +4,7 @@ slug: laid-off-what-to-do
 description: 被裁员后最贵的是慌张。投出第一份简历之前，先把三件事做好：该拿的钱落到纸上、算清存款还能撑几个月、分清这次是休息还是转向。
 keywords: 被裁员怎么办, 经济补偿金, N+1, 失业保险金, 裁员 下一步
 date: 2026-09-14
-related: should-i-quit, career-confusion
+related: should-i-quit, how-to-ask
 ---
 
 被裁员不是你的错——在现在这种行情里，它甚至不是任何人的错。

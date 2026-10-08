@@ -4,7 +4,7 @@ slug: should-i-quit
 description: 該不該離職？與其自己糾結三個月，不如用 5 個訊號幫自己判斷：成長曲線、談薪結果、身體反應、討厭的是工作還是玩法、以及你已經在偷偷做的事。
 keywords: 該不該離職, 離職 判斷, 想離職, 離職 時機, 職場決策
 date: 2026-09-14
-related: laid-off-what-to-do, career-confusion
+related: laid-off-what-to-do, how-to-ask
 ---
 
 會點開這篇文章，你大概已經在心裡離職一百次了。
