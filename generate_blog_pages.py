@@ -30,7 +30,7 @@ LANGS = {
         "html_lang": "zh-Hant",
         "alternate_hreflang": "zh-Hans",
         "brand": "決策之書",
-        "nav_sub": "易經 × 職場決策",
+        "nav_sub": "易經 × 商業與職場",
         "label_ask": "提問",
         "label_hex": "易經",
         "label_blog": "筆記",
@@ -38,12 +38,12 @@ LANGS = {
         "switch_lang": "sc",
         "author_line": "凱森讀易",
         "cta_h": "你的處境，換一雙眼睛看看？",
-        "cta_p": "輸入你正在糾結的職場難題，起一卦，讓易經給你一個不同的視角。",
+        "cta_p": "輸入你正在糾結的商業或職場難題，起一卦，讓易經給你一個不同的視角。",
         "cta_btn": "開始起卦 →",
         "footer_about": "決策之書——把易經做成一張陪你算帳、也陪你下決定的鏡子。卦不是算盤，不預測吉凶，只把你自己的處境翻給你看。",
         "footer_disclaimer": "本文僅供決策思考參考，不構成任何投資、法律或職業建議。",
-        "index_title": "職場決策筆記",
-        "index_sub": "易經 × 職場 —— 把真實的難題，想清楚",
+        "index_title": "決策筆記",
+        "index_sub": "易經 × 商業與職場 —— 把真實的難題，想清楚",
         "related_label": "延伸閱讀",
     },
     "sc": {
@@ -53,7 +53,7 @@ LANGS = {
         "html_lang": "zh-Hans",
         "alternate_hreflang": "zh-Hant",
         "brand": "决策之书",
-        "nav_sub": "易经 × 职场决策",
+        "nav_sub": "易经 × 商业与职场",
         "label_ask": "提问",
         "label_hex": "易经",
         "label_blog": "笔记",
@@ -61,12 +61,12 @@ LANGS = {
         "switch_lang": "tc",
         "author_line": "凯森读易",
         "cta_h": "你的处境，换一双眼睛看看？",
-        "cta_p": "输入你正在纠结的职场难题，起一卦，让易经给你一个不同的视角。",
+        "cta_p": "输入你正在纠结的商业或职场难题，起一卦，让易经给你一个不同的视角。",
         "cta_btn": "开始起卦 →",
         "footer_about": "决策之书——把易经做成一枚陪你算账、也陪你下决定的镜子。卦不是算盘，不预测吉凶，只把你自己的处境翻给你看。",
         "footer_disclaimer": "本文仅供决策思考参考，不构成任何投资、法律或职业建议。",
-        "index_title": "职场决策笔记",
-        "index_sub": "易经 × 职场 —— 把真实的难题，想清楚",
+        "index_title": "决策笔记",
+        "index_sub": "易经 × 商业与职场 —— 把真实的难题，想清楚",
         "related_label": "延伸阅读",
     },
 }
@@ -250,7 +250,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 {related_html}
 <footer>
   <div class="f-links"><a href="{prefix}/about/">{'關於本站' if lang == 'tc' else '关于本站'}</a> · <a href="{prefix}/privacy/">{'隱私聲明' if lang == 'tc' else '隐私声明'}</a> · <a href="{prefix}/disclaimer/">{'免責聲明' if lang == 'tc' else '免责声明'}</a></div>
-  <div class="f-links"><a href="{prefix}/hexagram/">{'易經六十四卦' if lang == 'tc' else '易经六十四卦'}</a> · <a href="{prefix}/blog/">{'職場決策筆記' if lang == 'tc' else '职场决策笔记'}</a></div>
+  <div class="f-links"><a href="{prefix}/hexagram/">{'易經六十四卦' if lang == 'tc' else '易经六十四卦'}</a> · <a href="{prefix}/blog/">{'決策筆記' if lang == 'tc' else '决策笔记'}</a></div>
   <p style="margin-top:10px">{cfg['footer_disclaimer']}</p>
 </footer>
 </div>
@@ -310,7 +310,7 @@ def main():
                 f'<div class="t">{m["title"]}</div>'
                 f'<div class="d">{m.get("description","")[:80]}</div></a>'
             )
-        desc = "易經 × 職場決策的內容站：離職、轉職、迷茫、被裁員——用真實的判斷方法，陪你把難題想清楚。" if lang == "tc" else "易经 × 职场决策的内容站：离职、跳槽、迷茫、被裁员——用真实的判断方法，陪你把难题想清楚。"
+        desc = "易經 × 商業與職場的內容站：離職、轉職、迷茫、被裁員——用真實的判斷方法，陪你把難題想清楚。" if lang == "tc" else "易经 × 商业与职场的内容站：离职、跳槽、迷茫、被裁员——用真实的判断方法，陪你把难题想清楚。"
         idx_body = f'<h1>{cfg["index_title"]}</h1><p class="meta">{cfg["index_sub"]}</p>' + "\n".join(items)
         idx_html = page_shell(lang, cfg["index_title"], desc, "", idx_body)
         out = cfg["out"] / "index.html"

@@ -101,7 +101,7 @@ export default function App() {
   const lang = INIT_CN ? "sc" : "tc";
   // 浏览器标签标题跟随语言（/ 繁体站、/cn/ 简体站各自显示对应标题）
   useEffect(() => {
-    document.title = lang === "tc" ? "決策之書 · 易經職場與商業決策助手" : "决策之书 · 易经职场与商业决策助手";
+    document.title = lang === "tc" ? "決策之書 · 曾仕強易經商業決策助手" : "决策之书 · 曾仕强易经商业决策助手";
   }, [lang]);
   const switchLang = () => {
     window.location.href = lang === "tc" ? "/cn/" : "/";
@@ -604,7 +604,7 @@ export default function App() {
               href={lang === "tc" ? "/blog/" : "/cn/blog/"}
               className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
             >
-              {lang === "tc" ? "✍️ 職場決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 职场决策笔记 · 离职、跳槽、迷茫的真实解法"}
+              {lang === "tc" ? "✍️ 決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 决策笔记 · 离职、跳槽、迷茫的真实解法"}
             </a>
           </div>
           <p className="text-xs text-gray-400 dark:text-[#6A6E78] tracking-wider">

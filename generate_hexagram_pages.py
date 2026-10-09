@@ -242,14 +242,14 @@ SEO_PILOT = {
 SEO_SCENARIO = {
     "24": {"tc": {"kw": "低谷期怎麼辦", "kw2": "低谷期"}, "sc": {"kw": "低谷期怎么办", "kw2": "低谷期"}},
     "9": {"tc": {"kw": "職業瓶頸怎麼辦", "kw2": "職業瓶頸"}, "sc": {"kw": "职业瓶颈怎么办", "kw2": "职业瓶颈"}},
-    "63": {"tc": {"kw": "職場與商業解讀"}, "sc": {"kw": "职场与商业解读"}},
+    "63": {"tc": {"kw": "商業與職場解讀"}, "sc": {"kw": "商业与职场解读"}},
     "18": {"tc": {"kw": "公司管理混亂怎麼辦", "kw2": "管理混亂"}, "sc": {"kw": "公司管理混乱怎么办", "kw2": "管理混乱"}},
     "30": {"tc": {"kw": "人生迷茫怎麼辦", "kw2": "人生迷茫"}, "sc": {"kw": "人生迷茫怎么办", "kw2": "人生迷茫"}},
     "43": {"tc": {"kw": "猶豫不決怎麼辦", "kw2": "猶豫不決"}, "sc": {"kw": "犹豫不决怎么办", "kw2": "犹豫不决"}},
     "58": {"tc": {"kw": "嘴笨怎麼辦", "kw2": "不會說話"}, "sc": {"kw": "嘴笨怎么办", "kw2": "不会说话"}},
     "49": {"tc": {"kw": "想轉行怎麼辦", "kw2": "轉行"}, "sc": {"kw": "想转行怎么办", "kw2": "转行"}},
     "13": {"tc": {"kw": "同事不合怎麼辦", "kw2": "同事不合"}, "sc": {"kw": "同事不合怎么办", "kw2": "同事不合"}},
-    "31": {"tc": {"kw": "職場與商業解讀"}, "sc": {"kw": "职场与商业解读"}},
+    "31": {"tc": {"kw": "商業與職場解讀"}, "sc": {"kw": "商业与职场解读"}},
     "15": {"tc": {"kw": "老實人吃虧怎麼辦", "kw2": "老實人吃虧"}, "sc": {"kw": "老实人吃亏怎么办", "kw2": "老实人吃亏"}},
     "36": {"tc": {"kw": "被排擠怎麼辦", "kw2": "被排擠"}, "sc": {"kw": "被排挤怎么办", "kw2": "被排挤"}},
     "17": {"tc": {"kw": "如何跟對老闆", "kw2": "跟對老闆"}, "sc": {"kw": "如何跟对老板", "kw2": "跟对老板"}},
@@ -451,13 +451,13 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     seo = pilot or SEO_SCENARIO.get(str(int(n)), {})
 
     if is_tc:
-        title = f"{name}卦｜第{int(n)}卦｜曾仕強易經職場與商業解讀"
-        desc = f"{name}卦在職場與商業上代表什麼？{insight}卦辭爻辭原文白話釋義、職場啟示一次看懂，幫你看清當下該怎麼走。"
+        title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業與職場解讀"
+        desc = f"{name}卦在商業與職場上代表什麼？{insight}卦辭爻辭原文白話釋義、商業與職場啟示一次看懂，幫你看清當下該怎麼走。"
         if seo:
             p = seo["tc"]
             title = f"{name}卦是什麼意思？{p['kw']}"
             if p.get("kw2"):
-                desc = f"{name}卦是什麼意思？{insight}卦辭爻辭原文白話、遇到{p['kw2']}時的職場啟示。想看清自己的處境，免費起一卦對照看看。"
+                desc = f"{name}卦是什麼意思？{insight}卦辭爻辭原文白話、遇到{p['kw2']}時的商業與職場啟示。想看清自己的處境，免費起一卦對照看看。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/{n}/"
         alt_url = f"{BASE_URL}/cn/hexagram/{n}/"
@@ -482,20 +482,20 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         yao_label = "爻辭"
         scripture_note = "原文出自《周易》，公版內容。"
         footer = "曾仕強教授易經思想體系"
-        blog_footer_text = "職場決策筆記"
+        blog_footer_text = "決策筆記"
         blog_footer_url = "/blog/"
         subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
         faq_heading = "常見問題"
         related_label = "相關卦象"
-        interp_labels = ["白話釋義", "職場啟示", "行動建議"]
+        interp_labels = ["白話釋義", "商業與職場啟示", "行動建議"]
     else:
-        title = f"{name}卦｜第{int(n)}卦｜曾仕强易经职场与商业解读"
-        desc = f"{name}卦在职场与商业上代表什么？{insight}卦辞爻辞原文白话释义、职场启示一次看懂，帮你看清当下该怎么走。"
+        title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业与职场解读"
+        desc = f"{name}卦在商业与职场上代表什么？{insight}卦辞爻辞原文白话释义、商业与职场启示一次看懂，帮你看清当下该怎么走。"
         if seo:
             p = seo["sc"]
             title = f"{name}卦是什么意思？{p['kw']}"
             if p.get("kw2"):
-                desc = f"{name}卦是什么意思？{insight}卦辞爻辞原文白话、遇到{p['kw2']}时的职场启示。想看清自己的处境，免费起一卦对照看看。"
+                desc = f"{name}卦是什么意思？{insight}卦辞爻辞原文白话、遇到{p['kw2']}时的商业与职场启示。想看清自己的处境，免费起一卦对照看看。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/{n}/"
         alt_url = f"{BASE_URL}/hexagram/{n}/"
@@ -520,12 +520,12 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         yao_label = "爻辞"
         scripture_note = "原文出自《周易》，公版内容。"
         footer = "曾仕强教授易经思想体系"
-        blog_footer_text = "职场决策笔记"
+        blog_footer_text = "决策笔记"
         blog_footer_url = "/cn/blog/"
         subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
         faq_heading = "常见问题"
         related_label = "相关卦象"
-        interp_labels = ["白话释义", "职场启示", "行动建议"]
+        interp_labels = ["白话释义", "商业与职场启示", "行动建议"]
 
     faq_items = FAQ_TC if is_tc else FAQ_SC
     # 试点页追加热点 FAQ（SEO_PILOT）
@@ -964,8 +964,8 @@ def index_html(hexagrams, lang="tc"):
         for h in hexagrams
     )
     if is_tc:
-        title = "易經六十四卦｜曾仕強職場與商業解讀全索引"
-        desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、職場與商業核心解讀，基於曾仕強教授易經思想體系。"
+        title = "易經六十四卦｜曾仕強商業與職場解讀全索引"
+        desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/"
         home_label = "決策之書"
@@ -973,7 +973,7 @@ def index_html(hexagrams, lang="tc"):
         h1 = "易經六十四卦"
         subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
         footer = "曾仕強教授易經思想體系"
-        blog_footer_text = "職場決策筆記"
+        blog_footer_text = "決策筆記"
         blog_footer_url = "/blog/"
         hot_html = '<div class="hot"><div class="hot-title">熱門場景 · 大家正在面對的處境</div><div class="hot-links">' + "".join(f'<a href="/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_TC) + '</div></div>'
         back = "回到決策之書"
@@ -988,8 +988,8 @@ def index_html(hexagrams, lang="tc"):
         nav_blog = "筆記"
         lang_switch = f'<span class="lang-switch"><a href="/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
     else:
-        title = "易经六十四卦｜曾仕强职场与商业解读全索引"
-        desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、职场与商业核心解读，基于曾仕强教授易经思想体系。"
+        title = "易经六十四卦｜曾仕强商业与职场解读全索引"
+        desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/"
         home_label = "决策之书"
@@ -997,7 +997,7 @@ def index_html(hexagrams, lang="tc"):
         h1 = "易经六十四卦"
         subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
         footer = "曾仕强教授易经思想体系"
-        blog_footer_text = "职场决策笔记"
+        blog_footer_text = "决策笔记"
         blog_footer_url = "/cn/blog/"
         hot_html = '<div class="hot"><div class="hot-title">热门场景 · 大家正在面对的处境</div><div class="hot-links">' + "".join(f'<a href="/cn/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_SC) + '</div></div>'
         back = "回到决策之书"
