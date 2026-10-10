@@ -554,6 +554,11 @@
     <changefreq>weekly</changefreq>
   </url>
 <url>
+    <loc>https://decision-book.vercel.app/blog/about-kyson/</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
     <loc>https://decision-book.vercel.app/blog/how-to-ask/</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -585,6 +590,11 @@
   </url>
 <url>
     <loc>https://decision-book.vercel.app/cn/blog/</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://decision-book.vercel.app/cn/blog/about-kyson/</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
   </url>

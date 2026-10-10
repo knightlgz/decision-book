@@ -4,7 +4,7 @@ slug: is-i-ching-fortune-telling
 description: 很多人一聽易經就問「準不準」。這篇從「善易者不卜」說起，講清楚易經的本來面目：它不是水晶球，是一套讓你把自己處境看清楚的方法。
 keywords: 易經 算命, 易經是什麼, 善易者不卜, 易經 決策, 易經怎麼用
 date: 2026-09-15
-related: why-different-hexagram, how-to-ask, i-ching-vs-fortune-telling
+related: why-different-hexagram, how-to-ask, i-ching-vs-fortune-telling, about-kyson
 ---
 
 如果你跟身邊的人說「我在用易經做決策」，十個有八個的反應大概是：「哦，你還會算命喔？」

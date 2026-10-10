@@ -102,7 +102,7 @@ def inline_md(s, prefix=""):
     return s
 
 def md_to_html(body, prefix=""):
-    html, para, in_ul, in_bq = [], [], False, []
+    html, para, in_list, list_tag, in_bq = [], [], False, None, []
     def flush_para():
         if para:
             html.append("<p>" + inline_md(" ".join(para), prefix) + "</p>")
@@ -111,33 +111,36 @@ def md_to_html(body, prefix=""):
         if in_bq:
             html.append("<blockquote>" + inline_md(" ".join(in_bq), prefix) + "</blockquote>")
             in_bq.clear()
-    def close_ul():
-        nonlocal in_ul
-        if in_ul:
-            html.append("</ul>")
-            in_ul = False
+    def close_list():
+        nonlocal in_list, list_tag
+        if in_list:
+            html.append(f"</{list_tag}>")
+            in_list, list_tag = False, None
     for line in body.split("\n"):
         line = line.rstrip()
         if not line:
-            flush_para(); flush_bq(); close_ul(); continue
+            flush_para(); flush_bq(); close_list(); continue
         if line.strip() == "---":
-            flush_para(); flush_bq(); close_ul(); html.append("<hr>")
+            flush_para(); flush_bq(); close_list(); html.append("<hr>")
         elif line.startswith("### "):
-            flush_para(); flush_bq(); close_ul(); html.append("<h3>" + inline_md(line[4:], prefix) + "</h3>")
+            flush_para(); flush_bq(); close_list(); html.append("<h3>" + inline_md(line[4:], prefix) + "</h3>")
         elif line.startswith("## "):
-            flush_para(); flush_bq(); close_ul(); html.append("<h2>" + inline_md(line[3:], prefix) + "</h2>")
+            flush_para(); flush_bq(); close_list(); html.append("<h2>" + inline_md(line[3:], prefix) + "</h2>")
         elif line.startswith("# "):
-            flush_para(); flush_bq(); close_ul(); html.append("<h2>" + inline_md(line[2:], prefix) + "</h2>")
+            flush_para(); flush_bq(); close_list(); html.append("<h2>" + inline_md(line[2:], prefix) + "</h2>")
         elif line.startswith("> "):
-            flush_para(); close_ul(); in_bq.append(line[2:])
-        elif line.startswith("- "):
+            flush_para(); close_list(); in_bq.append(line[2:])
+        elif line.startswith("- ") or re.match(r"^\d+\.\s", line):
             flush_para(); flush_bq()
-            if not in_ul:
-                html.append("<ul>"); in_ul = True
-            html.append("<li>" + inline_md(line[2:], prefix) + "</li>")
+            tag = "ul" if line.startswith("- ") else "ol"
+            if not in_list or list_tag != tag:
+                close_list()
+                html.append(f"<{tag}>"); in_list, list_tag = True, tag
+            item = line[2:] if line.startswith("- ") else re.sub(r"^\d+\.\s+", "", line)
+            html.append("<li>" + inline_md(item, prefix) + "</li>")
         else:
-            flush_bq(); close_ul(); para.append(line)
-    flush_para(); flush_bq(); close_ul()
+            flush_bq(); close_list(); para.append(line)
+    flush_para(); flush_bq(); close_list()
     return "\n".join(html)
 
 # ---------- 页面模板 ----------
@@ -166,7 +169,7 @@ h1{font-size:26px;line-height:1.5;margin-bottom:10px;letter-spacing:.02em}
 h2{font-size:19px;margin:36px 0 14px;padding-left:10px;border-left:3px solid var(--ink)}
 h3{font-size:16.5px;margin:26px 0 10px}
 p{margin-bottom:16px}
-ul{margin:0 0 16px 22px}
+ul,ol{margin:0 0 16px 22px}
 li{margin-bottom:8px}
 strong{font-weight:700}
 a{color:var(--accent)}
