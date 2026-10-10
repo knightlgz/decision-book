@@ -358,7 +358,7 @@ export default function App() {
             </button>
           </h1>
           <p className="text-xs text-gray-500 dark:text-[#8B8F98] tracking-[0.2em]">
-            {lang === "tc" ? "商業與職場的抉擇 · 曾仕強思想體系" : "商业与职场的抉择 · 曾仕强思想体系"}
+            {lang === "tc" ? "生意場上的抉擇 · 曾仕強思想體系" : "生意场上的抉择 · 曾仕强思想体系"}
           </p>
           {/* 卖点三连（2026-09-15 鎏金主题色） */}
           <div className="flex justify-center gap-2 pt-2">

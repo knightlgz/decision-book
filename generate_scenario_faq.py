@@ -69,9 +69,9 @@ def build_prompt(items, lang):
     blocks = []
     for it in items:
         blocks.append(
-            f"【卦號 {it['n']}｜{it['name']}｜場景問題：{it['kw']}】\n白話釋義：{it['meaning']}\n職場啟示：{it['career']}"
+            f"【卦號 {it['n']}｜{it['name']}｜場景問題：{it['kw']}】\n白話釋義：{it['meaning']}\n啟示：{it['career']}"
             if is_tc
-            else f"【卦号 {it['n']}｜{it['name']}｜场景问题：{it['kw']}】\n白话释义：{it['meaning']}\n职场启示：{it['career']}"
+            else f"【卦号 {it['n']}｜{it['name']}｜场景问题：{it['kw']}】\n白话释义：{it['meaning']}\n启示：{it['career']}"
         )
     body = "\n\n".join(blocks)
     if is_tc:

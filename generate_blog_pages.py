@@ -31,15 +31,15 @@ LANGS = {
         "html_lang": "zh-Hant",
         "alternate_hreflang": "zh-Hans",
         "brand": "決策之書",
-        "nav_sub": "易經 × 商業與職場",
+        "nav_sub": "易經 × 商業決策",
         "switch_lang": "sc",
         "author_line": "凱森的決策之書",
         "cta_h": "你的處境，換一雙眼睛看看？",
-        "cta_p": "輸入你正在糾結的商業或職場難題，起一卦，讓易經給你一個不同的視角。",
+        "cta_p": "輸入你正在糾結的商業難題，起一卦，讓易經給你一個不同的視角。",
         "cta_btn": "開始起卦 →",
         "footer_about": "決策之書——把易經做成一張陪你算帳、也陪你下決定的鏡子。卦不是算盤，不預測吉凶，只把你自己的處境翻給你看。",
         "index_title": "決策筆記",
-        "index_sub": "易經 × 商業與職場 —— 把真實的難題，想清楚",
+        "index_sub": "易經 × 商業決策 —— 把真實的難題，想清楚",
         "related_label": "延伸閱讀",
     },
     "sc": {
@@ -49,15 +49,15 @@ LANGS = {
         "html_lang": "zh-Hans",
         "alternate_hreflang": "zh-Hant",
         "brand": "决策之书",
-        "nav_sub": "易经 × 商业与职场",
+        "nav_sub": "易经 × 商业决策",
         "switch_lang": "tc",
         "author_line": "凯森的决策之书",
         "cta_h": "你的处境，换一双眼睛看看？",
-        "cta_p": "输入你正在纠结的商业或职场难题，起一卦，让易经给你一个不同的视角。",
+        "cta_p": "输入你正在纠结的商业难题，起一卦，让易经给你一个不同的视角。",
         "cta_btn": "开始起卦 →",
         "footer_about": "决策之书——把易经做成一枚陪你算账、也陪你下决定的镜子。卦不是算盘，不预测吉凶，只把你自己的处境翻给你看。",
         "index_title": "决策笔记",
-        "index_sub": "易经 × 商业与职场 —— 把真实的难题，想清楚",
+        "index_sub": "易经 × 商业决策 —— 把真实的难题，想清楚",
         "related_label": "延伸阅读",
     },
 }
@@ -293,7 +293,7 @@ def main():
                 f'<div class="t">{m["title"]}</div>'
                 f'<div class="d">{m.get("description","")[:80]}</div></a>'
             )
-        desc = "易經 × 商業與職場的內容站：用真實的判斷方法，陪你把難題想清楚。" if lang == "tc" else "易经 × 商业与职场的内容站：用真实的判断方法，陪你把难题想清楚。"
+        desc = "易經 × 商業決策的內容站：用真實的判斷方法，陪你把難題想清楚。" if lang == "tc" else "易经 × 商业决策的内容站：用真实的判断方法，陪你把难题想清楚。"
         idx_body = f'<h1>{cfg["index_title"]}</h1><p class="meta">{cfg["index_sub"]}</p>' + "\n".join(items)
         idx_html = page_shell(lang, cfg["index_title"], desc, "", idx_body)
         out = cfg["out"] / "index.html"

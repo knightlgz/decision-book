@@ -137,12 +137,12 @@ def faq_jsonld(faq_items, url):
 # 词均经 Google suggest 实测（2026-10-07）；配不上痛点的用通用尾部（31/63 无 kw2=不改 desc）
 SEO_SCENARIO = {
     "24": {"tc": {"kw": "低谷期怎麼辦", "kw2": "低谷期"}, "sc": {"kw": "低谷期怎么办", "kw2": "低谷期"}},
-    "63": {"tc": {"kw": "商業與職場解讀"}, "sc": {"kw": "商业与职场解读"}},
+    "63": {"tc": {"kw": "商業決策解讀"}, "sc": {"kw": "商业决策解读"}},
     "18": {"tc": {"kw": "公司管理混亂怎麼辦", "kw2": "管理混亂"}, "sc": {"kw": "公司管理混乱怎么办", "kw2": "管理混乱"}},
     "30": {"tc": {"kw": "人生迷茫怎麼辦", "kw2": "人生迷茫"}, "sc": {"kw": "人生迷茫怎么办", "kw2": "人生迷茫"}},
     "43": {"tc": {"kw": "猶豫不決怎麼辦", "kw2": "猶豫不決"}, "sc": {"kw": "犹豫不决怎么办", "kw2": "犹豫不决"}},
     "58": {"tc": {"kw": "嘴笨怎麼辦", "kw2": "不會說話"}, "sc": {"kw": "嘴笨怎么办", "kw2": "不会说话"}},
-    "31": {"tc": {"kw": "商業與職場解讀"}, "sc": {"kw": "商业与职场解读"}},
+    "31": {"tc": {"kw": "商業決策解讀"}, "sc": {"kw": "商业决策解读"}},
     "15": {"tc": {"kw": "老實人吃虧怎麼辦", "kw2": "老實人吃虧"}, "sc": {"kw": "老实人吃亏怎么办", "kw2": "老实人吃亏"}},
     "8": {"tc": {"kw": "怎麼累積人脈", "kw2": "人脈"}, "sc": {"kw": "怎么积累人脉", "kw2": "人脉"}},
     "7": {"tc": {"kw": "怎麼帶團隊", "kw2": "帶團隊"}, "sc": {"kw": "怎么带团队", "kw2": "带团队"}},
@@ -327,13 +327,13 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     seo = SEO_SCENARIO.get(str(int(n)), {})
 
     if is_tc:
-        title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業與職場解讀"
-        desc = f"{name}卦在商業與職場上代表什麼？{insight}卦辭爻辭原文白話釋義、商業與職場啟示一次看懂，幫你看清當下該怎麼走。"
+        title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業決策解讀"
+        desc = f"{name}卦在商業決策上代表什麼？{insight}卦辭爻辭原文白話釋義、商業決策啟示一次看懂，幫你看清當下該怎麼走。"
         if seo:
             p = seo["tc"]
             title = f"{name}卦是什麼意思？{p['kw']}"
             if p.get("kw2"):
-                desc = f"{name}卦是什麼意思？{insight}卦辭爻辭原文白話、遇到{p['kw2']}時的商業與職場啟示。想看清自己的處境，免費起一卦對照看看。"
+                desc = f"{name}卦是什麼意思？{insight}卦辭爻辭原文白話、遇到{p['kw2']}時的商業決策啟示。想看清自己的處境，免費起一卦對照看看。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/{n}/"
         alt_url = f"{BASE_URL}/cn/hexagram/{n}/"
@@ -344,7 +344,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         all_label = "全部六十四卦"
         breadcrumb_home = "決策之書"
         insight_label = "核心解讀"
-        cta_h2 = "你正在面對類似的商業或職場抉擇嗎？"
+        cta_h2 = "你正在面對類似的商業抉擇嗎？"
         cta_p = "免費起卦，看看你的處境對應哪一卦；完整行動方案，起卦後即可免費查看。"
         cta_btn = "免費起卦 →"
         cta_mini_text = "你的困惑，也可以起一卦看看"
@@ -352,18 +352,18 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         gua_label = "卦辭"
         yao_label = "爻辭"
         scripture_note = "原文出自《周易》，公版內容。"
-        subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
+        subtitle_line = "曾仕強易經思想體系 · 商業決策解讀"
         faq_heading = "常見問題"
         related_label = "相關卦象"
-        interp_labels = ["白話釋義", "商業與職場啟示", "行動建議"]
+        interp_labels = ["白話釋義", "商業決策啟示", "行動建議"]
     else:
-        title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业与职场解读"
-        desc = f"{name}卦在商业与职场上代表什么？{insight}卦辞爻辞原文白话释义、商业与职场启示一次看懂，帮你看清当下该怎么走。"
+        title = f"{name}卦｜第{int(n)}卦｜曾仕强易经商业决策解读"
+        desc = f"{name}卦在商业决策上代表什么？{insight}卦辞爻辞原文白话释义、商业决策启示一次看懂，帮你看清当下该怎么走。"
         if seo:
             p = seo["sc"]
             title = f"{name}卦是什么意思？{p['kw']}"
             if p.get("kw2"):
-                desc = f"{name}卦是什么意思？{insight}卦辞爻辞原文白话、遇到{p['kw2']}时的商业与职场启示。想看清自己的处境，免费起一卦对照看看。"
+                desc = f"{name}卦是什么意思？{insight}卦辞爻辞原文白话、遇到{p['kw2']}时的商业决策启示。想看清自己的处境，免费起一卦对照看看。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/{n}/"
         alt_url = f"{BASE_URL}/hexagram/{n}/"
@@ -374,7 +374,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         all_label = "全部六十四卦"
         breadcrumb_home = "决策之书"
         insight_label = "核心解读"
-        cta_h2 = "你正在面对类似的商业或职场抉择吗？"
+        cta_h2 = "你正在面对类似的商业抉择吗？"
         cta_p = "免费起卦，看看你的处境对应哪一卦；完整行动方案，起卦后即可免费查看。"
         cta_btn = "免费起卦 →"
         cta_mini_text = "你的困惑，也可以起一卦看看"
@@ -382,10 +382,10 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         gua_label = "卦辞"
         yao_label = "爻辞"
         scripture_note = "原文出自《周易》，公版内容。"
-        subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
+        subtitle_line = "曾仕强易经思想体系 · 商业决策解读"
         faq_heading = "常见问题"
         related_label = "相关卦象"
-        interp_labels = ["白话释义", "商业与职场启示", "行动建议"]
+        interp_labels = ["白话释义", "商业决策启示", "行动建议"]
 
     faq_items = FAQ_TC if is_tc else FAQ_SC
     # 场景痛点 FAQ（第一页页群 B 方案；2026-10-07）——问题取自标题同源场景词
@@ -720,20 +720,20 @@ def index_html(hexagrams, lang="tc"):
         for h in hexagrams
     )
     if is_tc:
-        title = "易經六十四卦｜曾仕強商業與職場解讀全索引"
-        desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
+        title = "易經六十四卦｜曾仕強商業決策解讀全索引"
+        desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、商業決策核心解讀，基於曾仕強教授易經思想體系。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/"
         h1 = "易經六十四卦"
-        subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
+        subtitle = "曾仕強教授易經思想體系 · 商業決策解讀"
         switch_href = "/cn/hexagram/"
     else:
-        title = "易经六十四卦｜曾仕强商业与职场解读全索引"
-        desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
+        title = "易经六十四卦｜曾仕强商业决策解读全索引"
+        desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业决策核心解读，基于曾仕强教授易经思想体系。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/"
         h1 = "易经六十四卦"
-        subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
+        subtitle = "曾仕强教授易经思想体系 · 商业决策解读"
         switch_href = "/hexagram/"
 
     ld = json.dumps({
