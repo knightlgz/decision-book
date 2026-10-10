@@ -1,7 +1,7 @@
 ---
 title: 问卦教程：10 个复制即用的提问模板
 slug: question-templates
-description: 不知道怎么问卦？这 10 个模板覆盖职场最常见的纠结场景——二选一、涨薪、被边缘化、带团队……照着填空，就能问出高质量的问题。
+description: 不知道怎么问卦？这 10 个模板覆盖最常见的纠结场景。照着填空，就能问出高质量的问题。
 keywords: 问卦模板, 易经提问模板, 怎么问卦, AI解卦怎么问, 决策提问
 date: 2026-09-15
 related: how-to-ask, i-ching-vs-fortune-telling
