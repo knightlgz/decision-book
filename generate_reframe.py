@@ -49,8 +49,8 @@ def load_hexagrams():
     return {int(h["number"]): h for h in json.loads(r.stdout)}
 
 
-SYS_TC = "你是易經職場內容編輯，服務台灣與海外華語讀者。只輸出 JSON，不要任何其他文字。"
-SYS_SC = "你是简体中文职场内容编辑。只输出 JSON，不要任何其他文字。"
+SYS_TC = "你是易經與商業決策內容編輯，服務台灣與海外華語讀者。只輸出 JSON，不要任何其他文字。"
+SYS_SC = "你是简体中文商业决策内容编辑。只输出 JSON，不要任何其他文字。"
 
 
 def build_prompt(items, lang):

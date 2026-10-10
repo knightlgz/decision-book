@@ -35,13 +35,13 @@ const FAQ = {
     { q: "卦能預測未來嗎？", a: "不能。卦不是算盤，它不預測吉凶，只是把你自己看不清的處境翻給你看——答案，始終在你手上。" },
     { q: "可以對同一問題重複起卦嗎？", a: "不建議。卦反映的是當下處境；短時間反覆問同一件事，只會讓自己更亂。處境真的變了，再起一卦。" },
     { q: "報告能代替專業意見嗎？", a: "不能。醫療、法律、投資等專業問題，請諮詢持牌專業人士。本工具僅供決策思考參考。" },
-    { q: "為什麼要選擇地區？", a: "營商環境、職場規則、人情壓力因地而異。報告會結合你所在地區，給出更貼近現實的建議。" },
+    { q: "為什麼要選擇地區？", a: "營商環境、社會保障、人情壓力因地而異。報告會結合你所在地區，給出更貼近現實的建議。" },
   ],
   sc: [
     { q: "卦能预测未来吗？", a: "不能。卦不是算盘，它不预测吉凶，只是把你自己看不清的处境翻给你看——答案，始终在你手上。" },
     { q: "可以对同一问题重复起卦吗？", a: "不建议。卦反映的是当下处境；短时间反复问同一件事，只会让自己更乱。处境真的变了，再起一卦。" },
     { q: "报告能代替专业意见吗？", a: "不能。医疗、法律、投资等专业问题，请咨询持牌专业人士。本工具仅供决策思考参考。" },
-    { q: "为什么要选择地区？", a: "营商环境、职场规则、人情压力因地而异。报告会结合你所在地区，给出更贴近现实的建议。" },
+    { q: "为什么要选择地区？", a: "营商环境、社会保障、人情压力因地而异。报告会结合你所在地区，给出更贴近现实的建议。" },
   ],
 };
 // 博客精选（2026-09-15 借鉴对标：首页直达内容，降低发现门槛；新品发布后必须同步本板块）
@@ -49,18 +49,18 @@ const BLOG_POSTS = {
   tc: [
     { title: "易經到底是不是用來算命的？", desc: "從「善易者不卜」說起——它不是水晶球，是一套看清處境的方法。", href: "/blog/is-i-ching-fortune-telling/" },
     { title: "易經解卦和算命，到底有什麼區別？", desc: "兩把尺子：算命問「準不準」，解卦問「有沒有用」。", href: "/blog/i-ching-vs-fortune-telling/" },
-    { title: "問卦教程：10 個複製即用的提問模板", desc: "照著填空就能問出高品質的問題——覆蓋職場最常見的十種糾結。", href: "/blog/question-templates/" },
+    { title: "問卦教程：10 個複製即用的提問模板", desc: "照著填空就能問出高品質的問題——把最常見的十種糾結，變成好問題。", href: "/blog/question-templates/" },
   ],
   sc: [
     { title: "易经到底是不是用来算命的？", desc: "从「善易者不卜」说起——它不是水晶球，是一套看清处境的方法。", href: "/cn/blog/is-i-ching-fortune-telling/" },
     { title: "易经解卦和算命，到底有什么区别？", desc: "两把尺子：算命问「准不准」，解卦问「有没有用」。", href: "/cn/blog/i-ching-vs-fortune-telling/" },
-    { title: "问卦教程：10 个复制即用的提问模板", desc: "照着填空就能问出高质量的问题——覆盖职场最常见的十种纠结。", href: "/cn/blog/question-templates/" },
+    { title: "问卦教程：10 个复制即用的提问模板", desc: "照着填空就能问出高质量的问题——把最常见的十种纠结，变成好问题。", href: "/cn/blog/question-templates/" },
   ],
 };
 
 export default function App() {
   const [prefilled] = useState(() => {
-    // 支持 ?q= 预填问题（来自卦页「真實職場提問」卡片的引导链接）
+    // 支持 ?q= 预填问题（URL 参数）
     try {
       const params = new URLSearchParams(window.location.search);
       return params.get("q") || "";
@@ -604,7 +604,7 @@ export default function App() {
               href={lang === "tc" ? "/blog/" : "/cn/blog/"}
               className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
             >
-              {lang === "tc" ? "✍️ 決策筆記 · 離職、轉職、迷茫的真實解法" : "✍️ 决策笔记 · 离职、跳槽、迷茫的真实解法"}
+              {lang === "tc" ? "✍️ 決策筆記 · 把真實的難題，想清楚" : "✍️ 决策笔记 · 把真实的难题，想清楚"}
             </a>
           </div>
           <p className="text-xs text-gray-400 dark:text-[#6A6E78] tracking-wider">

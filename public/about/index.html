@@ -60,10 +60,10 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:v
   (function(){
     document.addEventListener('click', function(e){
       try {
-        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a, .q-card a') : null;
+        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a') : null;
         if (!a || !window.gtag) return;
-        var c = a.closest('.cta-mini') || a.closest('.cta') || a.closest('.q-card');
-        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : ((c && c.classList.contains('cta')) ? 'bottom' : 'question_card');
+        var c = a.closest('.cta-mini') || a.closest('.cta');
+        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : 'bottom';
         var parts = location.pathname.split('hexagram/');
         var hx = parts.length > 1 ? (parseInt(parts[1], 10) || '') : '';
         gtag('event', 'cta_click', { pos: pos, hexagram: String(hx), page_lang: document.documentElement.lang || '' });

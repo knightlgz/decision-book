@@ -25,7 +25,6 @@ INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
 # 简体版=LLM 语际转译（由 translate_interp_sc.py 产出；禁机翻铁律——不得用 opencc 等机械转换替代）
 INTERP_SC_FILE = ROOT / "src" / "data" / "hexagram_interpretations_sc.json"
 INSIGHT_GEN_FILE = ROOT / "src" / "data" / "insight_gen.json"
-WORK_FAQ_FILE = ROOT / "src" / "data" / "work_faq.json"
 PUBLIC = ROOT / "public"
 BASE_URL = "https://decision-book.vercel.app"
 
@@ -64,23 +63,6 @@ def parse_insight_gen():
     return {int(d["id"]): d for d in data}
 
 
-def parse_work_faq():
-    """{卦名}卦×工作/事業 FAQ（非试点页；generate_work_faq.py 产出）"""
-    if not WORK_FAQ_FILE.exists():
-        return {}
-    data = json.loads(WORK_FAQ_FILE.read_text(encoding="utf-8"))
-    return {int(k): v for k, v in data.items()}
-
-
-def parse_related_pub():
-    """读取已发布内容关联（related_content.json：卦号 -> {tc:[...], sc:[...]}）
-    繁页渲染 tc（Blogger）、简页渲染 sc（公众号）；无内容的卦自动隐藏。"""
-    f = ROOT / "src" / "data" / "related_content.json"
-    if not f.exists():
-        return {}
-    return json.loads(f.read_text(encoding="utf-8"))
-
-
 def parse_hexagrams():
     """用 Node.js 解析 ES module"""
     tmp_js = Path(tempfile.gettempdir()) / "dump_hexagrams.mjs"
@@ -98,7 +80,7 @@ console.log(JSON.stringify(HEXAGRAMS));
 FAQ_TC = [
     {
         "q": "這個卦象適合問什麼問題？",
-        "a": "適合工作與事業上的抉擇，例如轉職、與主管同事相處、創業方向、升遷時機等情境。",
+        "a": "適合事業與生意上的抉擇，例如合夥經營、用人帶人、定價取捨、轉型時機等情境。",
     },
     {
         "q": "如何獲得專屬於我的卦象解讀？",
@@ -113,7 +95,7 @@ FAQ_TC = [
 FAQ_SC = [
     {
         "q": "这个卦象适合问什么问题？",
-        "a": "适合工作与事业上的抉择，例如跳槽、与主管同事相处、创业方向、晋升时机等情境。",
+        "a": "适合事业与生意上的抉择，例如合伙经营、用人带人、定价取舍、转型时机等情境。",
     },
     {
         "q": "如何获得专属于我的卦象解读？",
@@ -150,122 +132,21 @@ def faq_jsonld(faq_items, url):
     }, ensure_ascii=False)
 
 
-# 试点页 SEO 优化（2026-08-28 建，2026-09-17 v2 重构）：场景痛点词 → 卦页映射
-# v2 规范：kw=经 Google 验证的真实搜索短语（口语化/被XX/怎么办型）；title 结构 = "{卦名}卦是什么意思？{kw}"
-# 与卦义理强关联（用户搜什么→卦讲什么，避免跳出率）；品牌尾缀一律不加（无搜索量支撑）
-SEO_PILOT = {
-    "27": {  # 山雷頤 → 精神內耗
-        "tc": {"kw": "上班內耗怎麼辦", "kw2": "消耗還是滋養",
-               "faq_q": "工作讓我越來越內耗，是山雷頤卦的意思嗎？該怎麼調適？",
-               "faq_a": "頤卦講「自求口實」：先分清工作是消耗你還是滋養你，再決定去留，答案會慢慢浮現。"},
-        "sc": {"kw": "上班内耗怎么办", "kw2": "消耗还是滋养",
-               "faq_q": "工作让我越来越内耗，是山雷颐卦的意思吗？该怎么调适？",
-               "faq_a": "颐卦讲「自求口实」：先分清工作是消耗你还是滋养你，再决定去留，答案会慢慢浮现。"},
-    },
-    "38": {  # 火澤睽 → 被主管針對（睽=對立分歧）
-        "tc": {"kw": "被主管針對怎麼辦", "kw2": "職場對立",
-               "faq_q": "感覺主管一直針對我，火澤睽卦怎麼看這種職場對立？",
-               "faq_a": "睽卦講「小事吉」：對立之中仍有轉圜，先別把矛盾升級，找雙方都能接受的共識點。"},
-        "sc": {"kw": "被主管针对怎么办", "kw2": "职场对立",
-               "faq_q": "感觉主管一直针对我，火泽睽卦怎么看这种职场对立？",
-               "faq_a": "睽卦讲「小事吉」：对立之中仍有转圜，先别把矛盾升级，找双方都能接受的共识点。"},
-    },
-    "3": {  # 水雷屯 → 面試失敗（屯=起步維艱）
-        "tc": {"kw": "面試總是失敗怎麼辦", "kw2": "求職碰壁",
-               "faq_q": "面試一直碰壁，是水雷屯卦的暗示嗎？該怎麼調適？",
-               "faq_a": "屯卦代表萬事起頭難：碰壁不代表你不夠好，而是時機與位置還沒對上，先蓄力再出發。"},
-        "sc": {"kw": "面试总是失败怎么办", "kw2": "求职碰壁",
-               "faq_q": "面试一直碰壁，是水雷屯卦的暗示吗？该怎么调适？",
-               "faq_a": "屯卦代表万事起头难：碰壁不代表你不够好，而是时机与位置还没对上，先蓄力再出发。"},
-    },
-    "47": {  # 澤水困 → 中年失業（困=資源枯竭）
-        "tc": {"kw": "中年失業怎麼辦", "kw2": "被資遣",
-               "faq_q": "中年被資遣怎麼辦？澤水困卦給什麼啟示？",
-               "faq_a": "困卦講「困而不失其所亨」：困境中守住本心與專業，暫時的困頓反而是重新定位的契機。"},
-        "sc": {"kw": "中年失业怎么办", "kw2": "被裁员",
-               "faq_q": "中年被裁员怎么办？泽水困卦给什么启示？",
-               "faq_a": "困卦讲「困而不失其所亨」：困境中守住本心与专业，暂时的困顿反而是重新定位的契机。"},
-    },
-    "5": {  # 水天需 → 被打壓（需=等待時機，忍待時）
-        "tc": {"kw": "被打壓怎麼辦", "kw2": "等待時機",
-               "faq_q": "在職場被打壓，水天需卦讓我等什麼？",
-               "faq_a": "需卦講「需，須也」：時機未到不硬碰，守正待時，把等待變成準備——熬得住的人才等得到轉機。"},
-        "sc": {"kw": "被打压怎么办", "kw2": "等待时机",
-               "faq_q": "在职场被打压，水天需卦让我等什么？",
-               "faq_a": "需卦讲「需，须也」：时机未到不硬碰，守正待时，把等待变成准备——熬得住的人才等得到转机。"},
-    },
-    "16": {  # 雷地豫 → 被裁員（豫=變相逼退的篩人）
-        "tc": {"kw": "被裁員怎麼辦", "kw2": "變相逼退",
-               "faq_q": "公司開始變相逼退、傳出裁員，雷地豫卦怎麼看？",
-               "faq_a": "豫卦講「順以動」：看準風向提前準備，但別被恐慌帶著走——把該留的證據留好，把退路備好，才能從容進退。"},
-        "sc": {"kw": "被裁员怎么办", "kw2": "变相逼退",
-               "faq_q": "公司开始变相逼退、传出裁员，雷地豫卦怎么看？",
-               "faq_a": "豫卦讲「顺以动」：看准风向提前准备，但别被恐慌带着走——把该留的证据留好，把退路备好，才能从容进退。"},
-    },
-    "29": {  # 坎為水 → 職業倦怠（坎=險中苦熬）
-        "tc": {"kw": "職業倦怠怎麼辦", "kw2": "熬過低谷",
-               "faq_q": "職業倦怠到撐不住，坎為水卦給什麼建議？",
-               "faq_a": "坎卦講「維心亨」：險難之中守住內心的通達——把大目標拆小，一口氣一口氣地熬，冬天再長也會過去。"},
-        "sc": {"kw": "职业倦怠怎么办", "kw2": "熬过低谷",
-               "faq_q": "职业倦怠到撑不住，坎为水卦给什么建议？",
-               "faq_a": "坎卦讲「维心亨」：险难之中守住内心的通达——把大目标拆小，一口气一口气地熬，冬天再长也会过去。"},
-    },
-    "33": {  # 天山遁 → 該不該離職（遁=撤退止損）
-        "tc": {"kw": "該不該離職", "kw2": "離職時機",
-               "faq_q": "糾結該不該離職，天山遁卦怎麼看進退？",
-               "faq_a": "遁卦講「遁之時義大矣哉」：退不是逃，是保全。看清局勢再退，退得從容，下一程才有底氣。"},
-        "sc": {"kw": "该不该离职", "kw2": "离职时机",
-               "faq_q": "纠结该不该离职，天山遁卦怎么看进退？",
-               "faq_a": "遁卦讲「遁之时义大矣哉」：退不是逃，是保全。看清局势再退，退得从容，下一程才有底气。"},
-    },
-    "41": {  # 山澤損 → 被AI取代（損=減損讓渡）
-        "tc": {"kw": "被AI取代怎麼辦", "kw2": "AI焦慮",
-               "faq_q": "怕被 AI 取代，山澤損卦怎麼看這種焦慮？",
-               "faq_a": "損卦講「有孚，元吉」：損要損得有價值——把 AI 省下的時間變成帶得走的能力，才不會白白被損。"},
-        "sc": {"kw": "被AI取代怎么办", "kw2": "AI焦虑",
-               "faq_q": "怕被 AI 取代，山泽损卦怎么看这种焦虑？",
-               "faq_a": "损卦讲「有孚，元吉」：损要损得有价值——把 AI 省下的时间变成带得走的能力，才不会白白被损。"},
-    },
-    "52": {  # 艮為山 → 不想上班（艮=止，停下審視）
-        "tc": {"kw": "不想上班怎麼辦", "kw2": "按下暫停",
-               "faq_q": "每天都不想上班，艮為山卦讓我停下來想什麼？",
-               "faq_a": "艮卦講「艮其背，不獲其身」：該停就停——先分清是累了、倦了、還是方向錯了，止而後定，才談下一步。"},
-        "sc": {"kw": "不想上班怎么办", "kw2": "按下暂停",
-               "faq_q": "每天都不想上班，艮为山卦让我停下来想什么？",
-               "faq_a": "艮卦讲「艮其背，不获其身」：该停就停——先分清是累了、倦了、还是方向错了，止而后定，才谈下一步。"},
-    },
-}
-
-
 # 第一页页群场景标题扩张（2026-10-07 Kyson 批准 A 方案）：非试点 20 卦
 # 词均经 Google suggest 实测（2026-10-07）；配不上痛点的用通用尾部（31/63 无 kw2=不改 desc）
 SEO_SCENARIO = {
     "24": {"tc": {"kw": "低谷期怎麼辦", "kw2": "低谷期"}, "sc": {"kw": "低谷期怎么办", "kw2": "低谷期"}},
-    "9": {"tc": {"kw": "職業瓶頸怎麼辦", "kw2": "職業瓶頸"}, "sc": {"kw": "职业瓶颈怎么办", "kw2": "职业瓶颈"}},
     "63": {"tc": {"kw": "商業與職場解讀"}, "sc": {"kw": "商业与职场解读"}},
     "18": {"tc": {"kw": "公司管理混亂怎麼辦", "kw2": "管理混亂"}, "sc": {"kw": "公司管理混乱怎么办", "kw2": "管理混乱"}},
     "30": {"tc": {"kw": "人生迷茫怎麼辦", "kw2": "人生迷茫"}, "sc": {"kw": "人生迷茫怎么办", "kw2": "人生迷茫"}},
     "43": {"tc": {"kw": "猶豫不決怎麼辦", "kw2": "猶豫不決"}, "sc": {"kw": "犹豫不决怎么办", "kw2": "犹豫不决"}},
     "58": {"tc": {"kw": "嘴笨怎麼辦", "kw2": "不會說話"}, "sc": {"kw": "嘴笨怎么办", "kw2": "不会说话"}},
-    "49": {"tc": {"kw": "想轉行怎麼辦", "kw2": "轉行"}, "sc": {"kw": "想转行怎么办", "kw2": "转行"}},
-    "13": {"tc": {"kw": "同事不合怎麼辦", "kw2": "同事不合"}, "sc": {"kw": "同事不合怎么办", "kw2": "同事不合"}},
     "31": {"tc": {"kw": "商業與職場解讀"}, "sc": {"kw": "商业与职场解读"}},
     "15": {"tc": {"kw": "老實人吃虧怎麼辦", "kw2": "老實人吃虧"}, "sc": {"kw": "老实人吃亏怎么办", "kw2": "老实人吃亏"}},
-    "36": {"tc": {"kw": "被排擠怎麼辦", "kw2": "被排擠"}, "sc": {"kw": "被排挤怎么办", "kw2": "被排挤"}},
-    "17": {"tc": {"kw": "如何跟對老闆", "kw2": "跟對老闆"}, "sc": {"kw": "如何跟对老板", "kw2": "跟对老板"}},
     "8": {"tc": {"kw": "怎麼累積人脈", "kw2": "人脈"}, "sc": {"kw": "怎么积累人脉", "kw2": "人脉"}},
-    "56": {"tc": {"kw": "異地工作怎麼辦", "kw2": "異地工作"}, "sc": {"kw": "异地工作怎么办", "kw2": "异地工作"}},
-    "44": {"tc": {"kw": "職場小人怎麼辦", "kw2": "職場小人"}, "sc": {"kw": "职场小人怎么办", "kw2": "职场小人"}},
     "7": {"tc": {"kw": "怎麼帶團隊", "kw2": "帶團隊"}, "sc": {"kw": "怎么带团队", "kw2": "带团队"}},
-    "53": {"tc": {"kw": "升遷無望怎麼辦", "kw2": "升遷無望"}, "sc": {"kw": "升职无望怎么办", "kw2": "升职无望"}},
     "57": {"tc": {"kw": "不會拒絕別人怎麼辦", "kw2": "不會拒絕"}, "sc": {"kw": "不会拒绝别人怎么办", "kw2": "不会拒绝"}},
-    "50": {"tc": {"kw": "職業轉型怎麼辦", "kw2": "職業轉型"}, "sc": {"kw": "职业转型怎么办", "kw2": "职业转型"}},
 }
-
-# 索引页「熱門場景」精选（2026-10-07 Kyson 批准 C 方案）：(锚文本, 卦号)
-HOT_SCENES_TC = [("被主管針對怎麼辦", "38"), ("中年失業怎麼辦", "47"), ("被排擠怎麼辦", "36"), ("想轉行怎麼辦", "49"), ("職場小人怎麼辦", "44"), ("老實人吃虧怎麼辦", "15"), ("上班內耗怎麼辦", "27"), ("升遷無望怎麼辦", "53")]
-HOT_SCENES_SC = [("被主管针对怎么办", "38"), ("中年失业怎么办", "47"), ("被排挤怎么办", "36"), ("想转行怎么办", "49"), ("职场小人怎么办", "44"), ("老实人吃亏怎么办", "15"), ("上班内耗怎么办", "27"), ("升职无望怎么办", "53")]
-
 
 # GA4 埋码（G-SGYWZGNCSH，2026-08-28 添加；2026-10-07 增 cta_click CTA 点击事件）
 GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
@@ -280,10 +161,10 @@ GA_SNIPPET = """  <!-- Google tag (gtag.js) -->
   (function(){
     document.addEventListener('click', function(e){
       try {
-        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a, .q-card a') : null;
+        var a = e.target && e.target.closest ? e.target.closest('.cta-mini a, .cta a') : null;
         if (!a || !window.gtag) return;
-        var c = a.closest('.cta-mini') || a.closest('.cta') || a.closest('.q-card');
-        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : ((c && c.classList.contains('cta')) ? 'bottom' : 'question_card');
+        var c = a.closest('.cta-mini') || a.closest('.cta');
+        var pos = (c && c.classList.contains('cta-mini')) ? 'mini' : 'bottom';
         var parts = location.pathname.split('hexagram/');
         var hx = parts.length > 1 ? (parseInt(parts[1], 10) || '') : '';
         gtag('event', 'cta_click', { pos: pos, hexagram: String(hx), page_lang: document.documentElement.lang || '' });
@@ -415,14 +296,9 @@ SHARE_ICON_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" st
 CHECK_ICON_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>' 
 
 
-# 真实职场提问问题库
-try:
-    from question_bank import QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC
-except ImportError:
-    QUESTIONS_BANK, HEX_TO_CATS, QUESTIONS_BANK_SC, HEX_TO_CATS_SC = {}, {}, {}, {}
 
 
-def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None, pub_related=None, work_faq=None, scenario_faq=None):
+def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, insight_gen=None, scenario_faq=None):
     """单个卦象页。lang: tc=繁体 / sc=简体
     related: [(num, tc_name, sc_name), ...] 相关卦列表（同上卦）
     insight_gen: {int_id: {sc, tc}} 通用版金句（分享文案用）"""
@@ -446,9 +322,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     # 白话解读（按语言直接取数据：tc=繁版 / sc=LLM 语际转译版；禁机翻铁律——运行时不机翻）
     interp_text = interp if interp else {"meaning": "", "career": "", "advice": ""}
 
-    # 试点页 SEO 覆盖（标题场景词 + 描述关键词）；2026-10-07：第一页页群 20 卦并入（SEO_SCENARIO）
-    pilot = SEO_PILOT.get(str(int(n)), {})
-    seo = pilot or SEO_SCENARIO.get(str(int(n)), {})
+    # 页群场景标题（2026-10-07 A 方案；2026-10-10 职场场景词清理后仅保留商业/通用项）
+    seo = SEO_SCENARIO.get(str(int(n)), {})
 
     if is_tc:
         title = f"{name}卦｜第{int(n)}卦｜曾仕強易經商業與職場解讀"
@@ -528,34 +403,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         interp_labels = ["白话释义", "商业与职场启示", "行动建议"]
 
     faq_items = FAQ_TC if is_tc else FAQ_SC
-    # 试点页追加热点 FAQ（SEO_PILOT）
-    if pilot:
-        pf = pilot["tc"] if is_tc else pilot["sc"]
-        faq_items = faq_items + [{"q": pf["faq_q"], "a": pf["faq_a"]}]
-    # {卦名}卦×工作/事業 FAQ（非试点页；2026-09-26 扩词面改造）
-    if not pilot and work_faq:
-        _wf = work_faq.get(int(n), {}).get("tc" if is_tc else "sc")
-        if _wf:
-            faq_items = faq_items + [{"q": _wf["q"], "a": _wf["a"]}]
     # 场景痛点 FAQ（第一页页群 B 方案；2026-10-07）——问题取自标题同源场景词
     if scenario_faq:
         _sf = scenario_faq.get(int(n), {}).get("tc" if is_tc else "sc")
         if _sf:
             faq_items = faq_items + [{"q": _sf["q"], "a": _sf["a"]}]
-    # 问题型 FAQ（从问题库取 2 个，与问题卡错开，答案用卦象洞察——SEO 长尾入口）
-    _bank = QUESTIONS_BANK if is_tc else (QUESTIONS_BANK_SC or QUESTIONS_BANK)
-    _h2c = HEX_TO_CATS if is_tc else (HEX_TO_CATS_SC or HEX_TO_CATS)
-    if _bank and _h2c:
-        _cats = _h2c.get(int(n), [])
-        _q_picks = []
-        if _cats:
-            _q_picks.extend(_bank.get(_cats[0], [])[2:3])
-            if len(_cats) > 1:
-                _q_picks.extend(_bank.get(_cats[1], [])[1:2])
-        for _q in _q_picks:
-            _tail = "卦對這個處境的提醒：先看清自己現在的位置與時機，再決定下一步怎麼走。" if is_tc else "卦对这个处境的提醒：先看清自己现在的位置与时机，再决定下一步怎么走。"
-            _a = f"「{insight}」——{name}{_tail}"
-            faq_items = faq_items + [{"q": _q, "a": _a}]
     faq_lines = "\n".join(
         f'<div class="faq-item"><div class="faq-q">{item["q"]}</div><div class="faq-a">{item["a"]}</div></div>'
         for item in faq_items
@@ -580,7 +432,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         scripture_html += lines_html
 
     # 白话解读区块（DeepSeek 生成）
-    # 策略：释义全量展示；职场启示截为2句引子；行动建议不上页面（付费产品核心价值）
+    # 策略：释义全量展示；启示段截为2句引子；行动建议不上页面（付费产品核心价值）
     def to_paragraphs(text):
         """优先按 LLM 语义分段标记 ||| 分，无标记时退回原样"""
         if "|||" in text:
@@ -616,20 +468,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         if rel_links:
             related_html = f'<div class="related"><h3>{related_label}</h3><div class="grid">{"".join(rel_links)}</div></div>'
 
-    # 延伸阅读（已发布内容：繁=Blogger / 简=公众号；无内容自动隐藏）
-    pub_html = ""
-    if pub_related:
-        _items = pub_related.get("tc" if is_tc else "sc", [])
-        if _items:
-            _pl = "延伸閱讀" if is_tc else "延伸阅读"
-            _pn = "關於這個卦的職場故事，我們寫過完整版：" if is_tc else "关于这个卦的职场故事，我们写过完整版："
-            _plat = "部落格" if is_tc else "公众号"
-            _links = []
-            for _it in _items[:5]:
-                _d = _it.get("date", "")
-                _links.append(f'<a href="{_it["url"]}" target="_blank" rel="noopener"><span class="pub-title">{_it["title"]}</span><span class="pub-meta">{_d} · {_plat} ↗</span></a>')
-            pub_html = f'<div class="related pub"><h3>{_pl}</h3><p class="pub-note">{_pn}</p><div class="grid">{"".join(_links)}</div></div>'
-
     # 六爻卦象图（小白也能看懂卦长什么样）
     TRI_SYMBOLS = {"乾": "☰", "兌": "☱", "離": "☲", "震": "☳", "巽": "☴", "坎": "☵", "艮": "☶", "坤": "☷"}
     gua_visual = ""
@@ -660,40 +498,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
             f'<div class="tri-label">上{comb[1] if len(comb) == 2 else ""} · 下{comb[0] if len(comb) == 2 else ""}</div>'
             f'</div></div>'
         )
-
-    # 真实职场提问板块（引导到产品起卦，不给答案）
-    question_html = ""
-    _bank_q = QUESTIONS_BANK if is_tc else (QUESTIONS_BANK_SC or QUESTIONS_BANK)
-    _h2c_q = HEX_TO_CATS if is_tc else (HEX_TO_CATS_SC or HEX_TO_CATS)
-    if _bank_q and _h2c_q:
-        import urllib.parse
-        num_int_q = int(n)
-        cats = _h2c_q.get(num_int_q, [])
-        picks = []
-        if cats:
-            picks.extend(_bank_q.get(cats[0], [])[:2])
-            for c in cats[1:]:
-                picks.extend(_bank_q.get(c, [])[:1])
-            picks = [p for p in picks if p][:4]
-        if picks:
-            q_label = "真實職場提問" if is_tc else "真实职场提问"
-            q_note = "這些問題，來自職場論壇的真實發帖。很多人起卦尋找答案——你的答案，起一卦就知道。" if is_tc else "这些问题来自职场论坛的真实发帖。很多人起卦寻找答案——你的答案，起一卦就知道。"
-            q_cta = "免費起卦，看你的答案 →" if is_tc else "免费起卦，看你的答案 →"
-            q_items = []
-            for qi, q in enumerate(picks):
-                q_url = f"{home}?q={urllib.parse.quote(q)}"
-                q_items.append(
-                    f'<div class="q-card"><div class="q-num">Q{qi + 1}</div>'
-                    f'<p class="q-text">{q}</p>'
-                    f'<a class="q-link" href="{q_url}">{q_cta}</a></div>'
-                )
-            question_html = (
-                f'<div class="questions">'
-                f'<div class="questions-head"><span class="insight-label">{q_label}</span>'
-                f'<p class="q-note">{q_note}</p></div>'
-                f'<div class="q-grid">{"".join(q_items)}</div>'
-                f'</div>'
-            )
 
     ga_snippet = GA_SNIPPET
 
@@ -816,17 +620,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .float-btn {{ width:44px; height:44px; border-radius:50%; background:var(--card); border:1px solid var(--border); color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; font-family:inherit; box-shadow:0 4px 14px rgba(0,0,0,.12); transition:all .2s; padding:0; }}
   .float-btn:hover {{ border-color:var(--accent); color:var(--accent); }}
   .float-btn svg {{ display:block; }}
-  /* 真实职场提问 */
-  .questions {{ margin-bottom:48px; }}
-  .questions-head {{ margin-bottom:16px; }}
-  .q-note {{ color:var(--muted); font-size:14px; }}
-  .q-grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }}
-  .q-card {{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; display:flex; flex-direction:column; gap:10px; transition:border-color .2s, box-shadow .2s; }}
-  .q-card:hover {{ border-color:var(--accent); box-shadow:0 4px 16px rgba(0,0,0,.07); }}
-  .q-num {{ font-size:12px; color:var(--accent); letter-spacing:2px; }}
-  .q-text {{ font-size:15px; color:var(--text-strong); line-height:1.8; flex:1; }}
-  .q-link {{ color:var(--accent); text-decoration:none; font-size:14px; font-weight:700; }}
-  .q-link:hover {{ color:var(--accent-hover); text-decoration:underline; }}
   /* 相关卦象 */
   .related {{ margin-bottom:48px; }}
   .related h3 {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:12px; }}
@@ -835,10 +628,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .related .grid a:hover {{ border-color:var(--accent); color:var(--accent); }}
   .related .rel-name {{ display:block; }}
   .related .rel-tag {{ display:inline-block; font-size:11px; color:var(--accent); border:1px solid var(--accent-border2); border-radius:10px; padding:1px 8px; margin-top:4px; }}
-  /* 延伸阅读（已发布内容） */
-  .related.pub .pub-note {{ font-size:13px; color:var(--muted); margin-bottom:12px; }}
-  .related.pub .pub-title {{ display:block; line-height:1.6; }}
-  .related.pub .pub-meta {{ display:block; font-size:11px; color:var(--muted); margin-top:6px; }}
   .faq {{ margin-bottom:48px; }}
   .faq h3 {{ font-size:16px; color:var(--muted); letter-spacing:2px; margin-bottom:16px; }}
   .faq-item {{ background:var(--card); border-radius:8px; padding:16px; margin-bottom:8px; }}
@@ -922,11 +711,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
 
   {interp_html}
 
-  {pub_html}
-
   {related_html}
-
-  {question_html}
 
   <div class="cta">
     <h2>{cta_h2}</h2>
@@ -975,7 +760,6 @@ def index_html(hexagrams, lang="tc"):
         footer = "曾仕強教授易經思想體系"
         blog_footer_text = "決策筆記"
         blog_footer_url = "/blog/"
-        hot_html = '<div class="hot"><div class="hot-title">熱門場景 · 大家正在面對的處境</div><div class="hot-links">' + "".join(f'<a href="/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_TC) + '</div></div>'
         back = "回到決策之書"
         nav_home = "/"
         f_about = "關於本站"
@@ -999,7 +783,6 @@ def index_html(hexagrams, lang="tc"):
         footer = "曾仕强教授易经思想体系"
         blog_footer_text = "决策笔记"
         blog_footer_url = "/cn/blog/"
-        hot_html = '<div class="hot"><div class="hot-title">热门场景 · 大家正在面对的处境</div><div class="hot-links">' + "".join(f'<a href="/cn/hexagram/{n}/">{t}</a>' for t, n in HOT_SCENES_SC) + '</div></div>'
         back = "回到决策之书"
         nav_home = "/cn/"
         f_about = "关于本站"
@@ -1066,11 +849,6 @@ def index_html(hexagrams, lang="tc"):
   @media (max-width:640px) {{ .site-nav-inner {{ padding:0 16px; gap:22px; }} .site-nav .lang-switch {{ right:16px; }} .site-nav a.nav-item {{ letter-spacing:2px; }} }}
   h1 {{ font-size:32px; margin-bottom:8px; color:var(--text-strong); }}
   .subtitle {{ color:var(--muted); font-size:15px; margin-bottom:40px; }}
-  .hot {{ margin:-16px 0 32px; padding:16px 18px; background:var(--card); border:1px solid var(--border); border-radius:12px; }}
-  .hot-title {{ font-size:13px; color:var(--muted); letter-spacing:1px; margin-bottom:10px; }}
-  .hot-links {{ display:flex; flex-wrap:wrap; gap:8px; }}
-  .hot-links a {{ font-size:14px; color:var(--text); text-decoration:none; border:1px solid var(--border); border-radius:16px; padding:4px 12px; transition:border-color .2s; }}
-  .hot-links a:hover {{ color:var(--accent); border-color:var(--accent); }}
   .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }}
   .grid a {{ display:block; background:var(--card); border:1px solid var(--border); color:var(--text); text-decoration:none; padding:16px; border-radius:10px; font-size:15px; transition:border-color .2s; }}
   .grid a:hover {{ border-color:var(--accent); color:var(--accent); }}
@@ -1096,7 +874,6 @@ def index_html(hexagrams, lang="tc"):
 <div class="container">
   <h1>{h1}</h1>
   <p class="subtitle">{subtitle}</p>
-  {hot_html}
   <div class="grid">
 {items}
   </div>
@@ -1151,8 +928,6 @@ def main():
     interpretations = parse_interpretations()
     interpretations_sc = parse_interpretations_sc()
     insight_gen = parse_insight_gen()
-    related_pub = parse_related_pub()
-    work_faq = parse_work_faq()
     scenario_faq = parse_scenario_faq()
     print(f"解析到 {len(hexagrams)} 个卦象, {len(original)}+{len(original_tc)} 条原文（简+繁）, {len(interpretations)} 条白话解读")
     if len(hexagrams) != 64:
@@ -1207,12 +982,12 @@ def main():
         orig_tc = original_tc.get(num_int)
         tc_dir = PUBLIC / "hexagram" / n
         tc_dir.mkdir(parents=True, exist_ok=True)
-        (tc_dir / "index.html").write_text(page_html(hx, orig_tc, interp, prev_num, next_num, "tc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq, scenario_faq=scenario_faq), encoding="utf-8")
+        (tc_dir / "index.html").write_text(page_html(hx, orig_tc, interp, prev_num, next_num, "tc", related, insight_gen, scenario_faq=scenario_faq), encoding="utf-8")
 
         # 简体页
         sc_dir = PUBLIC / "cn" / "hexagram" / n
         sc_dir.mkdir(parents=True, exist_ok=True)
-        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen, related_pub.get(hx["number"], {}), work_faq=work_faq, scenario_faq=scenario_faq), encoding="utf-8")
+        (sc_dir / "index.html").write_text(page_html(hx, orig, interp_sc, prev_num, next_num, "sc", related, insight_gen, scenario_faq=scenario_faq), encoding="utf-8")
 
         if num_int % 16 == 1:
             print(f"  ✓ 第{num_int}卦 {hx['tc']['name']}（繁+简）")
