@@ -731,7 +731,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   </div>
 </div>
 <footer>
-  <div class="f-links"><a href="{home}about/">{'關於本站' if is_tc else '关于本站'}</a> · <a href="{home}privacy/">{'隱私聲明' if is_tc else '隐私声明'}</a> · <a href="{home}disclaimer/">{'免責聲明' if is_tc else '免责声明'}</a></div>
+  <div class="f-links"><a href="{home}blog/about-kyson/">{'關於本站' if is_tc else '关于本站'}</a> · <a href="{home}privacy/">{'隱私聲明' if is_tc else '隐私声明'}</a> · <a href="{home}disclaimer/">{'免責聲明' if is_tc else '免责声明'}</a></div>
   <div class="f-links"><a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a></div>
   <div class="f-brand">{footer}</div>
 </footer>
@@ -879,7 +879,7 @@ def index_html(hexagrams, lang="tc"):
   </div>
 </div>
 <footer>
-  <div class="f-links"><a href="{nav_home}about/">{f_about}</a> · <a href="{nav_home}privacy/">{f_privacy}</a> · <a href="{nav_home}disclaimer/">{f_disclaimer}</a></div>
+  <div class="f-links"><a href="{nav_home}blog/about-kyson/">{f_about}</a> · <a href="{nav_home}privacy/">{f_privacy}</a> · <a href="{nav_home}disclaimer/">{f_disclaimer}</a></div>
   <div class="f-links"><a href="{nav_home}">{back}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a></div>
   <div class="f-brand">{footer}</div>
 </footer>

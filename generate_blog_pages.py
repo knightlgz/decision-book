@@ -252,7 +252,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 {body_html}
 {related_html}
 <footer>
-  <div class="f-links"><a href="{prefix}/about/">{'關於本站' if lang == 'tc' else '关于本站'}</a> · <a href="{prefix}/privacy/">{'隱私聲明' if lang == 'tc' else '隐私声明'}</a> · <a href="{prefix}/disclaimer/">{'免責聲明' if lang == 'tc' else '免责声明'}</a></div>
+  <div class="f-links"><a href="{prefix}/blog/about-kyson/">{'關於本站' if lang == 'tc' else '关于本站'}</a> · <a href="{prefix}/privacy/">{'隱私聲明' if lang == 'tc' else '隐私声明'}</a> · <a href="{prefix}/disclaimer/">{'免責聲明' if lang == 'tc' else '免责声明'}</a></div>
   <div class="f-links"><a href="{prefix}/hexagram/">{'易經六十四卦' if lang == 'tc' else '易经六十四卦'}</a> · <a href="{prefix}/blog/">{'決策筆記' if lang == 'tc' else '决策笔记'}</a></div>
   <p style="margin-top:10px">{cfg['footer_disclaimer']}</p>
 </footer>

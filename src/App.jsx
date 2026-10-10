@@ -581,7 +581,7 @@ export default function App() {
 
         <footer className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C] text-center space-y-1.5">
           <div className="flex justify-center gap-3 text-xs text-gray-400 dark:text-[#8B8F98]">
-            <a href={lang === "tc" ? "/about/" : "/cn/about/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
+            <a href={lang === "tc" ? "/blog/about-kyson/" : "/cn/blog/about-kyson/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
               {lang === "tc" ? "關於本站" : "关于本站"}
             </a>
             <span>·</span>

@@ -249,7 +249,7 @@ def footer_html(lang):
     tc = lang == "tc"
     p = "" if tc else "/cn"
     return f"""<footer>
-  <div class="f-links"><a href="{p}/about/">{'關於本站' if tc else '关于本站'}</a> · <a href="{p}/privacy/">{'隱私聲明' if tc else '隐私声明'}</a> · <a href="{p}/disclaimer/">{'免責聲明' if tc else '免责声明'}</a></div>
+  <div class="f-links"><a href="{p}/blog/about-kyson/">{'關於本站' if tc else '关于本站'}</a> · <a href="{p}/privacy/">{'隱私聲明' if tc else '隐私声明'}</a> · <a href="{p}/disclaimer/">{'免責聲明' if tc else '免责声明'}</a></div>
   <div class="f-links"><a href="{p}/hexagram/">{'易經六十四卦' if tc else '易经六十四卦'}</a> · <a href="{p}/blog/">{'決策筆記' if tc else '决策笔记'}</a></div>
   <div class="f-brand">{'曾仕強教授易經思想體系' if tc else '曾仕强教授易经思想体系'}</div>
 </footer>"""
