@@ -5,7 +5,7 @@ import HEXAGRAMS from './data/hexagrams';
 import ORIGINALS from './data/hexagram_originals.json';
 import INSIGHT_GEN from './data/insight_gen.json';
 import REFRAME_GEN from './data/reframe_gen.json';
-import SITE_FOOTER from './data/site_footer.json';
+import SITE from './data/site_components.json';
 import { castQuestion } from './lib/seed';
 import HexagramFigure from './components/HexagramFigure';
 import Paywall from './components/Paywall';
@@ -322,26 +322,26 @@ export default function App() {
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="text-sm tracking-[0.25em] text-[#8A6D3B] dark:text-[#C8A96A] font-bold cursor-pointer"
           >
-            {lang === "tc" ? "提問" : "提问"}
+            {lang === "tc" ? SITE.nav.items[0].tc : SITE.nav.items[0].sc}
           </button>
           <a
-            href={lang === "tc" ? "/hexagram/" : "/cn/hexagram/"}
+            href={(lang === "tc" ? "" : "/cn") + SITE.nav.items[1].href}
             className="text-sm tracking-[0.25em] text-gray-500 dark:text-[#8B8F98] hover:text-[#8A6D3B] dark:hover:text-[#C8A96A] transition-colors"
           >
-            {lang === "tc" ? "易經" : "易经"}
+            {lang === "tc" ? SITE.nav.items[1].tc : SITE.nav.items[1].sc}
           </a>
           <a
-            href={lang === "tc" ? "/blog/" : "/cn/blog/"}
+            href={(lang === "tc" ? "" : "/cn") + SITE.nav.items[2].href}
             className="text-sm tracking-[0.25em] text-gray-500 dark:text-[#8B8F98] hover:text-[#8A6D3B] dark:hover:text-[#C8A96A] transition-colors"
           >
-            {lang === "tc" ? "筆記" : "笔记"}
+            {lang === "tc" ? SITE.nav.items[2].tc : SITE.nav.items[2].sc}
           </a>
           <button
             onClick={switchLang}
             title={lang === "tc" ? "切換至簡體中文 · Switch to Simplified Chinese" : "切換至繁體中文 · Switch to Traditional Chinese"}
             className="absolute right-0 text-xs text-gray-500 dark:text-[#8B8F98] border border-gray-300 dark:border-[#3A3E4A] rounded-lg px-2.5 py-1 hover:text-gray-700 dark:hover:text-[#F5F2EA] transition-colors"
           >
-            🌐 {lang === "tc" ? "简体中文" : "繁體中文"}
+            🌐 {SITE.nav.switch_names[lang === "tc" ? "sc" : "tc"]}
           </button>
         </div>
       </nav>
@@ -582,7 +582,7 @@ export default function App() {
 
         <footer className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C] text-center space-y-1.5">
           <div className="flex justify-center gap-3 text-xs text-gray-400 dark:text-[#8B8F98]">
-            {SITE_FOOTER.row1.map((it, i) => (
+            {SITE.row1.map((it, i) => (
               <Fragment key={it.href}>
                 {i > 0 && <span>·</span>}
                 <a href={(lang === "tc" ? "" : "/cn") + it.href} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
@@ -592,21 +592,21 @@ export default function App() {
             ))}
           </div>
           <a
-            href={(lang === "tc" ? "" : "/cn") + SITE_FOOTER.row2.spa[0].href}
+            href={(lang === "tc" ? "" : "/cn") + SITE.row2.spa[0].href}
             className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
           >
-            {lang === "tc" ? SITE_FOOTER.row2.spa[0].tc : SITE_FOOTER.row2.spa[0].sc}
+            {lang === "tc" ? SITE.row2.spa[0].tc : SITE.row2.spa[0].sc}
           </a>
           <div>
             <a
-              href={(lang === "tc" ? "" : "/cn") + SITE_FOOTER.row2.spa[1].href}
+              href={(lang === "tc" ? "" : "/cn") + SITE.row2.spa[1].href}
               className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
             >
-              {lang === "tc" ? SITE_FOOTER.row2.spa[1].tc : SITE_FOOTER.row2.spa[1].sc}
+              {lang === "tc" ? SITE.row2.spa[1].tc : SITE.row2.spa[1].sc}
             </a>
           </div>
           <p className="text-xs text-gray-400 dark:text-[#6A6E78] tracking-wider">
-            {lang === "tc" ? SITE_FOOTER.brand.tc : SITE_FOOTER.brand.sc}
+            {lang === "tc" ? SITE.brand.tc : SITE.brand.sc}
           </p>
         </footer>
       </div>

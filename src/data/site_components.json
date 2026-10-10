@@ -1,5 +1,5 @@
 {
-  "_comment": "站点 footer 单一数据源（2026-10-10 建）。href 一律存繁体默认路径（无 /cn 前缀）；渲染时 sc 自动加 /cn。消费者：site_components.py（静态页生成器）＋ src/App.jsx（SPA）。改动流程：改本文件 → 跑三个生成器 → 跑 check_footer_parity.py。",
+  "_comment": "站点组件单一数据源（footer + 导航，2026-10-10 建）。href 一律存繁体默认路径（无 /cn 前缀）；渲染时 sc 自动加 /cn。消费者：site_components.py（静态页生成器）＋ src/App.jsx（SPA）。改动流程：改本文件 → 跑三个生成器（hex→blog→static 全序列）→ 跑 check_site_parity.py。",
   "row1": [
     {
       "href": "/blog/about-kyson/",
@@ -21,8 +21,8 @@
     "hexpage": [
       {
         "href": "/hexagram/",
-        "tc": "六十四卦",
-        "sc": "六十四卦"
+        "tc": "易經六十四卦",
+        "sc": "易经六十四卦"
       },
       {
         "href": "/blog/",
@@ -74,5 +74,31 @@
   "blog_disclaimer": {
     "tc": "本文僅供決策思考參考，不構成任何投資、法律或職業建議。",
     "sc": "本文仅供决策思考参考，不构成任何投资、法律或职业建议。"
+  },
+  "nav": {
+    "items": [
+      {
+        "id": "ask",
+        "tc": "提問",
+        "sc": "提问",
+        "href": "/"
+      },
+      {
+        "id": "hex",
+        "tc": "易經",
+        "sc": "易经",
+        "href": "/hexagram/"
+      },
+      {
+        "id": "blog",
+        "tc": "筆記",
+        "sc": "笔记",
+        "href": "/blog/"
+      }
+    ],
+    "switch_names": {
+      "tc": "繁體中文",
+      "sc": "简体中文"
+    }
   }
 }

@@ -343,10 +343,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         next_label = "下一卦 →"
         all_label = "全部六十四卦"
         breadcrumb_home = "決策之書"
-        nav_ask = "提問"
-        nav_hex = "易經"
-        nav_blog = "筆記"
-        blog_index = "/blog/"
         insight_label = "核心解讀"
         cta_h2 = "你正在面對類似的商業或職場抉擇嗎？"
         cta_p = "免費起卦，看看你的處境對應哪一卦；完整行動方案，起卦後即可免費查看。"
@@ -377,10 +373,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         next_label = "下一卦 →"
         all_label = "全部六十四卦"
         breadcrumb_home = "决策之书"
-        nav_ask = "提问"
-        nav_hex = "易经"
-        nav_blog = "笔记"
-        blog_index = "/cn/blog/"
         insight_label = "核心解读"
         cta_h2 = "你正在面对类似的商业或职场抉择吗？"
         cta_p = "免费起卦，看看你的处境对应哪一卦；完整行动方案，起卦后即可免费查看。"
@@ -411,9 +403,9 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
 
     # 语言切换链接
     if is_tc:
-        lang_switch = f'<span class="lang-switch"><a href="/cn/hexagram/{n}/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
+        switch_href = f"/cn/hexagram/{n}/"
     else:
-        lang_switch = f'<span class="lang-switch"><a href="/hexagram/{n}/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
+        switch_href = f"/hexagram/{n}/"
 
     # 原文
     scripture_html = ""
@@ -566,17 +558,14 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .topbar {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }}
   .breadcrumb {{ font-size:14px; color:var(--muted); }}
   .breadcrumb a {{ color:var(--accent); text-decoration:none; }}
-  .lang-switch a {{ color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; transition:all .2s; }}
-  .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
-  .lang-switch a.active {{ color:var(--accent); border-color:var(--accent); }}
   /* 三栏目常驻导航（2026-10-08）：提问｜易经｜笔记 */
   .site-nav {{ position:sticky; top:0; z-index:40; background:rgba(15,17,21,.86); -webkit-backdrop-filter:blur(12px) saturate(1.6); backdrop-filter:blur(12px) saturate(1.6); border-bottom:1px solid var(--border); }}
   .site-nav-inner {{ max-width:900px; margin:0 auto; padding:0 24px; height:48px; display:flex; align-items:center; justify-content:center; gap:36px; position:relative; }}
   .site-nav a.nav-item {{ color:var(--muted); text-decoration:none; font-size:14px; letter-spacing:3px; padding:6px 2px; transition:color .2s; }}
   .site-nav a.nav-item:hover {{ color:var(--accent); }}
   .site-nav a.nav-item.active {{ color:var(--accent); font-weight:700; text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:2px; }}
-  .site-nav .lang-switch {{ position:absolute; right:24px; top:50%; transform:translateY(-50%); }}
-  .site-nav .lang-switch a {{ font-size:12.5px; padding:3px 10px; }}
+  .site-nav .lang-switch {{ position:absolute; right:24px; top:50%; transform:translateY(-50%); font-weight:400; font-size:12.5px; color:var(--muted); letter-spacing:0; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:3px 10px; }}
+  .site-nav .lang-switch:hover {{ color:var(--accent); border-color:var(--accent); }}
   @media (prefers-color-scheme: light) {{ .site-nav {{ background:rgba(250,248,244,.86); }} }}
   @media (max-width:640px) {{ .site-nav-inner {{ padding:0 16px; gap:22px; }} .site-nav .lang-switch {{ right:16px; }} .site-nav a.nav-item {{ letter-spacing:2px; }} }}
 
@@ -669,14 +658,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   {ga_snippet}
  </head>
  <body>
- <nav class="site-nav">
- <div class="site-nav-inner">
-  <a class="nav-item" href="{home}">{nav_ask}</a>
-  <a class="nav-item active" href="{idx_link}">{nav_hex}</a>
-  <a class="nav-item" href="{blog_index}">{nav_blog}</a>
-  {lang_switch}
- </div>
-</nav>
+{site_components.nav_html(lang, 'hex', switch_href)}
 <div class="container">
   <div class="title-row">
     <span class="hexagram-badge">{num_label}</span>
@@ -742,33 +724,17 @@ def index_html(hexagrams, lang="tc"):
         desc = "易經六十四卦完整索引：每卦的卦辭爻辭原文、商業與職場核心解讀，基於曾仕強教授易經思想體系。"
         html_lang = "zh-Hant"
         url = f"{BASE_URL}/hexagram/"
-        home_label = "決策之書"
-        idx_label = "六十四卦"
         h1 = "易經六十四卦"
         subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
-        nav_home = "/"
-        nav_hex_href = "/hexagram/"
-        nav_blog_href = "/blog/"
-        nav_ask = "提問"
-        nav_hex = "易經"
-        nav_blog = "筆記"
-        lang_switch = f'<span class="lang-switch"><a href="/cn/hexagram/" hreflang="zh-Hans" rel="alternate">简体中文</a></span>'
+        switch_href = "/cn/hexagram/"
     else:
         title = "易经六十四卦｜曾仕强商业与职场解读全索引"
         desc = "易经六十四卦完整索引：每卦的卦辞爻辞原文、商业与职场核心解读，基于曾仕强教授易经思想体系。"
         html_lang = "zh-Hans"
         url = f"{BASE_URL}/cn/hexagram/"
-        home_label = "决策之书"
-        idx_label = "六十四卦"
         h1 = "易经六十四卦"
         subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
-        nav_home = "/cn/"
-        nav_hex_href = "/cn/hexagram/"
-        nav_blog_href = "/cn/blog/"
-        nav_ask = "提问"
-        nav_hex = "易经"
-        nav_blog = "笔记"
-        lang_switch = f'<span class="lang-switch"><a href="/hexagram/" hreflang="zh-Hant" rel="alternate">繁體中文</a></span>'
+        switch_href = "/hexagram/"
 
     ld = json.dumps({
         "@context": "https://schema.org",
@@ -810,16 +776,14 @@ def index_html(hexagrams, lang="tc"):
   .topbar {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }}
   .breadcrumb {{ font-size:14px; color:var(--muted); }}
   .breadcrumb a {{ color:var(--accent); text-decoration:none; }}
-  .lang-switch a {{ color:var(--muted); text-decoration:none; font-size:14px; border:1px solid var(--border); padding:4px 12px; border-radius:16px; }}
-  .lang-switch a:hover {{ color:var(--accent); border-color:var(--accent); }}
   /* 三栏目常驻导航（2026-10-08）：提问｜易经｜笔记 */
   .site-nav {{ position:sticky; top:0; z-index:40; background:rgba(15,17,21,.86); -webkit-backdrop-filter:blur(12px) saturate(1.6); backdrop-filter:blur(12px) saturate(1.6); border-bottom:1px solid var(--border); }}
   .site-nav-inner {{ max-width:900px; margin:0 auto; padding:0 24px; height:48px; display:flex; align-items:center; justify-content:center; gap:36px; position:relative; }}
   .site-nav a.nav-item {{ color:var(--muted); text-decoration:none; font-size:14px; letter-spacing:3px; padding:6px 2px; transition:color .2s; }}
   .site-nav a.nav-item:hover {{ color:var(--accent); }}
   .site-nav a.nav-item.active {{ color:var(--accent); font-weight:700; text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:2px; }}
-  .site-nav .lang-switch {{ position:absolute; right:24px; top:50%; transform:translateY(-50%); }}
-  .site-nav .lang-switch a {{ font-size:12.5px; padding:3px 10px; }}
+  .site-nav .lang-switch {{ position:absolute; right:24px; top:50%; transform:translateY(-50%); font-weight:400; font-size:12.5px; color:var(--muted); letter-spacing:0; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:3px 10px; }}
+  .site-nav .lang-switch:hover {{ color:var(--accent); border-color:var(--accent); }}
   @media (prefers-color-scheme: light) {{ .site-nav {{ background:rgba(250,248,244,.86); }} }}
   @media (max-width:640px) {{ .site-nav-inner {{ padding:0 16px; gap:22px; }} .site-nav .lang-switch {{ right:16px; }} .site-nav a.nav-item {{ letter-spacing:2px; }} }}
   h1 {{ font-size:32px; margin-bottom:8px; color:var(--text-strong); }}
@@ -838,14 +802,7 @@ def index_html(hexagrams, lang="tc"):
   {ga_snippet}
 </head>
 <body>
-<nav class="site-nav">
- <div class="site-nav-inner">
-  <a class="nav-item" href="{nav_home}">{nav_ask}</a>
-  <a class="nav-item active" href="{nav_hex_href}">{nav_hex}</a>
-  <a class="nav-item" href="{nav_blog_href}">{nav_blog}</a>
-  {lang_switch}
- </div>
-</nav>
+{site_components.nav_html(lang, 'hex', switch_href)}
 <div class="container">
   <h1>{h1}</h1>
   <p class="subtitle">{subtitle}</p>

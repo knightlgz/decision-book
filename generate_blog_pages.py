@@ -32,10 +32,6 @@ LANGS = {
         "alternate_hreflang": "zh-Hans",
         "brand": "決策之書",
         "nav_sub": "易經 × 商業與職場",
-        "label_ask": "提問",
-        "label_hex": "易經",
-        "label_blog": "筆記",
-        "switch_label": "简体中文",
         "switch_lang": "sc",
         "author_line": "凱森的決策之書",
         "cta_h": "你的處境，換一雙眼睛看看？",
@@ -54,10 +50,6 @@ LANGS = {
         "alternate_hreflang": "zh-Hant",
         "brand": "决策之书",
         "nav_sub": "易经 × 商业与职场",
-        "label_ask": "提问",
-        "label_hex": "易经",
-        "label_blog": "笔记",
-        "switch_label": "繁體中文",
         "switch_lang": "tc",
         "author_line": "凯森的决策之书",
         "cta_h": "你的处境，换一双眼睛看看？",
@@ -160,7 +152,7 @@ body{font-family:-apple-system,"PingFang TC","PingFang SC","Noto Sans TC","Noto 
 .site-nav a.nav-item{color:var(--sub);text-decoration:none;font-size:14px;letter-spacing:.2em;padding:6px 2px;transition:color .2s}
 .site-nav a.nav-item:hover{color:var(--accent)}
 .site-nav a.nav-item.active{color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
-.site-nav .lang-switch{position:absolute;right:22px;top:50%;transform:translateY(-50%);font-weight:400;font-size:12.5px;color:var(--sub);letter-spacing:0;border:1px solid var(--line);border-radius:6px;padding:3px 10px}
+.site-nav .lang-switch{position:absolute;right:22px;top:50%;transform:translateY(-50%);font-weight:400;font-size:12.5px;color:var(--sub);letter-spacing:0;text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:3px 10px}
 .site-nav .lang-switch:hover{color:var(--accent);border-color:var(--accent)}
 @media (max-width:640px){.site-nav-inner{padding:0 16px;gap:22px}.site-nav .lang-switch{right:16px}.site-nav a.nav-item{letter-spacing:.15em}}
 h1{font-size:26px;line-height:1.5;margin-bottom:10px;letter-spacing:.02em}
@@ -239,14 +231,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 {ga_snippet}
 </head>
 <body>
-<nav class="site-nav">
-  <div class="site-nav-inner">
-    <a class="nav-item" href="{prefix}/">{cfg['label_ask']}</a>
-    <a class="nav-item" href="{prefix}/hexagram/">{cfg['label_hex']}</a>
-    <a class="nav-item active" href="{prefix}/blog/">{cfg['label_blog']}</a>
-    <a class="lang-switch" href="{alt_path}">{cfg['switch_label']}</a>
-  </div>
-</nav>
+{site_components.nav_html(lang, 'blog', alt_path)}
 <div class="wrap">
 {body_html}
 {related_html}
