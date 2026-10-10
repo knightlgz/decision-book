@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
 import { Analytics, track } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import HEXAGRAMS from './data/hexagrams';
 import ORIGINALS from './data/hexagram_originals.json';
 import INSIGHT_GEN from './data/insight_gen.json';
 import REFRAME_GEN from './data/reframe_gen.json';
+import SITE_FOOTER from './data/site_footer.json';
 import { castQuestion } from './lib/seed';
 import HexagramFigure from './components/HexagramFigure';
 import Paywall from './components/Paywall';
@@ -581,34 +582,31 @@ export default function App() {
 
         <footer className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C] text-center space-y-1.5">
           <div className="flex justify-center gap-3 text-xs text-gray-400 dark:text-[#8B8F98]">
-            <a href={lang === "tc" ? "/blog/about-kyson/" : "/cn/blog/about-kyson/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
-              {lang === "tc" ? "關於本站" : "关于本站"}
-            </a>
-            <span>·</span>
-            <a href={lang === "tc" ? "/privacy/" : "/cn/privacy/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
-              {lang === "tc" ? "隱私聲明" : "隐私声明"}
-            </a>
-            <span>·</span>
-            <a href={lang === "tc" ? "/disclaimer/" : "/cn/disclaimer/"} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
-              {lang === "tc" ? "免責聲明" : "免责声明"}
-            </a>
+            {SITE_FOOTER.row1.map((it, i) => (
+              <Fragment key={it.href}>
+                {i > 0 && <span>·</span>}
+                <a href={(lang === "tc" ? "" : "/cn") + it.href} className="hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4">
+                  {lang === "tc" ? it.tc : it.sc}
+                </a>
+              </Fragment>
+            ))}
           </div>
           <a
-            href={lang === "tc" ? "/hexagram/" : "/cn/hexagram/"}
+            href={(lang === "tc" ? "" : "/cn") + SITE_FOOTER.row2.spa[0].href}
             className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
           >
-            {lang === "tc" ? "📖 易經六十四卦索引 · 卦辭爻辭原文" : "📖 易经六十四卦索引 · 卦辞爻辞原文"}
+            {lang === "tc" ? SITE_FOOTER.row2.spa[0].tc : SITE_FOOTER.row2.spa[0].sc}
           </a>
           <div>
             <a
-              href={lang === "tc" ? "/blog/" : "/cn/blog/"}
+              href={(lang === "tc" ? "" : "/cn") + SITE_FOOTER.row2.spa[1].href}
               className="inline-block text-sm text-gray-500 dark:text-[#8B8F98] hover:text-gray-900 dark:hover:text-[#F5F2EA] underline underline-offset-4"
             >
-              {lang === "tc" ? "✍️ 決策筆記 · 把真實的難題，想清楚" : "✍️ 决策笔记 · 把真实的难题，想清楚"}
+              {lang === "tc" ? SITE_FOOTER.row2.spa[1].tc : SITE_FOOTER.row2.spa[1].sc}
             </a>
           </div>
           <p className="text-xs text-gray-400 dark:text-[#6A6E78] tracking-wider">
-            {lang === "tc" ? "曾仕強教授易經思想體系" : "曾仕强教授易经思想体系"}
+            {lang === "tc" ? SITE_FOOTER.brand.tc : SITE_FOOTER.brand.sc}
           </p>
         </footer>
       </div>

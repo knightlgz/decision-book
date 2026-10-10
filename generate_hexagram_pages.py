@@ -15,6 +15,7 @@ import re
 import subprocess
 import tempfile
 from pathlib import Path
+import site_components
 
 ROOT = Path(__file__).parent
 DATA_FILE = ROOT / "src" / "data" / "hexagrams.js"
@@ -342,7 +343,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         next_label = "下一卦 →"
         all_label = "全部六十四卦"
         breadcrumb_home = "決策之書"
-        breadcrumb_idx = "六十四卦"
         nav_ask = "提問"
         nav_hex = "易經"
         nav_blog = "筆記"
@@ -356,9 +356,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         gua_label = "卦辭"
         yao_label = "爻辭"
         scripture_note = "原文出自《周易》，公版內容。"
-        footer = "曾仕強教授易經思想體系"
-        blog_footer_text = "決策筆記"
-        blog_footer_url = "/blog/"
         subtitle_line = "曾仕強易經思想體系 · 商業與職場解讀"
         faq_heading = "常見問題"
         related_label = "相關卦象"
@@ -380,7 +377,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         next_label = "下一卦 →"
         all_label = "全部六十四卦"
         breadcrumb_home = "决策之书"
-        breadcrumb_idx = "六十四卦"
         nav_ask = "提问"
         nav_hex = "易经"
         nav_blog = "笔记"
@@ -394,9 +390,6 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         gua_label = "卦辞"
         yao_label = "爻辞"
         scripture_note = "原文出自《周易》，公版内容。"
-        footer = "曾仕强教授易经思想体系"
-        blog_footer_text = "决策笔记"
-        blog_footer_url = "/cn/blog/"
         subtitle_line = "曾仕强易经思想体系 · 商业与职场解读"
         faq_heading = "常见问题"
         related_label = "相关卦象"
@@ -730,11 +723,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
     {next_link}
   </div>
 </div>
-<footer>
-  <div class="f-links"><a href="{home}blog/about-kyson/">{'關於本站' if is_tc else '关于本站'}</a> · <a href="{home}privacy/">{'隱私聲明' if is_tc else '隐私声明'}</a> · <a href="{home}disclaimer/">{'免責聲明' if is_tc else '免责声明'}</a></div>
-  <div class="f-links"><a href="{idx_link}">{breadcrumb_idx}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a></div>
-  <div class="f-brand">{footer}</div>
-</footer>
+{site_components.footer_html(lang, 'hexpage')}
 {share_html}
 </body>
 </html>"""
@@ -757,14 +746,7 @@ def index_html(hexagrams, lang="tc"):
         idx_label = "六十四卦"
         h1 = "易經六十四卦"
         subtitle = "曾仕強教授易經思想體系 · 商業與職場雙語境解讀"
-        footer = "曾仕強教授易經思想體系"
-        blog_footer_text = "決策筆記"
-        blog_footer_url = "/blog/"
-        back = "回到決策之書"
         nav_home = "/"
-        f_about = "關於本站"
-        f_privacy = "隱私聲明"
-        f_disclaimer = "免責聲明"
         nav_hex_href = "/hexagram/"
         nav_blog_href = "/blog/"
         nav_ask = "提問"
@@ -780,14 +762,7 @@ def index_html(hexagrams, lang="tc"):
         idx_label = "六十四卦"
         h1 = "易经六十四卦"
         subtitle = "曾仕强教授易经思想体系 · 商业与职场双语境解读"
-        footer = "曾仕强教授易经思想体系"
-        blog_footer_text = "决策笔记"
-        blog_footer_url = "/cn/blog/"
-        back = "回到决策之书"
         nav_home = "/cn/"
-        f_about = "关于本站"
-        f_privacy = "隐私声明"
-        f_disclaimer = "免责声明"
         nav_hex_href = "/cn/hexagram/"
         nav_blog_href = "/cn/blog/"
         nav_ask = "提问"
@@ -878,11 +853,7 @@ def index_html(hexagrams, lang="tc"):
 {items}
   </div>
 </div>
-<footer>
-  <div class="f-links"><a href="{nav_home}blog/about-kyson/">{f_about}</a> · <a href="{nav_home}privacy/">{f_privacy}</a> · <a href="{nav_home}disclaimer/">{f_disclaimer}</a></div>
-  <div class="f-links"><a href="{nav_home}">{back}</a> · <a href="{blog_footer_url}">{blog_footer_text}</a></div>
-  <div class="f-brand">{footer}</div>
-</footer>
+{site_components.footer_html(lang, 'hexindex')}
 </body>
 </html>"""
 

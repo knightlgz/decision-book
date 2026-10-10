@@ -16,6 +16,7 @@ import re
 import datetime
 from pathlib import Path
 from generate_hexagram_pages import GA_SNIPPET  # GA4 埋码复用（含 cta_click 监听，2026-10-07）
+import site_components
 
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
@@ -41,7 +42,6 @@ LANGS = {
         "cta_p": "輸入你正在糾結的商業或職場難題，起一卦，讓易經給你一個不同的視角。",
         "cta_btn": "開始起卦 →",
         "footer_about": "決策之書——把易經做成一張陪你算帳、也陪你下決定的鏡子。卦不是算盤，不預測吉凶，只把你自己的處境翻給你看。",
-        "footer_disclaimer": "本文僅供決策思考參考，不構成任何投資、法律或職業建議。",
         "index_title": "決策筆記",
         "index_sub": "易經 × 商業與職場 —— 把真實的難題，想清楚",
         "related_label": "延伸閱讀",
@@ -64,7 +64,6 @@ LANGS = {
         "cta_p": "输入你正在纠结的商业或职场难题，起一卦，让易经给你一个不同的视角。",
         "cta_btn": "开始起卦 →",
         "footer_about": "决策之书——把易经做成一枚陪你算账、也陪你下决定的镜子。卦不是算盘，不预测吉凶，只把你自己的处境翻给你看。",
-        "footer_disclaimer": "本文仅供决策思考参考，不构成任何投资、法律或职业建议。",
         "index_title": "决策笔记",
         "index_sub": "易经 × 商业与职场 —— 把真实的难题，想清楚",
         "related_label": "延伸阅读",
@@ -251,11 +250,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 <div class="wrap">
 {body_html}
 {related_html}
-<footer>
-  <div class="f-links"><a href="{prefix}/blog/about-kyson/">{'關於本站' if lang == 'tc' else '关于本站'}</a> · <a href="{prefix}/privacy/">{'隱私聲明' if lang == 'tc' else '隐私声明'}</a> · <a href="{prefix}/disclaimer/">{'免責聲明' if lang == 'tc' else '免责声明'}</a></div>
-  <div class="f-links"><a href="{prefix}/hexagram/">{'易經六十四卦' if lang == 'tc' else '易经六十四卦'}</a> · <a href="{prefix}/blog/">{'決策筆記' if lang == 'tc' else '决策笔记'}</a></div>
-  <p style="margin-top:10px">{cfg['footer_disclaimer']}</p>
-</footer>
+{site_components.footer_html(lang, 'default', 'blog')}
 </div>
 </body>
 </html>"""

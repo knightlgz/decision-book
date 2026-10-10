@@ -11,6 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from generate_blog_pages import md_to_html          # noqa: E402
 from generate_hexagram_pages import GA_SNIPPET      # noqa: E402
+import site_components
 
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
@@ -246,13 +247,7 @@ def nav_html(lang, slug):
 
 
 def footer_html(lang):
-    tc = lang == "tc"
-    p = "" if tc else "/cn"
-    return f"""<footer>
-  <div class="f-links"><a href="{p}/blog/about-kyson/">{'關於本站' if tc else '关于本站'}</a> · <a href="{p}/privacy/">{'隱私聲明' if tc else '隐私声明'}</a> · <a href="{p}/disclaimer/">{'免責聲明' if tc else '免责声明'}</a></div>
-  <div class="f-links"><a href="{p}/hexagram/">{'易經六十四卦' if tc else '易经六十四卦'}</a> · <a href="{p}/blog/">{'決策筆記' if tc else '决策笔记'}</a></div>
-  <div class="f-brand">{'曾仕強教授易經思想體系' if tc else '曾仕强教授易经思想体系'}</div>
-</footer>"""
+    return site_components.footer_html(lang, "default")
 
 
 def build_page(slug, lang):
