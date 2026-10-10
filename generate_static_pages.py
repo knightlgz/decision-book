@@ -15,7 +15,7 @@ from generate_hexagram_pages import GA_SNIPPET      # noqa: E402
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
 BASE_URL = "https://decision-book.vercel.app"
-IG_URL = "https://www.instagram.com/kyson_yijing/"
+IG_URL = "https://www.instagram.com/kysonsdecisionbook/"
 
 # ============================================================
 # 页面内容（草稿级；改动只需改这里）
@@ -48,7 +48,7 @@ PAGES = {
 
 ## 聯繫我們
 
-使用上的問題、建議，或想刪除你的使用資料，歡迎 IG 私訊：[@kyson_yijing](%s)
+使用上的問題、建議，或想刪除你的使用資料，歡迎 IG 私訊：[@kysonsdecisionbook](%s)
 
 凱森""" % IG_URL,
         },
@@ -78,7 +78,7 @@ PAGES = {
 
 ## 联系我们
 
-使用上的问题、建议，或想删除你的使用资料，欢迎 IG 私信：[@kyson_yijing](%s)
+使用上的问题、建议，或想删除你的使用资料，欢迎 IG 私信：[@kysonsdecisionbook](%s)
 
 凯森""" % IG_URL,
         },
@@ -108,7 +108,7 @@ PAGES = {
 
 ## 資料的保留與刪除
 
-本站不建立用戶帳戶資料庫。如需查詢或刪除與你相關的處理記錄，請 IG 私訊 [@kyson_yijing](%s)，我們會盡快處理。
+本站不建立用戶帳戶資料庫。如需查詢或刪除與你相關的處理記錄，請 IG 私訊 [@kysonsdecisionbook](%s)，我們會盡快處理。
 
 ## 變更
 
@@ -138,7 +138,7 @@ PAGES = {
 
 ## 资料的保留与删除
 
-本站不建立用户账户数据库。如需查询或删除与你相关的处理记录，请 IG 私信 [@kyson_yijing](%s)，我们会尽快处理。
+本站不建立用户账户数据库。如需查询或删除与你相关的处理记录，请 IG 私信 [@kysonsdecisionbook](%s)，我们会尽快处理。
 
 ## 变更
 
