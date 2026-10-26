@@ -306,15 +306,19 @@ def main():
         sm = sm_path.read_text(encoding="utf-8")
         # 清理：匹配完整 <url> 块（含 lastmod 等任意子元素），懒惰匹配到最近的 </url>
         sm = re.sub(r"\n?\s*<url>\s*<loc>[^<]*/blog/[^<]*</loc>[\s\S]*?</url>", "", sm)
-        today = datetime.date.today().isoformat()
-        urls = []
+        site_date = site_components.SITE_LASTMOD
+        urls = []  # (url, lastmod)：lastmod = 真实内容变更日（updated > date > 站点日期），不用构建日
         for lang, cfg in LANGS.items():
             prefix = cfg["prefix"]
-            urls.append(f"{BASE_URL}{prefix}/blog/")
-            urls += [f"{BASE_URL}{prefix}/blog/{p['meta']['slug']}/" for p in all_posts[lang]]
+            posts = all_posts[lang]
+            def _d(p):
+                return p["meta"].get("updated") or p["meta"].get("date") or site_date
+            latest = max([_d(p) for p in posts] + [site_date])
+            urls.append((f"{BASE_URL}{prefix}/blog/", latest))
+            urls += [(f"{BASE_URL}{prefix}/blog/{p['meta']['slug']}/", _d(p)) for p in posts]
         block = "\n".join(
-            f"  <url>\n    <loc>{u}</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>weekly</changefreq>\n  </url>"
-            for u in urls
+            f"  <url>\n    <loc>{u}</loc>\n    <lastmod>{d}</lastmod>\n    <changefreq>weekly</changefreq>\n  </url>"
+            for u, d in urls
         )
         sm = sm.replace("</urlset>", block + "\n</urlset>")
         # 去重保险：按 <loc> 去重，防止历史重复累积

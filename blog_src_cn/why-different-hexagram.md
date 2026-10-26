@@ -4,6 +4,7 @@ slug: why-different-hexagram
 description: 「同一件事，我和朋友一起问，卦却不一样——是不是不准？」这是被问最多的问题。答案其实很简单：因为你和你朋友面对的，本来就是两个不同的处境。
 keywords: 易经 准吗, 起卦 原理, 易经 同一问题, 卦 为什么不同, 易经 决策
 date: 2026-09-15
+updated: 2026-10-10
 related: how-to-ask, is-i-ching-fortune-telling
 ---
 

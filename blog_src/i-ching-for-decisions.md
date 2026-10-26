@@ -4,6 +4,7 @@ slug: i-ching-for-decisions
 description: 易經不是拿來「算準」的。這篇完整指南講清楚：易經決策的三個層次、一個真實兩難的完整推演、以及為什麼「卦是鏡子，不是算盤」。
 keywords: 易經決策, 易經 準嗎, 易經 商業決策, 生意人 決策, 決策之書
 date: 2026-09-14
+updated: 2026-10-10
 related: is-i-ching-fortune-telling, about-kyson
 ---
 

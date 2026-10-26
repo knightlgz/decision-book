@@ -4,6 +4,7 @@ slug: i-ching-vs-fortune-telling
 description: 都說「不準」，為什麼解卦還有人用？因為它和算命根本是兩件事——一個替你預測答案，一個幫你看清處境。這篇把區別一次講清楚。
 keywords: 易經解卦, 易經 算命 區別, 易經是算命嗎, AI解卦, 解卦是什麼
 date: 2026-09-15
+updated: 2026-10-10
 related: is-i-ching-fortune-telling, question-templates
 ---
 

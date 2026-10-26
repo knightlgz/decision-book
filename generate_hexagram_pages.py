@@ -816,16 +816,18 @@ def index_html(hexagrams, lang="tc"):
 
 
 def build_sitemap(hexagrams):
-    urls = [f"{BASE_URL}/", f"{BASE_URL}/hexagram/", f"{BASE_URL}/cn/hexagram/"]
+    site_date = site_components.SITE_LASTMOD
+    hex_date = site_components.HEX_LASTMOD
+    urls = [(f"{BASE_URL}/", site_date), (f"{BASE_URL}/hexagram/", hex_date), (f"{BASE_URL}/cn/hexagram/", hex_date)]
     for _p in ("about", "privacy", "disclaimer"):
-        urls.append(f"{BASE_URL}/{_p}/")
-        urls.append(f"{BASE_URL}/cn/{_p}/")
+        urls.append((f"{BASE_URL}/{_p}/", site_date))
+        urls.append((f"{BASE_URL}/cn/{_p}/", site_date))
     for h in hexagrams:
-        urls.append(f"{BASE_URL}/hexagram/{h['number']}/")
-        urls.append(f"{BASE_URL}/cn/hexagram/{h['number']}/")
+        urls.append((f"{BASE_URL}/hexagram/{h['number']}/", hex_date))
+        urls.append((f"{BASE_URL}/cn/hexagram/{h['number']}/", hex_date))
     body = "\n".join(
-        f"  <url>\n    <loc>{u}</loc>\n    <changefreq>weekly</changefreq>\n  </url>"
-        for u in urls
+        f"  <url>\n    <loc>{u}</loc>\n    <lastmod>{d}</lastmod>\n    <changefreq>weekly</changefreq>\n  </url>"
+        for u, d in urls
     )
     # 保留既有 blog 条目（由 generate_blog_pages.py 维护；单独重跑本脚本时不可丢失）
     blog_blocks = ""

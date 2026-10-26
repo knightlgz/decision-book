@@ -4,6 +4,7 @@ slug: question-templates
 description: 不知道怎麼問卦？這 10 個模板覆蓋最常見的糾結場景。照著填空，就能問出高品質的問題。
 keywords: 問卦模板, 易經 提問 模板, 怎麼問卦, AI解卦 怎麼問, 決策 提問
 date: 2026-09-15
+updated: 2026-10-20
 related: how-to-ask, i-ching-vs-fortune-telling
 ---
 
