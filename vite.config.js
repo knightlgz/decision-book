@@ -25,9 +25,21 @@ function devDirIndexPlugin() {
   }
 }
 
+// SPA 入口 index.html 的 canonical / JSON-LD url：单一数据源注入（site_components.json）
+function siteUrlPlugin() {
+  return {
+    name: 'site-url',
+    transformIndexHtml(html) {
+      const data = JSON.parse(fs.readFileSync(path.resolve('src/data/site_components.json'), 'utf-8'))
+      return html.replaceAll('__SITE_URL__', data.site_url)
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     devDirIndexPlugin(),
+    siteUrlPlugin(),
     react(),
     tailwindcss(),
   ],

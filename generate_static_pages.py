@@ -289,6 +289,11 @@ def main():
             (out_dir / "index.html").write_text(build_page(slug, lang), encoding="utf-8")
             n += 1
             print(f"  ✓ {'/cn' if lang == 'sc' else ''}/{slug}/ ({lang})")
+    # robots.txt：sitemap 域名同样来自单一数据源
+    (PUBLIC / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {BASE_URL}/sitemap.xml\n", encoding="utf-8"
+    )
+    print("  ✓ /robots.txt")
     print(f"\n完成 {n} 页。提交 git 后 Vercel 自动部署。")
 
 

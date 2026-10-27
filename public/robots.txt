@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://decision-book.vercel.app/sitemap.xml
+Sitemap: https://kysonsbook.com/sitemap.xml
