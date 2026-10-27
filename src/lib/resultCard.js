@@ -1,3 +1,4 @@
+import SITE from '../data/site_components.json';
 // 卦象结果卡（2026-10-07）：纯 Canvas 绘制 1080×1920 分享图，零第三方依赖。
 // 隐私红线：卡面结构性不含问题/报告片段——只含 品牌行 / 卦象 / 卦名 / 金句 / 二维码。
 // 品牌行措辞：曾師的AI學徒（2026-10-07 Kyson 定，替代已弃用的“AI 弟子”）。
@@ -197,7 +198,7 @@ export async function renderCard(canvas, { hexagram, orig, cast, insight, lang }
   ctx.fillText(isTc ? '掃碼起一卦，看看你的處境' : '扫码起一卦，看看你的处境', 430, 1662);
   ctx.fillStyle = C.muted;
   ctx.font = font(400, 30, lang);
-  ctx.fillText('decision-book.vercel.app', 430, 1716);
+  ctx.fillText(new URL(SITE.site_url).host, 430, 1716);
   ctx.font = font(400, 24, lang);
   ctx.fillText(isTc ? '卦不預測吉凶，只幫你理清處境' : '卦不预测吉凶，只帮你理清处境', 430, 1766);
 }

@@ -27,7 +27,7 @@ INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
 INTERP_SC_FILE = ROOT / "src" / "data" / "hexagram_interpretations_sc.json"
 INSIGHT_GEN_FILE = ROOT / "src" / "data" / "insight_gen.json"
 PUBLIC = ROOT / "public"
-BASE_URL = "https://decision-book.vercel.app"
+BASE_URL = site_components.SITE_URL
 
 
 def parse_original():

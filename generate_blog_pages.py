@@ -20,7 +20,7 @@ import site_components
 
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
-BASE_URL = "https://decision-book.vercel.app"
+BASE_URL = site_components.SITE_URL
 
 # ---------- 语言配置（未来加语言=加一项） ----------
 LANGS = {

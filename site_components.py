@@ -20,6 +20,7 @@ ROOT = Path(__file__).parent
 _DATA = json.loads((ROOT / "src" / "data" / "site_components.json").read_text(encoding="utf-8"))
 
 # sitemap lastmod：真实内容变更日（不是构建日，避免每次部署制造假新鲜度）
+SITE_URL = _DATA["site_url"].rstrip("/")
 SITE_LASTMOD = _DATA.get("content_dates", {}).get("site", "")
 HEX_LASTMOD = _DATA.get("content_dates", {}).get("hexagrams", SITE_LASTMOD)
 

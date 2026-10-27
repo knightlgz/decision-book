@@ -2,7 +2,7 @@
 
 > 基于曾仕强教授易经思想体系，用 AI 为你推演职场与商业抉择。
 > 
-> 🔗 在线体验：**[decision-book.vercel.app](https://decision-book.vercel.app)**
+> 🔗 在线体验：**[kysonsbook.com](https://kysonsbook.com)**
 
 ## 这是什么？
 
@@ -17,9 +17,9 @@
 
 每卦配有《周易》原文、白话释义与职场启示：
 
-- 📖 [六十四卦索引（繁體）](https://decision-book.vercel.app/hexagram/)
-- 📖 [六十四卦索引（简体）](https://decision-book.vercel.app/cn/hexagram/)
-- 示例：[地澤臨 · 職場解讀](https://decision-book.vercel.app/hexagram/19/) ｜ [水風井 · 職場解讀](https://decision-book.vercel.app/hexagram/48/) ｜ [風火家人 · 職場解讀](https://decision-book.vercel.app/hexagram/37/)
+- 📖 [六十四卦索引（繁體）](https://kysonsbook.com/hexagram/)
+- 📖 [六十四卦索引（简体）](https://kysonsbook.com/cn/hexagram/)
+- 示例：[地澤臨 · 職場解讀](https://kysonsbook.com/hexagram/19/) ｜ [水風井 · 職場解讀](https://kysonsbook.com/hexagram/48/) ｜ [風火家人 · 職場解讀](https://kysonsbook.com/hexagram/37/)
 
 ## 技术栈
 

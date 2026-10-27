@@ -35,7 +35,7 @@ export default defineConfig({
   // 注：起卦为纯前端计算（src/lib/seed.js），不经过 /api；此代理仅供报告生成 /api/dify 联调
   server: {
     proxy: {
-      '/api': { target: 'https://decision-book.vercel.app', changeOrigin: true },
+      '/api': { target: 'https://kysonsbook.com', changeOrigin: true },
     },
   },
 })
