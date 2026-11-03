@@ -251,6 +251,7 @@ def build_page(slug, lang):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{site_components.HEAD_TAGS}
 <title>{cfg['title']}｜{brand}</title>
 <meta name="description" content="{cfg['desc']}">
 <meta name="robots" content="index, follow">
@@ -263,6 +264,7 @@ def build_page(slug, lang):
 <meta property="og:description" content="{cfg['desc']}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="{brand}">
+{site_components.OG_IMAGE_TAGS}
 <style>{CSS}</style>
 {GA_SNIPPET}
 </head>

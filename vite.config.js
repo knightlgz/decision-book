@@ -31,7 +31,19 @@ function siteUrlPlugin() {
     name: 'site-url',
     transformIndexHtml(html) {
       const data = JSON.parse(fs.readFileSync(path.resolve('src/data/site_components.json'), 'utf-8'))
-      return html.replaceAll('__SITE_URL__', data.site_url)
+      const og = data.og_image
+      const ogTags = [
+        `<meta property="og:image" content="${data.site_url}${og.path}">`,
+        `<meta property="og:image:width" content="${og.width}">`,
+        `<meta property="og:image:height" content="${og.height}">`,
+        '<meta property="og:image:alt" content="決策之書 · 易經商業決策">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        `<meta name="twitter:image" content="${data.site_url}${og.path}">`,
+      ].join('\n    ')
+      return html
+        .replaceAll('__SITE_URL__', data.site_url)
+        .replaceAll('__HEAD_TAGS__', data.head_tags)
+        .replaceAll('__OG_IMAGE_TAGS__', ogTags)
     },
   }
 }

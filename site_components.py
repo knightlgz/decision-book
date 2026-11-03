@@ -24,6 +24,20 @@ SITE_URL = _DATA["site_url"].rstrip("/")
 SITE_LASTMOD = _DATA.get("content_dates", {}).get("site", "")
 HEX_LASTMOD = _DATA.get("content_dates", {}).get("hexagrams", SITE_LASTMOD)
 
+# 全站 head 资源（单一数据源）：favicon 套装 / manifest / theme-color
+HEAD_TAGS = _DATA["head_tags"]
+
+# 社交分享图（绝对 URL，供 og / twitter 使用）
+_OG = _DATA["og_image"]
+OG_IMAGE_TAGS = (
+    f'<meta property="og:image" content="{SITE_URL}{_OG["path"]}">\n'
+    f'<meta property="og:image:width" content="{_OG["width"]}">\n'
+    f'<meta property="og:image:height" content="{_OG["height"]}">\n'
+    '<meta property="og:image:alt" content="決策之書 · 易經商業決策">\n'
+    '<meta name="twitter:card" content="summary_large_image">\n'
+    f'<meta name="twitter:image" content="{SITE_URL}{_OG["path"]}">'
+)
+
 
 def _href(item, lang):
     href = item["href"]

@@ -215,6 +215,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{site_components.HEAD_TAGS}
 <title>{title}｜{cfg['brand']}</title>
 <meta name="description" content="{desc}">
 <meta name="keywords" content="{meta_extra.get('keywords', '')}">
@@ -226,6 +227,7 @@ def page_shell(lang, title, desc, slug, body_html, meta_extra=None, related_html
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{canonical}">
+{site_components.OG_IMAGE_TAGS}
 <style>{CSS}</style>
 <script type="application/ld+json">{ld_json}</script>
 {ga_snippet}

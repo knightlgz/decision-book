@@ -1,0 +1,13 @@
+{
+  "name": "決策之書 · 易經商業決策",
+  "short_name": "決策之書",
+  "description": "用易經的視角，把商業處境想清楚。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDF3D9",
+  "theme_color": "#16130E",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

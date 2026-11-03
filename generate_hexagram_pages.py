@@ -520,6 +520,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{site_components.HEAD_TAGS}
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="index, follow">
@@ -531,8 +532,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
+{site_components.OG_IMAGE_TAGS}
 <meta property="og:site_name" content="{breadcrumb_home}">
-<meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
 <script type="application/ld+json">{article_ld}</script>
@@ -750,6 +751,7 @@ def index_html(hexagrams, lang="tc"):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{site_components.HEAD_TAGS}
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="index, follow">
@@ -758,6 +760,7 @@ def index_html(hexagrams, lang="tc"):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
+{site_components.OG_IMAGE_TAGS}
 <script type="application/ld+json">{ld}</script>
 <style>
   :root {{
