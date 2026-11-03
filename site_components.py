@@ -60,7 +60,12 @@ def nav_html(lang, active=None, switch_href=None):
     """三栏目常驻导航：提問｜易經｜筆記 + 语言切换
     active: None | "ask" | "hex" | "blog"；switch_href: 目标语言同页 URL（各页传入）"""
     p = "" if lang == "tc" else "/cn"
-    rows = []
+    brand = (
+        f'    <a class="nav-brand" href="{p}/" aria-label="決策之書" '
+        'style="position:absolute;left:clamp(16px,4vw,24px);top:50%;transform:translateY(-50%);line-height:0;display:flex">'
+        '<img src="/mark.svg" alt="" width="22" height="22"></a>'
+    )
+    rows = [brand]
     for it in _DATA["nav"]["items"]:
         cls = "nav-item active" if active == it["id"] else "nav-item"
         rows.append(f'    <a class="{cls}" href="{p + it["href"]}">{it[lang]}</a>')

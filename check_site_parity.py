@@ -16,6 +16,8 @@ import re
 import sys
 from pathlib import Path
 
+import site_components
+
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
 D = json.loads((ROOT / "src" / "data" / "site_components.json").read_text(encoding="utf-8"))
@@ -93,13 +95,13 @@ def main():
         m = re.search(r"<footer>[\s\S]*?</footer>", text)
         if not m:
             fails.append((rel, "页面缺 footer"))
-        elif m.group(0) != build_footer(lang, row2, trailer):
+        elif m.group(0) != site_components.footer_html(lang, row2, trailer):
             fails.append((rel, "footer 与数据源不一致"))
         n = re.search(r'<nav class="site-nav">[\s\S]*?</nav>', text)
         if not n:
             fails.append((rel, "页面缺 site-nav"))
         else:
-            if n.group(0) != build_nav(lang, active, switch_href_of(rel)):
+            if n.group(0) != site_components.nav_html(lang, active, switch_href_of(rel)):
                 fails.append((rel, "nav 与数据源不一致"))
             got = re.search(r'class="lang-switch" href="([^"]+)"', n.group(0))
             if not got or not got.group(1).startswith("/"):
