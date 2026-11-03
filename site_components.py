@@ -63,7 +63,7 @@ def nav_html(lang, active=None, switch_href=None):
     brand = (
         f'    <a class="nav-brand" href="{p}/" aria-label="決策之書" '
         'style="position:absolute;left:clamp(16px,4vw,24px);top:50%;transform:translateY(-50%);line-height:0;display:flex">'
-        '<img src="/mark.svg" alt="" width="22" height="22"></a>'
+        '<img src="/mark-header.png" alt="" width="22" height="22"></a>'
     )
     rows = [brand]
     for it in _DATA["nav"]["items"]:

@@ -350,7 +350,7 @@ export default function App() {
         <header className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-widest text-gray-900 dark:text-[#F5F2EA]">
             <span className="inline-flex items-center gap-2 justify-center">
-              <img src="/mark.svg" alt="" width="30" height="30" aria-hidden="true" className="inline-block" />
+              <img src="/mark-header.png" alt="" width="30" height="30" aria-hidden="true" className="inline-block" />
               <button
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 title={lang === "tc" ? "回到頂部" : "回到顶部"}
