@@ -99,6 +99,12 @@
         "tc": "筆記",
         "sc": "笔记",
         "href": "/blog/"
+      },
+      {
+        "id": "contact",
+        "tc": "聯繫",
+        "sc": "联系",
+        "href": "/contact/"
       }
     ],
     "switch_names": {
