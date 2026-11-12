@@ -3,7 +3,7 @@ title: 做生意講道易：年底了，你還有一筆貨款收不回來嗎？
 slug: year-end-receivables
 description: 每年三個十五，上元節天官賜福、中元節地官赦罪、下元節水官解厄。前兩個是加減法，最後的解厄是清零，心理上的不順意、身體上的沉痾舊疾、生意上的磕磕絆絆，全都清零。
 keywords: 下元節, 應收帳款, 討債, 解卦, 益卦, 訟卦, 易經 商業決策
-date: 2026-11-22
+date: 2026-11-12
 related: i-ching-for-decisions, question-templates
 ---
 
