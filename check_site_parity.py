@@ -62,7 +62,7 @@ def classify(rel):
         return (lang, "hexindex" if inner == "index.html" else "hexpage", None, "hex")
     if rest.startswith("blog/"):
         return (lang, "default", "blog", "blog")
-    if rest.split("/")[0] in ("about", "privacy", "disclaimer"):
+    if rest.split("/")[0] in ("about", "privacy", "disclaimer", "contact"):
         return (lang, "default", None, None)
     return None
 

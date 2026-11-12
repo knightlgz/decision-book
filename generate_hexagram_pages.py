@@ -822,7 +822,7 @@ def build_sitemap(hexagrams):
     site_date = site_components.SITE_LASTMOD
     hex_date = site_components.HEX_LASTMOD
     urls = [(f"{BASE_URL}/", site_date), (f"{BASE_URL}/hexagram/", hex_date), (f"{BASE_URL}/cn/hexagram/", hex_date)]
-    for _p in ("about", "privacy", "disclaimer"):
+    for _p in ("about", "privacy", "disclaimer", "contact"):
         urls.append((f"{BASE_URL}/{_p}/", site_date))
         urls.append((f"{BASE_URL}/cn/{_p}/", site_date))
     for h in hexagrams:

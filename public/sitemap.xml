@@ -46,6 +46,16 @@
     <changefreq>weekly</changefreq>
   </url>
 <url>
+    <loc>https://kysonsbook.com/contact/</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://kysonsbook.com/cn/contact/</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
     <loc>https://kysonsbook.com/hexagram/01/</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -684,16 +694,6 @@
     <loc>https://kysonsbook.com/cn/hexagram/64/</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
-  </url>
-<url>
-    <loc>https://kysonsbook.com/contact/</loc>
-    <lastmod>2026-11-09</lastmod>
-    <changefreq>monthly</changefreq>
-  </url>
-<url>
-    <loc>https://kysonsbook.com/cn/contact/</loc>
-    <lastmod>2026-11-09</lastmod>
-    <changefreq>monthly</changefreq>
   </url>
 <url>
     <loc>https://kysonsbook.com/blog/</loc>
