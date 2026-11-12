@@ -686,8 +686,23 @@
     <changefreq>weekly</changefreq>
   </url>
 <url>
+    <loc>https://kysonsbook.com/contact/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+<url>
+    <loc>https://kysonsbook.com/cn/contact/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+<url>
     <loc>https://kysonsbook.com/blog/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://kysonsbook.com/blog/year-end-receivables/</loc>
+    <lastmod>2026-11-22</lastmod>
     <changefreq>weekly</changefreq>
   </url>
 <url>
@@ -727,7 +742,12 @@
   </url>
 <url>
     <loc>https://kysonsbook.com/cn/blog/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<url>
+    <loc>https://kysonsbook.com/cn/blog/year-end-receivables/</loc>
+    <lastmod>2026-11-22</lastmod>
     <changefreq>weekly</changefreq>
   </url>
 <url>
@@ -764,15 +784,5 @@
     <loc>https://kysonsbook.com/cn/blog/i-ching-for-decisions/</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
-  </url>
-<url>
-    <loc>https://kysonsbook.com/contact/</loc>
-    <lastmod>2026-11-09</lastmod>
-    <changefreq>monthly</changefreq>
-  </url>
-<url>
-    <loc>https://kysonsbook.com/cn/contact/</loc>
-    <lastmod>2026-11-09</lastmod>
-    <changefreq>monthly</changefreq>
   </url>
 </urlset>
