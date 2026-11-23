@@ -26,6 +26,7 @@ INTERP_FILE = ROOT / "src" / "data" / "hexagram_interpretations.json"
 # 简体版=LLM 语际转译（由 translate_interp_sc.py 产出；禁机翻铁律——不得用 opencc 等机械转换替代）
 INTERP_SC_FILE = ROOT / "src" / "data" / "hexagram_interpretations_sc.json"
 INSIGHT_GEN_FILE = ROOT / "src" / "data" / "insight_gen.json"
+PUBLIC_BLOCKS_FILE = ROOT / "src" / "data" / "hexagram_public_blocks.json"
 PUBLIC = ROOT / "public"
 BASE_URL = site_components.SITE_URL
 
@@ -61,6 +62,17 @@ def parse_interpretations_sc():
     if not INTERP_SC_FILE.exists():
         return {}
     return json.loads(INTERP_SC_FILE.read_text(encoding="utf-8"))
+
+
+def parse_public_blocks():
+    """老板向公开区块（B2）：scene2 / checkpoints / misjudgments / faqs
+    只放公开判读，不放付费 advice。缺文件时返回空字典（页面回退到全文 career）。"""
+    if not PUBLIC_BLOCKS_FILE.exists():
+        return {}
+    return json.loads(PUBLIC_BLOCKS_FILE.read_text(encoding="utf-8"))
+
+
+PUBLIC_BLOCKS = parse_public_blocks()
 
 
 def parse_insight_gen():
@@ -394,7 +406,11 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         related_label = "相关卦象"
         interp_labels = ["白话释义", "商业决策启示", "行动建议"]
 
+    public_block = PUBLIC_BLOCKS.get(str(int(n)), {}).get(lang)
     faq_items = FAQ_TC if is_tc else FAQ_SC
+    # B2 老板向独立 FAQ（每卦不同，避免全站同一套重复）
+    if public_block:
+        faq_items = faq_items + public_block.get("faqs", [])
     # 场景痛点 FAQ（第一页页群 B 方案；2026-10-07）——问题取自标题同源场景词
     if scenario_faq:
         _sf = scenario_faq.get(int(n), {}).get("tc" if is_tc else "sc")
@@ -424,7 +440,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         scripture_html += lines_html
 
     # 白话解读区块（DeepSeek 生成）
-    # 策略：释义全量展示；启示段截为2句引子；行动建议不上页面（付费产品核心价值）
+    # 策略：释义全文 + 老板向启示全文；行动建议不上页面（付费产品核心价值）
     def to_paragraphs(text):
         """优先按 LLM 语义分段标记 ||| 分，无标记时退回原样"""
         if "|||" in text:
@@ -440,14 +456,25 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         if meaning_text:
             blocks.append(f'<div class="interp-block"><h3>{interp_labels[0]}</h3>{to_paragraphs(meaning_text)}</div>')
         if career_text:
-            # 截取前两句作为引子
-            sentences = re.split(r'(?<=[。！？])', career_text)
-            teaser = "".join(sentences[:2]).strip()
-            if len(teaser) < 30 and len(sentences) > 2:
-                teaser += sentences[2]
-            teaser += "…"
-            blocks.append(f'<div class="interp-block"><h3>{interp_labels[1]}</h3><p>{teaser}</p></div>')
+            blocks.append(f'<div class="interp-block"><h3>{interp_labels[1]}</h3>{to_paragraphs(career_text)}</div>')
         interp_html = f'<div class="interpretation">{"".join(blocks)}</div>'
+    # 老板向公开区块（B2）：只放判读，不放付费 advice
+    extra_html = ""
+    if public_block:
+        _extra = []
+        if public_block.get("scene2"):
+            _h = "另一個常見場景" if is_tc else "另一个常见场景"
+            _extra.append(f'<div class="interp-block"><h3>{_h}</h3><p>{public_block["scene2"]}</p></div>')
+        if public_block.get("checkpoints"):
+            _h = "決策檢查" if is_tc else "决策检查"
+            _li = "".join(f"<li>{x}</li>" for x in public_block["checkpoints"])
+            _extra.append(f'<div class="interp-block"><h3>{_h}</h3><ul>{_li}</ul></div>')
+        if public_block.get("misjudgments"):
+            _h = "常見誤判" if is_tc else "常见误判"
+            _li = "".join(f"<li>{x}</li>" for x in public_block["misjudgments"])
+            _extra.append(f'<div class="interp-block"><h3>{_h}</h3><ul>{_li}</ul></div>')
+        if _extra:
+            extra_html = f'<div class="interpretation">{"".join(_extra)}</div>'
 
     # 相关卦模块（錯綜交互，含关系标签）
     related_html = ""
@@ -598,6 +625,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   .interp-block h3 {{ color:var(--accent); font-size:15px; letter-spacing:2px; margin-bottom:10px; }}
   .interp-block p {{ color:var(--text3); font-size:15px; line-height:1.9; margin-bottom:12px; }}
   .interp-block p:last-child {{ margin-bottom:0; }}
+  .interp-block ul {{ margin:8px 0 0 20px; color:var(--text3); font-size:15px; line-height:1.9; }}
+  .interp-block li {{ margin-bottom:6px; }}
   .scripture {{ background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:48px; }}
   .scripture-label {{ color:var(--accent); font-size:13px; letter-spacing:3px; margin-bottom:16px; display:block; }}
   .gua-ci {{ font-size:20px; color:var(--text-strong); border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:16px; }}
@@ -703,6 +732,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
   </div>
 
   {interp_html}
+
+  {extra_html}
 
   {further_html}
 
