@@ -59,7 +59,7 @@ const BLOG_POSTS = {
   ],
 };
 
-export default function App() {
+export default function App({ embedded = false }) {
   const [prefilled] = useState(() => {
     // 支持 ?q= 预填问题（URL 参数）
     try {
@@ -78,12 +78,12 @@ export default function App() {
   // 繁体页面显示用标签（值恒为简体，与 Dify 端档位对齐）
   const TC_REGION_LABELS = { "中国大陆": "中國大陸", "东南亚": "東南亞", "日韩": "日韓", "欧洲": "歐洲", "澳洲/新西兰": "澳洲/紐西蘭", "其他地区": "其他地區" };
   const [region, setRegion] = useState(() => {
-    if (typeof window === "undefined") return INIT_CN ? "中国大陆" : "港澳台";
+    if (typeof window === "undefined") return INIT_CN ? "东南亚" : "港澳台";
     try {
       const saved = window.localStorage.getItem("db_region");
       if (saved && REGIONS.includes(saved)) return saved;
     } catch {}
-    return INIT_CN ? "中国大陆" : "港澳台";
+    return INIT_CN ? "东南亚" : "港澳台";
   });
   const changeRegion = (v) => {
     setRegion(v);
@@ -102,8 +102,8 @@ export default function App() {
   const lang = INIT_CN ? "sc" : "tc";
   // 浏览器标签标题跟随语言（/ 繁体站、/cn/ 简体站各自显示对应标题）
   useEffect(() => {
-    document.title = lang === "tc" ? "決策之書 · 曾仕強易經商業決策助手" : "决策之书 · 曾仕强易经商业决策助手";
-  }, [lang]);
+    if (!embedded) document.title = lang === "tc" ? "決策之書 · 曾仕強易經商業決策助手" : "决策之书 · 曾仕强易经商业决策助手";
+  }, [lang, embedded]);
   const switchLang = () => {
     window.location.href = lang === "tc" ? "/cn/" : "/";
   };
@@ -314,8 +314,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-dvh bg-[#FAFAFA] dark:bg-[#0F1115] text-[#333333] dark:text-[#E8E6E0] font-sans p-4 sm:p-6 selection:bg-gray-200 dark:selection:bg-[#2A2E3A]">
+    <div className={embedded ? "" : "min-h-dvh bg-[#FAFAFA] dark:bg-[#0F1115] text-[#333333] dark:text-[#E8E6E0] font-sans p-4 sm:p-6 selection:bg-gray-200 dark:selection:bg-[#2A2E3A]"}>
       {/* 三栏目常驻导航（2026-10-08）：提问｜易经｜笔记 */}
+{!embedded && (
       <nav className="sticky top-0 z-40 -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 px-4 sm:px-6 backdrop-blur-md bg-[#FAFAFA]/85 dark:bg-[#0F1115]/85 border-b border-gray-200 dark:border-[#2A2E3A]">
         <div className="max-w-md mx-auto h-12 flex items-center justify-center gap-8 relative">
           <button
@@ -345,8 +346,11 @@ export default function App() {
           </button>
         </div>
       </nav>
-      <div className="max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12">
 
+      )}
+      <div className={embedded ? "max-w-md mx-auto space-y-6" : "max-w-md mx-auto space-y-6 sm:space-y-8 mt-6 sm:mt-12"}>
+
+{!embedded && (
         <header className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-widest text-gray-900 dark:text-[#F5F2EA]">
             <span className="inline-flex items-center gap-2 justify-center">
@@ -372,6 +376,8 @@ export default function App() {
             ))}
           </div>
         </header>
+
+      )}
 
         <section className="space-y-4">
           <textarea
@@ -532,7 +538,7 @@ export default function App() {
           </section>
         )}
 
-        {/* 博客精选入口（2026-09-15 借鉴对标 tarotap：内容直达，降低发现门槛） */}
+{!embedded && (
         <section className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C]">
           <h2 className="text-sm font-medium text-gray-700 dark:text-[#DCD8CF] mb-1 text-center tracking-wider">
             {lang === "tc" ? "決策筆記" : "决策笔记"}
@@ -564,8 +570,9 @@ export default function App() {
             </a>
           </div>
         </section>
+        )}
 
-        {/* 首页 FAQ（2026-09-15 借鉴对标）：合规声明 + 期望管理 */}
+{!embedded && (
         <section className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C]">
           <h2 className="text-sm font-medium text-gray-700 dark:text-[#DCD8CF] mb-3 text-center tracking-wider">
             {lang === "tc" ? "常見問題" : "常见问题"}
@@ -582,7 +589,9 @@ export default function App() {
             ))}
           </div>
         </section>
+        )}
 
+{!embedded && (
         <footer className="mt-10 pt-6 border-t border-gray-100 dark:border-[#1E222C] text-center space-y-1.5">
           <div className="flex justify-center gap-3 text-xs text-gray-400 dark:text-[#8B8F98]">
             {SITE.row1.map((it, i) => (
@@ -612,6 +621,7 @@ export default function App() {
             {lang === "tc" ? SITE.brand.tc : SITE.brand.sc}
           </p>
         </footer>
+        )}
       </div>
       {(showTop || report) && (
         <div className="fixed bottom-6 right-6 flex flex-col items-end gap-3">
