@@ -406,7 +406,7 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
         related_label = "相关卦象"
         interp_labels = ["白话释义", "商业决策启示", "行动建议"]
 
-    public_block = PUBLIC_BLOCKS.get(str(int(n)), {}).get(lang)
+    public_block = (PUBLIC_BLOCKS.get(n) or PUBLIC_BLOCKS.get(str(int(n))) or {}).get(lang)
     faq_items = FAQ_TC if is_tc else FAQ_SC
     # B2 老板向独立 FAQ（每卦不同，避免全站同一套重复）
     if public_block:
@@ -871,7 +871,7 @@ def index_html(hexagrams, lang="tc"):
 def build_sitemap(hexagrams):
     site_date = site_components.SITE_LASTMOD
     hex_date = site_components.HEX_LASTMOD
-    urls = [(f"{BASE_URL}/", site_date), (f"{BASE_URL}/cn/", site_components.SITEMAP_LASTMOD), (f"{BASE_URL}/hexagram/", hex_date), (f"{BASE_URL}/cn/hexagram/", hex_date)]
+    urls = [(f"{BASE_URL}/", site_components.SITEMAP_LASTMOD), (f"{BASE_URL}/cn/", site_components.SITEMAP_LASTMOD), (f"{BASE_URL}/hexagram/", hex_date), (f"{BASE_URL}/cn/hexagram/", hex_date)]
     for _p in ("about", "privacy", "disclaimer", "contact", "sitemap"):
         _d = site_components.SITEMAP_LASTMOD if _p == "sitemap" else site_date
         urls.append((f"{BASE_URL}/{_p}/", _d))
