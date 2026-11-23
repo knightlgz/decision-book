@@ -3,7 +3,8 @@
   "site_url": "https://kysonsbook.com",
   "content_dates": {
     "site": "2026-10-10",
-    "hexagrams": "2026-10-10"
+    "hexagrams": "2026-10-10",
+    "sitemap": "2026-11-23"
   },
   "row1": [
     {
@@ -33,6 +34,11 @@
         "href": "/blog/",
         "tc": "決策筆記",
         "sc": "决策笔记"
+      },
+      {
+        "href": "/sitemap/",
+        "tc": "網站地圖",
+        "sc": "网站地图"
       }
     ],
     "hexindex": [
@@ -45,6 +51,11 @@
         "href": "/blog/",
         "tc": "決策筆記",
         "sc": "决策笔记"
+      },
+      {
+        "href": "/sitemap/",
+        "tc": "網站地圖",
+        "sc": "网站地图"
       }
     ],
     "default": [
@@ -57,6 +68,11 @@
         "href": "/blog/",
         "tc": "決策筆記",
         "sc": "决策笔记"
+      },
+      {
+        "href": "/sitemap/",
+        "tc": "網站地圖",
+        "sc": "网站地图"
       }
     ],
     "spa": [

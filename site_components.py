@@ -23,6 +23,7 @@ _DATA = json.loads((ROOT / "src" / "data" / "site_components.json").read_text(en
 SITE_URL = _DATA["site_url"].rstrip("/")
 SITE_LASTMOD = _DATA.get("content_dates", {}).get("site", "")
 HEX_LASTMOD = _DATA.get("content_dates", {}).get("hexagrams", SITE_LASTMOD)
+SITEMAP_LASTMOD = _DATA.get("content_dates", {}).get("sitemap", SITE_LASTMOD)
 
 # 全站 head 资源（单一数据源）：favicon 套装 / manifest / theme-color
 HEAD_TAGS = _DATA["head_tags"]

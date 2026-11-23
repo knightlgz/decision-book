@@ -30,6 +30,13 @@ PUBLIC = ROOT / "public"
 BASE_URL = site_components.SITE_URL
 
 
+FURTHER_READING = {
+    "36": [("huang-renxun-resignation", "黃仁勳辭職那天，北美的華裔老闆都看懂了", "黄仁勋辞职那天，北美的华裔老板都看懂了")],
+    "42": [("year-end-receivables", "年底了，你還有筆貨款收不回來嗎？", "年底了，你还有笔货款收不回来吗？")],
+    "40": [("year-end-receivables", "年底了，你還有筆貨款收不回來嗎？", "年底了，你还有笔货款收不回来吗？")],
+    "6": [("year-end-receivables", "年底了，你還有筆貨款收不回來嗎？", "年底了，你还有笔货款收不回来吗？")],
+}
+
 def parse_original():
     """读取原文数据（卦辞+爻辞），按卦序号索引"""
     data = json.loads(ORIGINAL_FILE.read_text(encoding="utf-8"))
@@ -452,6 +459,16 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
             rel_links.append(f'<a href="{idx_link}{rn}/"><span class="rel-name">{r_name}</span><span class="rel-tag">{r_label}</span></a>')
         if rel_links:
             related_html = f'<div class="related"><h3>{related_label}</h3><div class="grid">{"".join(rel_links)}</div></div>'
+    # 延伸閱讀：只掛與文章直接相關的卦頁（不影響其他頁）
+    further_html = ""
+    _fr = FURTHER_READING.get(str(int(n)))
+    if _fr:
+        _links = []
+        for _slug, _label_tc, _label_sc in _fr:
+            _label = _label_tc if is_tc else _label_sc
+            _prefix = "" if is_tc else "/cn"
+            _links.append(f'<a href="{_prefix}/blog/{_slug}/"><span class="rel-name">{_label}</span><span class="rel-tag">延伸閱讀</span></a>')
+        further_html = f'<div class="related"><h3>{"延伸閱讀" if is_tc else "延伸阅读"}</h3><div class="grid">{"".join(_links)}</div></div>'
 
     # 六爻卦象图（小白也能看懂卦长什么样）
     TRI_SYMBOLS = {"乾": "☰", "兌": "☱", "離": "☲", "震": "☳", "巽": "☴", "坎": "☵", "艮": "☶", "坤": "☷"}
@@ -687,6 +704,8 @@ def page_html(hx, orig, interp, prev_num, next_num, lang="tc", related=None, ins
 
   {interp_html}
 
+  {further_html}
+
   {related_html}
 
   <div class="cta">
@@ -822,9 +841,10 @@ def build_sitemap(hexagrams):
     site_date = site_components.SITE_LASTMOD
     hex_date = site_components.HEX_LASTMOD
     urls = [(f"{BASE_URL}/", site_date), (f"{BASE_URL}/hexagram/", hex_date), (f"{BASE_URL}/cn/hexagram/", hex_date)]
-    for _p in ("about", "privacy", "disclaimer", "contact"):
-        urls.append((f"{BASE_URL}/{_p}/", site_date))
-        urls.append((f"{BASE_URL}/cn/{_p}/", site_date))
+    for _p in ("about", "privacy", "disclaimer", "contact", "sitemap"):
+        _d = site_components.SITEMAP_LASTMOD if _p == "sitemap" else site_date
+        urls.append((f"{BASE_URL}/{_p}/", _d))
+        urls.append((f"{BASE_URL}/cn/{_p}/", _d))
     for h in hexagrams:
         urls.append((f"{BASE_URL}/hexagram/{h['number']}/", hex_date))
         urls.append((f"{BASE_URL}/cn/hexagram/{h['number']}/", hex_date))
@@ -929,8 +949,9 @@ def main():
     (PUBLIC / "cn" / "hexagram" / "index.html").write_text(index_html(hexagrams, "sc"), encoding="utf-8")
     print("  ✓ 繁简索引页")
 
-    (PUBLIC / "sitemap.xml").write_text(build_sitemap(hexagrams), encoding="utf-8")
-    print(f"  ✓ sitemap.xml（{64*2+3} 个 URL）")
+    _sm = build_sitemap(hexagrams)
+    (PUBLIC / "sitemap.xml").write_text(_sm, encoding="utf-8")
+    print(f"  ✓ sitemap.xml（{_sm.count('<loc>')} 个 URL）")
     print("\n完成！提交 git 后 Vercel 自动部署。")
 
 
